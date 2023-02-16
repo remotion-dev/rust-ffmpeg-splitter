@@ -3,6 +3,7 @@ import fs from "fs";
 import { execSync } from "child_process";
 
 execSync("git config --global advice.detachedHead false");
+const isWindows = process.argv[2] === "windows";
 
 const out = "remotion";
 
@@ -35,6 +36,8 @@ execSync(
   [
     path.join(process.cwd(), "ffmpeg", "configure"),
     `--prefix=${out}`,
+    isWindows ? '--target-os=mingw32' : null,
+    isWindows ? '--cross-prefix=i686-w64-mingw32-',
     "--enable-small",
     "--disable-static",
     "--enable-shared",
@@ -75,7 +78,9 @@ execSync(
     "--enable-muxer=hevc",
     "--enable-muxer=h264",
     "--enable-muxer=gif",
-  ].join(" "),
+  ]
+    .filter(Boolean)
+    .join(" "),
   {
     cwd: "ffmpeg",
     stdio: "inherit",

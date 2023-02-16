@@ -23,6 +23,24 @@ jobs:
           key: ffmpeg_source-linux-x64
           paths:
             - ffmpeg
+  build-windows:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - node/install:
+          node-version: "16.13"
+      - restore_cache:
+          keys:
+            - ffmpeg_source-windows
+      - run: sudo apt-get install -y yasm mingw-w64
+      - run: node build.mjs windows
+      - store_artifacts:
+          path: ffmpeg.tar.gz
+      - save_cache:
+          key: ffmpeg_source-windows
+          paths:
+            - ffmpeg
 
   build-linux-arm:
     machine:
@@ -63,25 +81,6 @@ jobs:
           paths:
             - ffmpeg
 
-  build-windows:
-    docker:
-      - image: purplekarrot/mingw-w64-x86-64
-        auth:
-          username: jonnyburger
-          password: $DOCKER_PASSWORD
-    steps:
-      - checkout
-      - run: pacman -S mingw-w64-x86_64-nodejs
-      - restore_cache:
-          keys:
-            - ffmpeg_source-windows
-      - run: node build.mjs
-      - store_artifacts:
-          path: ffmpeg.tar.gz
-      - save_cache:
-          key: ffmpeg_source-windows
-          paths:
-            - ffmpeg
 workflows:
   build_ffmpeg:
     jobs:
