@@ -71,8 +71,8 @@ jobs:
       - node/install:
           node-version: "16.13"
       - restore_cache:
-        keys:
-          - ffmpeg_source
+          keys:
+            - ffmpeg_source
       - run: node build.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
