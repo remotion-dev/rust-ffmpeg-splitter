@@ -50,8 +50,8 @@ jobs:
       - node/install:
           node-version: "16.13"
       - restore_cache:
-        keys:
-          - ffmpeg_source
+          keys:
+            - ffmpeg_source
       - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm
       - run: node build.mjs
       - store_artifacts:
