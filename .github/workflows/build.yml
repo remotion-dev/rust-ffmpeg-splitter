@@ -28,6 +28,9 @@ jobs:
           brew install yasm
         if: matrix.os == 'macos-latest'
       - run: |
+          choco install yasm
+        if: matrix.os == 'windows-latest'
+      - run: |
           node build.mjs
       - uses: actions/upload-artifact@v3
         with:
