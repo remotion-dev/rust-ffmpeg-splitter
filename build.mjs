@@ -36,8 +36,8 @@ execSync(
   [
     path.join(process.cwd(), "ffmpeg", "configure"),
     `--prefix=${out}`,
-    isWindows ? '--target-os=mingw32' : null,
-    isWindows ? '--cross-prefix=i686-w64-mingw32-',
+    isWindows ? "--target-os=mingw32" : null,
+    isWindows ? "--cross-prefix=i686-w64-mingw32-" : null,
     "--enable-small",
     "--disable-static",
     "--enable-shared",
