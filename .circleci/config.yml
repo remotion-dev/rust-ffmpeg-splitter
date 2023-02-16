@@ -65,7 +65,11 @@ jobs:
 
   build-windows:
     docker:
+      # Public image but is rate limited
       - image: mmozeiko/mingw-w64
+        auth:
+          username: jonnyburger
+          password: $DOCKER_PASSWORD
     steps:
       - checkout
       - node/install:
