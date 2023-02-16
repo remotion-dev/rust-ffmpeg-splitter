@@ -12,6 +12,7 @@ jobs:
       - checkout
       - node/install:
           node-version: "16.13"
+      - run: apt-get install -y yasm
       - run: node build.mjs
 workflows:
   test_my_app:
