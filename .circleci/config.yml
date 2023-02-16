@@ -14,13 +14,13 @@ jobs:
           node-version: "16.13"
       - restore_cache:
           keys:
-            - ffmpeg_source
+            - ffmpeg_source-linux-x64
       - run: sudo apt-get install -y yasm
       - run: node build.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
-          key: ffmpeg_source
+          key: ffmpeg_source-linux-x64
           paths:
             - ffmpeg
 
@@ -34,13 +34,13 @@ jobs:
           node-version: "16.13"
       - restore_cache:
           keys:
-            - ffmpeg_source
+            - ffmpeg_source-linux-arm
       - run: sudo apt-get install -y yasm
       - run: node build.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
-          key: ffmpeg_source
+          key: ffmpeg_source-linux-arm
           paths:
             - ffmpeg
 
@@ -53,13 +53,13 @@ jobs:
           node-version: "16.13"
       - restore_cache:
           keys:
-            - ffmpeg_source
+            - ffmpeg_source-macos
       - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm
       - run: node build.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
-          key: ffmpeg_source
+          key: ffmpeg_source-macos
           paths:
             - ffmpeg
 
@@ -76,12 +76,12 @@ jobs:
           node-version: "16.13"
       - restore_cache:
           keys:
-            - ffmpeg_source
+            - ffmpeg_source-windows
       - run: node build.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
-          key: ffmpeg_source
+          key: ffmpeg_source-windows
           paths:
             - ffmpeg
 workflows:
