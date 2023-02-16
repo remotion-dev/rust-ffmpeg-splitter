@@ -9,6 +9,8 @@ env:
   FORCE_COLOR: 1
 jobs:
   build:
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@main
       - uses: actions/setup-node@v3
