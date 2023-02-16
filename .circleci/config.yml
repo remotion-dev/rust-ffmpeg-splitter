@@ -71,12 +71,10 @@ jobs:
           password: $DOCKER_PASSWORD
     steps:
       - checkout
-      - node/install:
-          node-version: "16.13"
+      - run: pacman -S mingw-w64-x86_64-nodejs
       - restore_cache:
           keys:
             - ffmpeg_source-windows
-      - run: pacman -S mingw-w64-x86_64-nodejs
       - run: node build.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
