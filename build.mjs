@@ -1,3 +1,4 @@
+import path from "path";
 import fs from "fs";
 import { execSync } from "child_process";
 
@@ -32,7 +33,7 @@ execSync("git checkout n5.1.1", {
 
 execSync(
   [
-    "./configure",
+    path.join(process.cwd(), "ffmpeg", "configure"),
     `--prefix=${out}`,
     "--enable-small",
     "--disable-static",
