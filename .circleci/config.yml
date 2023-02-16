@@ -23,6 +23,7 @@ jobs:
           key: ffmpeg_source
           paths:
             - ffmpeg
+
   build-linux-arm:
     machine:
       image: ubuntu-2004:202101-01
@@ -42,7 +43,8 @@ jobs:
           key: ffmpeg_source
           paths:
             - ffmpeg
-  build-linux-macos:
+
+  build-macos:
     macos:
       xcode: 13.4.1
     steps:
@@ -60,7 +62,8 @@ jobs:
           key: ffmpeg_source
           paths:
             - ffmpeg
-  build-linux-windows:
+
+  build-windows:
     docker:
       - image: mmozeiko/mingw-w64
     steps:
@@ -82,5 +85,5 @@ workflows:
     jobs:
       - build-linux-x64
       - build-linux-arm
-      - build-linux-macos
-      - build-linux-windows
+      - build-macos
+      - build-windows
