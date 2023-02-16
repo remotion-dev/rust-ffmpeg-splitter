@@ -21,6 +21,10 @@ jobs:
           override: true
       - run: |
           node build.mjs
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ffmpeg.zip
+          path: ffmpeg.zip
     strategy:
       matrix:
         include:

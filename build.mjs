@@ -3,6 +3,8 @@ import { execSync } from "child_process";
 
 execSync("git config --global advice.detachedHead false");
 
+const out = "remotion";
+
 if (fs.existsSync("ffmpeg")) {
   execSync("git checkout master", {
     cwd: "ffmpeg",
@@ -31,7 +33,7 @@ execSync("git checkout n5.1.1", {
 execSync(
   [
     "./configure",
-    "--prefix=remotion",
+    `--prefix=${out}`,
     "--enable-small",
     "--disable-static",
     "--enable-shared",
@@ -83,6 +85,16 @@ execSync("make", {
   stdio: "inherit",
 });
 execSync("make install", {
+  cwd: "ffmpeg",
+  stdio: "inherit",
+});
+
+execSync("rm -rf remotion/share", {
+  cwd: "ffmpeg",
+  stdio: "inherit",
+});
+
+execSync(`tar cvzf remotion.tar.gz ffmpeg/${out}`, {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
