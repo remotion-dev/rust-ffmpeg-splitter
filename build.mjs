@@ -95,7 +95,6 @@ execSync("rm -rf remotion/share", {
   stdio: "inherit",
 });
 
-execSync(`tar cvzf remotion.tar.gz ffmpeg/${out}`, {
-  cwd: "ffmpeg",
+execSync(`tar cvzf ffmpeg.tar.gz ffmpeg/${out}`, {
   stdio: "inherit",
 });
