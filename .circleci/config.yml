@@ -15,7 +15,7 @@ jobs:
       - run: sudo apt-get install -y yasm
       - run: node build.mjs
       - store_artifacts:
-        path: ffmpeg.tar.gz
+          path: ffmpeg.tar.gz
   build-linux-arm:
     machine:
       image: ubuntu-2004:202101-01
