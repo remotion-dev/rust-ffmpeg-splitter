@@ -28,8 +28,20 @@ jobs:
       - run: node build.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
+  build-linux-macos:
+    macos:
+      xcode: 13.4.1
+    steps:
+      - checkout
+      - node/install:
+          node-version: "16.13"
+      - run: sudo apt-get install -y yasm
+      - run: node build.mjs
+      - store_artifacts:
+          path: ffmpeg.tar.gz
 workflows:
   build_ffmpeg:
     jobs:
       - build-linux-x64
       - build-linux-arm
+      - build-linux-macos
