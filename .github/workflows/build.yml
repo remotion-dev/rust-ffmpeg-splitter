@@ -22,7 +22,7 @@ jobs:
           toolchain: stable
           override: true
       - run: |
-          apt-get install -y yasm
+          sudo apt-get install -y yasm
         if: matrix.os == 'ubuntu-latest'
       - run: |
           node build.mjs
