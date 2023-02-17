@@ -16,7 +16,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-x64
       - run: sudo apt-get install -y yasm
-      - run: node build.mjs
+      - run: sh all.sh
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
@@ -34,7 +34,7 @@ jobs:
           keys:
             - ffmpeg_source-windows
       - run: sudo apt-get install -y yasm mingw-w64
-      - run: node build.mjs windows
+      - run: sh allwindows.sh windows
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
@@ -54,7 +54,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-arm
       - run: sudo apt-get install -y yasm
-      - run: node build.mjs
+      - run: sh all.sh
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
@@ -73,7 +73,7 @@ jobs:
           keys:
             - ffmpeg_source-macos
       - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm
-      - run: node build.mjs
+      - run: sh all.sh
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
