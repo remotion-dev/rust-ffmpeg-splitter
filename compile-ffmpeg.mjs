@@ -4,6 +4,7 @@ import { execSync } from "child_process";
 
 execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv[2] === "windows";
+const isMusl = process.argv[2] === "musl";
 
 const out = "remotion";
 
@@ -39,6 +40,13 @@ execSync(
     isWindows ? "--arch=x86" : null,
     isWindows ? "--target-os=mingw32" : null,
     isWindows ? "--cross-prefix=i686-w64-mingw32-" : null,
+    isMusl ? '--extra-cflags="-static -static-libgcc"' : null,
+    isMusl
+      ? '--extra-cxxflags="-static -static-libgcc -static-libstdc++"'
+      : null,
+    isMusl
+      ? '--extra-ldexeflags="-static -static-libgcc -static-libstdc++"'
+      : null,
     "--enable-small",
     "--disable-static",
     "--enable-shared",

@@ -39,7 +39,7 @@ jobs:
             - ffmpeg_source-linux-x64-musl
       - run: apk add yasm clang curl git
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: node compile-ffmpeg.mjs
+      - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
       - run: node generate-bindings.mjs
       - run: node zip.mjs
       - store_artifacts:
