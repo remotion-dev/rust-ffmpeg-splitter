@@ -102,8 +102,9 @@ jobs:
       - run: choco install rustup.install
       - run: rustup toolchain install stable-x86_64-pc-windows-gnu
       - run: rustup default stable-x86_64-pc-windows-gnu
-      - run: node compile-ffmpeg.mjs windows
-        shell: bash.exe
+      - run:
+          command: node compile-ffmpeg.mjs windows
+          shell: bash.exe
       - run: node generate-bindings.mjs
       - run: zip.mjs
       - store_artifacts:
