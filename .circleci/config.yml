@@ -69,7 +69,7 @@ jobs:
             - ffmpeg
   build-windows:
     docker:
-      - image: mmozeiko/mingw-w64
+      - image: purplekarrot/mingw-w64-x86-64
     steps:
       - checkout
       - restore_cache:
