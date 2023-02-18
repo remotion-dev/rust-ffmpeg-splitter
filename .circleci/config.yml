@@ -28,29 +28,6 @@ jobs:
           key: ffmpeg_source-linux-x64
           paths:
             - ffmpeg
-  build-windows:
-    executor:
-      name: win/default
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - ffmpeg_source-windows
-      - run: choco install rust
-      - run: choco install nodejs-lts
-      - run: choco install rustup.install
-      - run: rustup toolchain install stable-x86_64-pc-windows-gnu
-      - run: rustup default stable-x86_64-pc-windows-gnu
-      - run: node compile-ffmpeg.mjs windows
-      - run: node generate-bindings.mjs
-      - run: zip.mjs
-      - store_artifacts:
-          path: ffmpeg.tar.gz
-      - save_cache:
-          key: ffmpeg_source-windows
-          paths:
-            - ffmpeg
-
   build-linux-arm:
     machine:
       image: ubuntu-2004:202101-01
@@ -73,6 +50,28 @@ jobs:
           path: ffmpeg.tar.gz
       - save_cache:
           key: ffmpeg_source-linux-arm
+          paths:
+            - ffmpeg
+  build-windows:
+    executor:
+      name: win/default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - ffmpeg_source-windows
+      - run: choco install rust
+      - run: choco install nodejs-lts
+      - run: choco install rustup.install
+      - run: rustup toolchain install stable-x86_64-pc-windows-gnu
+      - run: rustup default stable-x86_64-pc-windows-gnu
+      - run: node compile-ffmpeg.mjs windows
+      - run: node generate-bindings.mjs
+      - run: zip.mjs
+      - store_artifacts:
+          path: ffmpeg.tar.gz
+      - save_cache:
+          key: ffmpeg_source-windows
           paths:
             - ffmpeg
 
