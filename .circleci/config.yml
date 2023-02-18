@@ -79,7 +79,7 @@ jobs:
             - ffmpeg_source-windows
       - run: sudo apt-get update
       - run: sudo apt-get install -y yasm mingw-w64 cargo
-      - run: make clean
+      - run: make distclean
       - run: node compile-ffmpeg.mjs windows
       - run: node generate-bindings.mjs
       - run: zip.mjs
