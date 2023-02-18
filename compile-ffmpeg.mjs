@@ -90,12 +90,14 @@ execSync(
     stdio: "inherit",
   }
 );
+console.log("cleaned");
 
-execSync("make", {
+execSync("make clean", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
-execSync("make clean", {
+
+execSync("make", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
