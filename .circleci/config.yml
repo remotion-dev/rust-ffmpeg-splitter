@@ -37,7 +37,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64-musl
-      - run: apk add yasm clang
+      - run: apk add yasm clang curl
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
