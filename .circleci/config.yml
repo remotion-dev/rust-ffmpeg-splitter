@@ -99,7 +99,7 @@ jobs:
             - ffmpeg_source-windows
       - run: choco install msys2
       - run:
-          run: pacman -S make
+          command: pacman -S make
           shell: c:/msys64/msys2_shell.cmd
       - run: which cl.exe
       - run: choco install rust
