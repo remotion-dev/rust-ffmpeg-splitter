@@ -35,7 +35,7 @@ execSync("git checkout n5.1.1", {
 
 execSync(
   [
-    path.posix.join(process.cwd().replace(/\\\\/g, "/"), "ffmpeg", "configure"),
+    path.posix.join(process.cwd().replace(/\\/g, "/"), "ffmpeg", "configure"),
     `--prefix=${out}`,
     isWindows ? "--toolchain=msvc" : null,
     isMusl ? '--extra-cflags="-static-libgcc"' : null,
