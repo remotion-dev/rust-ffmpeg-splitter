@@ -97,7 +97,11 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-windows
-      - run: which link.exe
+      - run: choco install msys2
+      - run:
+          run: pacman -S make
+          shell: c:/msys64/msys2_shell.cmd
+      - run: which cl.exe
       - run: choco install rust
       - run: choco install nodejs-lts
       - run: choco install rustup.install
