@@ -36,7 +36,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64-musl
-      - run: apk install -y yasm clang
+      - run: apk install yasm clang
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
@@ -72,24 +72,27 @@ jobs:
           paths:
             - ffmpeg
   build-linux-arm-musl:
-    docker:
-      - image: node:lts-alpine3.16
+    machine:
+      image: ubuntu-2004:202101-01
     resource_class: arm.medium
     steps:
       - checkout
+      - node/install:
+          node-version: "16.13"
       - restore_cache:
           keys:
-            - ffmpeg_source-linux-arm-musl
-      - run: apk install -y yasm clang
+            - ffmpeg_source-linux-arm
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y yasm clang musl
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: source "$HOME/.cargo/env
-      - run: node compile-ffmpeg.mjs
+      - run: node compile-ffmpeg.mjs musl
       - run: node generate-bindings.mjs
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
-          key: ffmpeg_source-linux-arm-musl
+          key: ffmpeg_source-linux-arm
           paths:
             - ffmpeg
   build-windows:
