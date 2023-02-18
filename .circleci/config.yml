@@ -8,7 +8,7 @@ orbs:
 jobs:
   build-linux-x64-gnu:
     docker:
-      - image: cimg/base:stable
+      image: cimg/base:stable
     steps:
       - checkout
       - node/install:
@@ -30,7 +30,7 @@ jobs:
             - ffmpeg
   build-linux-x64-musl:
     docker:
-      - image: node:lts-alpine
+      image: node:lts-alpine
     steps:
       - checkout
       - restore_cache:
