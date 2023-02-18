@@ -16,6 +16,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64
+      - run: sudo apt-get update
       - run: sudo apt-get install -y yasm clang
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: node compile-ffmpeg.mjs
@@ -61,6 +62,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-arm
+      - run: sudo apt-get update
       - run: sudo apt-get install -y yasm clang
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: node compile-ffmpeg.mjs
