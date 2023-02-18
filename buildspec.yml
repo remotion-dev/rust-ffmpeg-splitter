@@ -9,3 +9,6 @@ phases:
       - CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
       - node generate-bindings.mjs
       - node zip.mjs
+artifacts:
+  files:
+    - ffmpeg.tar.gz
