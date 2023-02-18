@@ -1,0 +1,11 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - apk add yasm clang curl git cargo make clang-dev
+  build:
+    commands:
+      - CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
+      - node generate-bindings.mjs
+      - node zip.mjs
