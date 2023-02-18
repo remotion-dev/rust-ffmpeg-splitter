@@ -97,6 +97,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-windows
+      - run: which link.exe
       - run: choco install rust
       - run: choco install nodejs-lts
       - run: choco install rustup.install
