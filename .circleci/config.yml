@@ -18,7 +18,9 @@ jobs:
             - ffmpeg_source-linux-x64
       - run: sudo apt-get install -y yasm
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: sh all.sh
+      - run: node compile-ffmpeg.mjs
+      - run: node generate-bindings.mjs
+      - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
@@ -63,7 +65,9 @@ jobs:
             - ffmpeg_source-linux-arm
       - run: sudo apt-get install -y yasm
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: sh all.sh
+      - run: node compile-ffmpeg.mjs
+      - run: node generate-bindings.mjs
+      - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
@@ -83,7 +87,9 @@ jobs:
             - ffmpeg_source-macos
       - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: sh all.sh
+      - run: node compile-ffmpeg.mjs
+      - run: node generate-bindings.mjs
+      - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
