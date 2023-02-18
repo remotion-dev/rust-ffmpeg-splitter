@@ -77,6 +77,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-windows
+      - run: sudo apt-get update
       - run: sudo apt-get install -y yasm mingw-w64 cargo
       - run: node compile-ffmpeg.mjs windows
       - run: node generate-bindings.mjs
