@@ -87,7 +87,6 @@ execSync(
   {
     cwd: "ffmpeg",
     stdio: "inherit",
-    shell: isWindows ? "bash.exe" : undefined,
   }
 );
 execSync("make", {
