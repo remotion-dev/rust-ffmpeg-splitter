@@ -100,7 +100,7 @@ jobs:
       - run: choco install msys2
       - run:
           command: pacman -S make
-          shell: c:/msys64/msys2_shell.cmd
+          shell: c:/tools/msys64/msys2_shell.cmd
       - run: which cl.exe
       - run: choco install rust
       - run: choco install nodejs-lts
