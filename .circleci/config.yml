@@ -16,6 +16,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-x64
       - run: sudo apt-get install -y yasm
+      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: sh all.sh
       - store_artifacts:
           path: ffmpeg.tar.gz
@@ -24,8 +25,8 @@ jobs:
           paths:
             - ffmpeg
   build-windows:
-    docker:
-      - image: cimg/base:stable
+    executor:
+      name: win/default
     steps:
       - checkout
       - node/install:
@@ -33,8 +34,14 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-windows
-      - run: sudo apt-get install -y yasm mingw-w64
-      - run: sh allwindows.sh windows
+      - run: choco install rust
+      - run: choco install nodejs-lts
+      - run: choco install rustup.install
+      - run: rustup toolchain install stable-x86_64-pc-windows-gnu
+      - run: rustup default stable-x86_64-pc-windows-gnu
+      - run: node compile-ffmpeg.mjs windows
+      - run: node generate-bindings.mjs
+      - run: zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
@@ -54,6 +61,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-arm
       - run: sudo apt-get install -y yasm
+      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: sh all.sh
       - store_artifacts:
           path: ffmpeg.tar.gz
@@ -73,6 +81,7 @@ jobs:
           keys:
             - ffmpeg_source-macos
       - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm
+      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: sh all.sh
       - store_artifacts:
           path: ffmpeg.tar.gz
