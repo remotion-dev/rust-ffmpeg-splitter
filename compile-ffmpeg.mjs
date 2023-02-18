@@ -90,10 +90,16 @@ execSync(
     stdio: "inherit",
   }
 );
+
 execSync("make", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
+execSync("make clean", {
+  cwd: "ffmpeg",
+  stdio: "inherit",
+});
+
 execSync("make install", {
   cwd: "ffmpeg",
   stdio: "inherit",
