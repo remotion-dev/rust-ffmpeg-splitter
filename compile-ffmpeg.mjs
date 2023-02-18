@@ -40,6 +40,8 @@ execSync(
     isWindows
       ? "--target-os=mingw32 --arch=x86_64 --cross-prefix=x86_64-w64-mingw32-"
       : null,
+    isWindows ? "--disable-w32threads" : null,
+    isWindows ? "--disable-os2threads" : null,
     isMusl ? '--extra-cflags="-static-libgcc"' : null,
     isMusl ? '--extra-cxxflags="-static-libgcc -static-libstdc++"' : null,
     isMusl ? '--extra-ldexeflags="-static-libgcc -static-libstdc++"' : null,
