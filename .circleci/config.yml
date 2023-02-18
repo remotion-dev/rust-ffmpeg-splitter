@@ -67,49 +67,20 @@ jobs:
           key: ffmpeg_source-linux-arm
           paths:
             - ffmpeg
-  build-linux-arm-musl:
-    machine:
-      image: ubuntu-2004:202101-01
-    resource_class: arm.medium
-    steps:
-      - checkout
-      - node/install:
-          node-version: "16.13"
-      - restore_cache:
-          keys:
-            - ffmpeg_source-linux-arm
-      - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm clang musl gcc cargo
-      - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
-      - run: node generate-bindings.mjs
-      - run: node zip.mjs
-      - store_artifacts:
-          path: ffmpeg.tar.gz
-      - save_cache:
-          key: ffmpeg_source-linux-arm
-          paths:
-            - ffmpeg
   build-windows:
-    executor:
-      name: win/default
+    docker:
+      image: mmozeiko/mingw-w64
     steps:
       - checkout
       - restore_cache:
           keys:
             - ffmpeg_source-windows
-      - run: choco install msys2
-      - run:
-          command: pacman -S make
-          shell: c:/tools/msys64/msys2_shell.cmd
-      - run: which cl.exe
+      - run: node compile-ffmpeg.mjs windows
       - run: choco install rust
       - run: choco install nodejs-lts
       - run: choco install rustup.install
       - run: rustup toolchain install stable-x86_64-pc-windows-gnu
       - run: rustup default stable-x86_64-pc-windows-gnu
-      - run:
-          command: node compile-ffmpeg.mjs windows
-          shell: bash.exe
       - run: node generate-bindings.mjs
       - run: zip.mjs
       - store_artifacts:
