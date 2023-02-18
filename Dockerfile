@@ -1,18 +1,19 @@
 FROM node:19-alpine3.17
 
-COPY src src
-COPY Cargo.toml Cargo.toml
+RUN mkdir -p app
+COPY src app/src
+COPY Cargo.toml app/Cargo.toml
 # COPY Cargo.lock Cargo.lock
-COPY compile-ffmpeg.mjs compile-ffmpeg.mjs
-COPY generate-bindings.mjs generate-bindings.mjs
-COPY zip.mjs zip.mjs
-COPY main.rs main.rs
-COPY build.rs build.rs
+COPY compile-ffmpeg.mjs app/compile-ffmpeg.mjs
+COPY generate-bindings.mjs app/generate-bindings.mjs
+COPY zip.mjs app/zip.mjs
+COPY main.rs app/main.rs
+COPY build.rs app/build.rs
 
 RUN apk add yasm clang curl git cargo make clang-dev
 RUN cargo --version
-RUN CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
-RUN node generate-bindings.mjs
-RUN node zip.mjs
+RUN cd app && CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
+RUN cd app && node generate-bindings.mjs
+RUN cd app && node zip.mjs
 
 
