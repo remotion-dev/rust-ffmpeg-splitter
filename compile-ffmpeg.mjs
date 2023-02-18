@@ -37,9 +37,7 @@ execSync(
   [
     path.join(process.cwd(), "ffmpeg", "configure"),
     `--prefix=${out}`,
-    isWindows ? "--arch=x86" : null,
-    isWindows ? "--target-os=mingw32" : null,
-    isWindows ? "--cross-prefix=i686-w64-mingw32-" : null,
+    isWindows ? "--toolchain=msvc" : null
     isMusl ? '--extra-cflags="-static -static-libgcc"' : null,
     isMusl
       ? '--extra-cxxflags="-static -static-libgcc -static-libstdc++"'
