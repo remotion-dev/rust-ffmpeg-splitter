@@ -46,6 +46,7 @@ execSync(
     "--enable-shared",
     "--disable-ffplay",
     "--disable-filters",
+    "--disable-libxcb",
     "--enable-filter=aformat",
     "--enable-filter=atrim",
     "--enable-filter=adelay",
