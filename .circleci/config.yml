@@ -35,7 +35,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64-musl
-      - run: apk add yasm clang curl git cargo
+      - run: apk add yasm clang curl git cargo make
       - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
       - run: node generate-bindings.mjs
       - run: node zip.mjs
@@ -79,7 +79,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-arm
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm clang musl libgcc cargo
+      - run: sudo apt-get install -y yasm clang musl gcc cargo
       - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
       - run: node generate-bindings.mjs
       - run: node zip.mjs
