@@ -65,7 +65,7 @@ jobs:
       - run: sudo apt-get update
       - run: sudo apt-get install -y yasm clang
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: "source "$HOME/.cargo/env"
+      - run: source "$HOME/.cargo/env
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs
