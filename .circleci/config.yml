@@ -17,9 +17,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-x64
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm clang
-      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: source "$HOME/.cargo/env"
+      - run: sudo apt-get install -y yasm clang cargo
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs
@@ -37,8 +35,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64-musl
-      - run: apk add yasm clang curl git
-      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      - run: apk add yasm clang curl git cargo
       - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
       - run: node generate-bindings.mjs
       - run: node zip.mjs
@@ -60,9 +57,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-arm
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm clang
-      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: source "$HOME/.cargo/env"
+      - run: sudo apt-get install -y yasm clang cargo
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs
@@ -84,9 +79,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-arm
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm clang musl
-      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: source "$HOME/.cargo/env"
+      - run: sudo apt-get install -y yasm clang musl libgcc cargo
       - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
       - run: node generate-bindings.mjs
       - run: node zip.mjs
