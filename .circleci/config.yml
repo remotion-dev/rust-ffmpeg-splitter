@@ -78,7 +78,7 @@ jobs:
           keys:
             - ffmpeg_source-windows
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm mingw-w64 cargo
+      - run: sudo apt-get install -y yasm mingw-w64 cargo clang
       - run: node compile-ffmpeg.mjs windows
       - run: node generate-bindings.mjs
       - run: zip.mjs

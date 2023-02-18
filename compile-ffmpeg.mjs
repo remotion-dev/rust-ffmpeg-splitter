@@ -33,6 +33,11 @@ execSync("git checkout n5.1.1", {
   stdio: "inherit",
 });
 
+execSync("make clean", {
+  cwd: "ffmpeg",
+  stdio: "inherit",
+});
+
 execSync(
   [
     path.posix.join(process.cwd().replace(/\\/g, "/"), "ffmpeg", "configure"),
@@ -90,12 +95,6 @@ execSync(
     stdio: "inherit",
   }
 );
-console.log("cleaned");
-
-execSync("make clean", {
-  cwd: "ffmpeg",
-  stdio: "inherit",
-});
 
 execSync("make", {
   cwd: "ffmpeg",
