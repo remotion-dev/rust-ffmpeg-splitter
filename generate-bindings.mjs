@@ -20,7 +20,15 @@ execSync(
   }
 );
 
-const bindings = path.join(process.cwd(), "target", "release", "build");
+const bindings = isWindows
+  ? path.join(
+      process.cwd(),
+      "target",
+      "x86_64-pc-windows-gnu",
+      "release",
+      "build"
+    )
+  : path.join(process.cwd(), "target", "release", "build");
 const folders = fs.readdirSync(bindings);
 const sysFolders = folders.filter((folder) => {
   return folder.startsWith("ffmpeg-sys-");
