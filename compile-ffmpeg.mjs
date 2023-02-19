@@ -1,13 +1,17 @@
 import path from "path";
-import fs from "fs";
+import fs, { existsSync } from "fs";
 import { execSync } from "child_process";
 import { fixLinks } from "./fix-macos-links.mjs";
+import { PREFIX } from "./const.mjs";
+import { enableX264 } from "./compile-x264.mjs";
+
+if (!existsSync(PREFIX)) {
+  fs.mkdirSync(PREFIX);
+}
 
 execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv[2] === "windows";
 const isMusl = process.argv[2] === "musl";
-
-const out = "remotion";
 
 if (fs.existsSync("ffmpeg")) {
   execSync("git checkout master", {
@@ -24,30 +28,41 @@ if (fs.existsSync("ffmpeg")) {
   });
 }
 
-execSync("rm -rf remotion", {
+execSync("rm -rf " + PREFIX, {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
+
+enableX264();
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
 
+const extraCFlags = [
+  // TODO: should it always be static libgcc?
+  isMusl ? "-static-libgcc" : null,
+  "-I" + PREFIX + "/include",
+].filter(Boolean);
+
+const extraLdFlags = ["-L" + PREFIX + "/lib"].filter(Boolean);
+
 execSync(
   [
     path.posix.join(process.cwd().replace(/\\/g, "/"), "ffmpeg", "configure"),
-    `--prefix=${out}`,
+    `--prefix=${PREFIX}`,
     isWindows
       ? "--target-os=mingw32 --arch=x86_64 --cross-prefix=x86_64-w64-mingw32-"
       : null,
     isWindows ? "--disable-w32threads" : null,
     isWindows ? "--disable-os2threads" : null,
-    isMusl ? '--extra-cflags="-static-libgcc"' : null,
+    '--extra-cflags="' + extraCFlags.join(" ") + '"',
+    '--extra-ldflags="' + extraLdFlags.join(" ") + '"',
     isMusl ? '--extra-cxxflags="-static-libgcc -static-libstdc++"' : null,
     isMusl ? '--extra-ldexeflags="-static-libgcc -static-libstdc++"' : null,
+    '--pkg-config-flags="--static"',
     "--enable-small",
-    "--disable-static",
     "--enable-shared",
     "--disable-ffplay",
     "--disable-filters",
@@ -75,6 +90,7 @@ execSync(
     "--enable-encoder=png",
     "--enable-encoder=mjpeg",
     "--enable-encoder=pcm_s16le",
+    "--enable-encoder=libx264",
     //"--disable-muxers",
     "--enable-muxer=webm",
     "--enable-muxer=opus",
@@ -86,10 +102,15 @@ execSync(
     "--enable-muxer=hevc",
     "--enable-muxer=h264",
     "--enable-muxer=gif",
+    "--enable-libx264",
   ]
     .filter(Boolean)
     .join(" "),
   {
+    env: {
+      ...process.env,
+      PKG_CONFIG_PATH: PREFIX + "/lib/pkgconfig",
+    },
     cwd: "ffmpeg",
     stdio: "inherit",
   }
@@ -110,7 +131,7 @@ execSync("make install", {
   stdio: "inherit",
 });
 
-execSync("rm -rf remotion/share", {
+execSync("rm -rf " + PREFIX + "/share", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });

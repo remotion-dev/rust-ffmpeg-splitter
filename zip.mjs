@@ -1,7 +1,6 @@
 import { execSync } from "child_process";
+import { PREFIX } from "./const.mjs";
 
-const out = "remotion";
-
-execSync(`tar cvzf ffmpeg.tar.gz ffmpeg/${out} bindings.rs`, {
+execSync(`tar cvzf ffmpeg.tar.gz ${PREFIX} bindings.rs`, {
   stdio: "inherit",
 });

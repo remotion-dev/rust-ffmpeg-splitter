@@ -1,6 +1,7 @@
 import { execSync } from "child_process";
 import path from "path";
 import fs from "fs";
+import { PREFIX } from "./const.mjs";
 
 const isWindows = process.argv[2] === "windows";
 
@@ -9,8 +10,7 @@ execSync(
   {
     env: {
       ...process.env,
-      FFMPEG_DIR: path.join(process.cwd(), "ffmpeg", "remotion"),
-
+      FFMPEG_DIR: PREFIX,
       CPATH:
         process.platform === "darwin"
           ? "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"

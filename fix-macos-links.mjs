@@ -23,13 +23,6 @@ export const fixLinks = () => {
       continue;
     }
     for (const match of matches) {
-      console.log(
-        "install_name_tool -id " +
-          match.replace("remotion/lib/", "") +
-          " " +
-          match
-      );
-
       execSync(
         "install_name_tool -id " +
           match.replace("remotion/lib/", "") +
