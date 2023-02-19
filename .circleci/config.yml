@@ -80,8 +80,7 @@ jobs:
       - run: sudo apt-get update
       - run: sudo apt-get install -y yasm mingw-w64 cargo clang
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: source "$HOME/.cargo/env"
-      - run: rustup target add x86_64-pc-windows-gnu
+      - run: source "$HOME/.cargo/env" && rustup target add x86_64-pc-windows-gnu
       - run: node compile-ffmpeg.mjs windows
       - run: node generate-bindings.mjs windows
       - run: zip.mjs
