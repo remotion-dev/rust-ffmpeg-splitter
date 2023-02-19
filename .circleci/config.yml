@@ -83,7 +83,7 @@ jobs:
       - run: source "$HOME/.cargo/env" && rustup target add x86_64-pc-windows-gnu
       - run: node compile-ffmpeg.mjs windows
       - run: source "$HOME/.cargo/env" && node generate-bindings.mjs windows
-      - run: zip.mjs
+      - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
       - save_cache:
