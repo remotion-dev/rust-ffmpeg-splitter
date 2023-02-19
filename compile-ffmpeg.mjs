@@ -29,7 +29,6 @@ if (fs.existsSync("ffmpeg")) {
 }
 
 execSync("rm -rf " + PREFIX, {
-  cwd: "ffmpeg",
   stdio: "inherit",
 });
 
@@ -43,10 +42,12 @@ execSync("git checkout n5.1.1", {
 const extraCFlags = [
   // TODO: should it always be static libgcc?
   isMusl ? "-static-libgcc" : null,
-  "-I" + PREFIX + "/include",
+  "-I" + path.join(process.cwd(), PREFIX) + "/include",
 ].filter(Boolean);
 
-const extraLdFlags = ["-L" + PREFIX + "/lib"].filter(Boolean);
+const extraLdFlags = ["-L" + path.join(process.cwd(), PREFIX) + "/lib"].filter(
+  Boolean
+);
 
 execSync(
   [
@@ -61,9 +62,9 @@ execSync(
     '--extra-ldflags="' + extraLdFlags.join(" ") + '"',
     isMusl ? '--extra-cxxflags="-static-libgcc -static-libstdc++"' : null,
     isMusl ? '--extra-ldexeflags="-static-libgcc -static-libstdc++"' : null,
-    '--pkg-config-flags="--static"',
     "--enable-small",
     "--enable-shared",
+    "--disable-static",
     "--disable-ffplay",
     "--disable-filters",
     "--disable-libxcb",
@@ -109,7 +110,7 @@ execSync(
   {
     env: {
       ...process.env,
-      PKG_CONFIG_PATH: PREFIX + "/lib/pkgconfig",
+      PKG_CONFIG_PATH: path.join(process.cwd(), PREFIX) + "/lib/pkgconfig",
     },
     cwd: "ffmpeg",
     stdio: "inherit",
@@ -139,3 +140,8 @@ execSync("rm -rf " + PREFIX + "/share", {
 if (process.platform === "darwin") {
   fixLinks();
 }
+
+execSync("cp -r " + PREFIX + " ../", {
+  cwd: "ffmpeg",
+  stdio: "inherit",
+});

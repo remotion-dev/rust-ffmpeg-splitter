@@ -10,7 +10,7 @@ execSync(
   {
     env: {
       ...process.env,
-      FFMPEG_DIR: PREFIX,
+      FFMPEG_DIR: path.join(process.cwd(), PREFIX),
       CPATH:
         process.platform === "darwin"
           ? "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"
