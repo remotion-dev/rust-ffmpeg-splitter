@@ -57,7 +57,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-arm
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm nasm clang cargo
+      - run: sudo apt-get install -y yasm nasm clang cargo ca-certificates
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs

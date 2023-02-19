@@ -31,7 +31,7 @@ export const enableX264 = (isMusl, isWindows) => {
       "--disable-opencl",
       "--enable-pic",
       isWindows
-        ? "--target-os=mingw32 --arch=x86_64 --cross-prefix=x86_64-w64-mingw32-"
+        ? "--host=x86_64-w64-mingw32 --arch=x86_64 --cross-prefix=x86_64-w64-mingw32-"
         : null,
       isWindows ? "--disable-w32threads" : null,
       isWindows ? "--disable-os2threads" : null,
