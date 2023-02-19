@@ -3,7 +3,7 @@ import { exec, execSync } from "child_process";
 import { PREFIX } from "./const.mjs";
 import path from "path";
 
-export const enableX264 = (isMusl: boolean, isWindws) => {
+export const enableX264 = (isMusl, isWindows) => {
   const extraCFlags = [
     // TODO: should it always be static libgcc?
     isMusl ? "-static-libgcc" : null,
