@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { execSync } from "child_process";
+import { fixLinks } from "./fix-macos-links.mjs";
 
 execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv[2] === "windows";
@@ -29,11 +30,6 @@ execSync("rm -rf remotion", {
 });
 
 execSync("git checkout n5.1.1", {
-  cwd: "ffmpeg",
-  stdio: "inherit",
-});
-
-execSync("make clean", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
@@ -96,6 +92,11 @@ execSync(
   }
 );
 
+execSync("make clean", {
+  cwd: "ffmpeg",
+  stdio: "inherit",
+});
+
 execSync("make", {
   cwd: "ffmpeg",
   stdio: "inherit",
@@ -110,3 +111,7 @@ execSync("rm -rf remotion/share", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
+
+if (process.platform === "darwin") {
+  fixLinks();
+}
