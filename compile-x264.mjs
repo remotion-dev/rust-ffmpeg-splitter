@@ -31,10 +31,8 @@ export const enableX264 = (isMusl, isWindows) => {
       "--disable-opencl",
       "--enable-pic",
       isWindows
-        ? "--host=x86_64-w64-mingw32 --arch=x86_64 --cross-prefix=x86_64-w64-mingw32-"
+        ? "--host=x86_64-w64-mingw32 --cross-prefix=x86_64-w64-mingw32-"
         : null,
-      isWindows ? "--disable-w32threads" : null,
-      isWindows ? "--disable-os2threads" : null,
       '--extra-cflags="' + extraCFlags.join(" ") + '"',
       isMusl ? '--extra-cxxflags="-static-libgcc -static-libstdc++"' : null,
       isMusl ? '--extra-ldexeflags="-static-libgcc -static-libstdc++"' : null,
