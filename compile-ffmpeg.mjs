@@ -32,7 +32,7 @@ execSync("rm -rf " + PREFIX, {
   stdio: "inherit",
 });
 
-enableX264();
+enableX264(isMusl, isWindows);
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",
