@@ -26,23 +26,23 @@ export const enableX265 = (isMusl, isWindows) => {
 
   execSync(
     [
-      'cmake -G "Unix Makefiles"',
+      "cmake",
       '-DCMAKE_INSTALL_PREFIX="remotion"',
       "-DENABLE_SHARED:BOOL=OFF",
       "-DSTATIC_LINK_CRT:BOOL=ON",
       "-DENABLE_CLI:BOOL=OFF",
-      "../../source",
+      "source",
     ]
       .filter(Boolean)
       .join(" "),
     {
-      cwd: "x265/build/linux",
+      cwd: "x265",
       stdio: "inherit",
       env: {
         ...process.env,
         CMAKE_CROSSCOMPILING: isWindows ? "ON" : undefined,
         CMAKE_C_COMPILER: isWindows ? "x86_64-w64-mingw32-gcc" : undefined,
-        CMAKE_CXX_COMPILER: isWindows ? "x86_64-w64-mingw32-g++" : "g++",
+        CMAKE_CXX_COMPILER: isWindows ? "x86_64-w64-mingw32-g++" : undefined,
         CFLAGS: extraCFlags.join(" "),
         CXXFLAGS: isMusl ? "-static-libgcc -static-libstdc++" : undefined,
       },
@@ -50,32 +50,31 @@ export const enableX265 = (isMusl, isWindows) => {
   );
 
   execSync("make", {
-    cwd: "x265/build/linux",
+    cwd: "x265",
     stdio: "inherit",
   });
-
   execSync("make install", {
-    cwd: "x265/build/linux",
+    cwd: "x265",
     stdio: "inherit",
   });
 
   execSync("sed -e 's/prefix=\\/.*/prefix=remotion/g' x265.pc > xx.pc", {
-    cwd: "x265/build/linux/remotion/lib/pkgconfig",
+    cwd: "x265/remotion/lib/pkgconfig",
     stdio: "inherit",
   });
 
   execSync("rm x265.pc", {
-    cwd: "x265/build/linux/remotion/lib/pkgconfig",
+    cwd: "x265/remotion/lib/pkgconfig",
     stdio: "inherit",
   });
 
   execSync("mv xx.pc x265.pc", {
-    cwd: "x265/build/linux/remotion/lib/pkgconfig",
+    cwd: "x265/remotion/lib/pkgconfig",
     stdio: "inherit",
   });
 
-  execSync("cp -r " + PREFIX + " ../../../", {
-    cwd: "x265/build/linux",
+  execSync("cp -r " + PREFIX + " ../", {
+    cwd: "x265",
     stdio: "inherit",
   });
 };
