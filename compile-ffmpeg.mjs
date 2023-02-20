@@ -14,8 +14,6 @@ execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv[2] === "windows";
 const isMusl = process.argv[2] === "musl";
 
-enableX265(isMusl, isWindows);
-
 if (fs.existsSync("ffmpeg")) {
   execSync("git checkout master", {
     cwd: "ffmpeg",
@@ -36,6 +34,7 @@ execSync("rm -rf " + PREFIX, {
 });
 
 enableX264(isMusl, isWindows);
+enableX265(isMusl, isWindows);
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",
