@@ -66,6 +66,11 @@ export const enableX265 = (isMusl, isWindows) => {
   const x265 = readFileSync("x265/remotion/lib/pkgconfig/x265.pc", "utf8");
   console.log("pkgconfig/x265.pc is:", x265);
   const lines = x265.split("\n");
+  const privLibs = lines.find((line) => line.startsWith("Libs.private"));
+  if (!privLibs) {
+    throw new Error("Could not find Libs.private in x265.pc");
+  }
+  const extraLibs = privLibs.replace("Libs.private: ", "");
   const linesPkg = lines
     .map((line) => {
       if (line.startsWith("prefix=")) {
@@ -75,7 +80,7 @@ export const enableX265 = (isMusl, isWindows) => {
         return "exec_prefix=remotion";
       }
       if (line.startsWith("Libs:")) {
-        return line + " -lc++ -ldl";
+        return line + " " + extraLibs;
       }
       if (line.startsWith("Libs.private")) {
         return null;
