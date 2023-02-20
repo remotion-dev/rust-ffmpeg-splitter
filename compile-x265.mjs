@@ -47,6 +47,7 @@ export const enableX265 = (isMusl, isWindows) => {
     cwd: "x265",
     stdio: "inherit",
     env: {
+      ...process.env,
       CMAKE_CROSSCOMPILING: isWindows ? "ON" : undefined,
       CMAKE_C_COMPILER: isWindows ? "x86_64-w64-mingw32-gcc" : undefined,
       CMAKE_CXX_COMPILER: isWindows ? "x86_64-w64-mingw32-g++" : undefined,
