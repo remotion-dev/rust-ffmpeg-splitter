@@ -51,7 +51,6 @@ export const enableX265 = (isMusl, isWindows) => {
       CMAKE_RANLIB: isWindows ? "x86_64-w64-mingw32-ranlib" : undefined,
       CMAKE_SYSTEM_NAME: isWindows ? "Windows" : undefined,
       CMAKE_ASM_YASM_COMPILER: isWindows ? "yasm" : undefined,
-      CFLAGS: extraCFlags.join(" "),
     },
   });
   execSync("make install", {
