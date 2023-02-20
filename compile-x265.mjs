@@ -47,7 +47,7 @@ export const enableX265 = (isMusl, isWindows) => {
       "-DCMAKE_BUILD_TYPE=Release",
       "-DSTATIC_LINK_CRT:BOOL=" + (staticallyLinkCLibrary ? "ON" : "OFF"),
       "-DENABLE_PIC=ON",
-      "-DENABLE_CLI:BOOL=ON",
+      "-DENABLE_CLI:BOOL=OFF",
       "source",
     ]
       .filter(Boolean)
