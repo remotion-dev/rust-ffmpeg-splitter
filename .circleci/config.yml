@@ -38,9 +38,9 @@ jobs:
           keys:
             - ffmpeg_source-linux-x64-musl
       - run: apk add yasm nasm curl git cargo make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static
-      - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
       - run: node clean.mjs
-      - run: node generate-bindings.mjs
+      - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
+      - run: node generate-bindings.mjs musl
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz

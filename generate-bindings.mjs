@@ -4,6 +4,7 @@ import fs from "fs";
 import { PREFIX } from "./const.mjs";
 
 const isWindows = process.argv[2] === "windows";
+const isMusl = process.argv[2] === "musl";
 
 execSync(
   `cargo build --release ${isWindows ? "--target=x86_64-pc-windows-gnu" : ""}`,
@@ -15,6 +16,7 @@ execSync(
         process.platform === "darwin"
           ? "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"
           : undefined,
+      RUSTFLAGS: isMusl ? "-Ctarget-feature=-crt-static" : undefined,
     },
     stdio: "inherit",
   }
