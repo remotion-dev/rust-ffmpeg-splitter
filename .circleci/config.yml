@@ -73,6 +73,24 @@ jobs:
           key: ffmpeg_source-linux-arm
           paths:
             - ffmpeg
+  build-linux-arm-musl:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - ffmpeg_source-linux-arm-musl
+      - run: sudo apt-get install -y docker
+      - run: docker build . -t aarch-musl
+      - store_artifacts:
+          path: ffmpeg.tar.gz
+          name: linux-arm-musl.gz
+      - save_cache:
+          key: ffmpeg_source-linux-arm-musl
+          paths:
+            - ffmpeg
   build-windows:
     docker:
       # Newer ubuntu is needed because mingw64-tools were not supported by previous one
@@ -130,5 +148,6 @@ workflows:
       - build-linux-x64-gnu
       - build-linux-arm-gnu
       - build-linux-x64-musl
+      - build-linux-arm-musl
       - build-macos
       - build-windows
