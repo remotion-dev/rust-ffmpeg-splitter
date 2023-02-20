@@ -25,6 +25,8 @@ export const enableX265 = (isMusl, isWindows) => {
     stdio: "inherit",
   });
 
+  const staticallyLinkCLibrary = isMusl || isWindows;
+
   execSync(
     [
       "cmake",
