@@ -13,6 +13,7 @@ const paths = [
   path.join(process.cwd(), "ffmpeg"),
   path.join(process.cwd(), "target"),
   path.join(process.cwd(), "x264"),
+  path.join(process.cwd(), "x265"),
   path.join(process.cwd(), "bindings.rs"),
   path.join(process.cwd(), "ffmpeg.tar.gz"),
 ];

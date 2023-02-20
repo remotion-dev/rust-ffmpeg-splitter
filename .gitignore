@@ -1,5 +1,6 @@
 ffmpeg
 x264
+x265
 .DS_Store
 ffmpeg.tar.gz
 target

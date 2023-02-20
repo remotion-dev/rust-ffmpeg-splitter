@@ -4,6 +4,7 @@ import { execSync } from "child_process";
 import { fixLinks } from "./fix-macos-links.mjs";
 import { PREFIX } from "./const.mjs";
 import { enableX264 } from "./compile-x264.mjs";
+import { enableX265 } from "./compile-x265.mjs";
 
 if (!existsSync(PREFIX)) {
   fs.mkdirSync(PREFIX);
@@ -12,6 +13,8 @@ if (!existsSync(PREFIX)) {
 execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv[2] === "windows";
 const isMusl = process.argv[2] === "musl";
+
+enableX265(isMusl, isWindows);
 
 if (fs.existsSync("ffmpeg")) {
   execSync("git checkout master", {
@@ -105,6 +108,7 @@ execSync(
     "--enable-muxer=h264",
     "--enable-muxer=gif",
     "--enable-libx264",
+    "--enable-libx265",
   ]
     .filter(Boolean)
     .join(" "),

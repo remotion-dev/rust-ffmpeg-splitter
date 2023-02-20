@@ -1,5 +1,5 @@
 import fs from "fs";
-import { exec, execSync } from "child_process";
+import { execSync } from "child_process";
 import { PREFIX } from "./const.mjs";
 import path from "path";
 
@@ -56,5 +56,5 @@ export const enableX264 = (isMusl, isWindows) => {
     stdio: "inherit",
   });
 
-  execSync(`mv ${PREFIX} ../`, { cwd: "x264", stdio: "inherit" });
+  execSync(`cp -r ${PREFIX} ../`, { cwd: "x264", stdio: "inherit" });
 };
