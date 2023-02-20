@@ -5,6 +5,11 @@ import { PREFIX } from "./const.mjs";
 import { compileFunction } from "vm";
 
 export const enableX265 = (isMusl, isWindows) => {
+  const extraCFlags = [
+    // TODO: should it always be static libgcc?
+    isMusl ? "-static-libgcc" : null,
+  ].filter(Boolean);
+
   if (!fs.existsSync("x265")) {
     execSync("git clone https://github.com/videolan/x265 x265", {
       stdio: "inherit",
@@ -19,8 +24,6 @@ export const enableX265 = (isMusl, isWindows) => {
     cwd: "x265",
     stdio: "inherit",
   });
-
-  const staticallyLinkCLibrary = isMusl || isWindows;
 
   execSync(
     [
@@ -53,6 +56,7 @@ export const enableX265 = (isMusl, isWindows) => {
       CMAKE_RANLIB: isWindows ? "x86_64-w64-mingw32-ranlib" : undefined,
       CMAKE_SYSTEM_NAME: isWindows ? "Windows" : undefined,
       CMAKE_ASM_YASM_COMPILER: isWindows ? "yasm" : undefined,
+      CFLAGS: extraCFlags.join(" "),
     },
   });
   execSync("make install", {
