@@ -102,8 +102,10 @@ export const enableX265 = (isMusl, isWindows) => {
       const shouldAddLibxx = isMusl;
       if (line.startsWith("Libs:")) {
         return [
-          isWindows ? line.replace("-lrt", "").replace("-ldl", "") : line,
-          extraLibs,
+          line,
+          isWindows
+            ? extraLibs.replace("-lrt", "").replace("-ldl", "")
+            : extraLibs,
           shouldAddPthread ? "-lpthread" : null,
           shouldAddLibxx ? "-lstdc++" : null,
         ]
