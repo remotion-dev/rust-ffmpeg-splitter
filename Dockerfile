@@ -3,13 +3,8 @@ FROM node:19-alpine3.17
 RUN mkdir -p app
 COPY Cargo.toml app/Cargo.toml
 COPY Cargo.lock Cargo.lock
-COPY compile-ffmpeg.mjs app/compile-ffmpeg.mjs
-COPY generate-bindings.mjs app/generate-bindings.mjs
-COPY fix-macos-links.mjs app/fix-macos-links.mjs
-COPY zip.mjs app/zip.mjs
-COPY const.mjs app/const.mjs
-COPY main.rs app/main.rs
-COPY build.rs app/build.rs
+COPY *.mjs app/
+COPY *.rs app/
 
 RUN apk add yasm clang curl git cargo make clang-dev
 RUN cargo --version
