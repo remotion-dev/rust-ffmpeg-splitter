@@ -79,8 +79,10 @@ export const enableX265 = (isMusl, isWindows) => {
       if (line.startsWith("exec_prefix=")) {
         return "exec_prefix=remotion";
       }
+      const shouldAddPthread =
+        !isMusl && !isWindows && process.platform !== "darwin";
       if (line.startsWith("Libs:")) {
-        return line + " " + extraLibs;
+        return line + " " + extraLibs + (shouldAddPthread ? " -lpthread" : "");
       }
       if (line.startsWith("Libs.private")) {
         return null;

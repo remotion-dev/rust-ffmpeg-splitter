@@ -6,7 +6,7 @@ COPY Cargo.lock Cargo.lock
 COPY *.mjs app/
 COPY *.rs app/
 
-RUN apk add yasm nasm clang curl git cargo make clang-dev pkgconfig bash cmake make libstdc++
+RUN apk add yasm nasm clang curl git cargo make clang-dev ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev
 RUN cargo --version
 RUN cd app && CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
 RUN cd app && node generate-bindings.mjs
