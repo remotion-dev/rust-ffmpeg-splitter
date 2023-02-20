@@ -75,6 +75,7 @@ jobs:
             - ffmpeg
   build-windows:
     docker:
+      # Newer ubuntu is needed because mingw64-tools were not supported by previous one
       - image: cimg/base:current-22.04
     steps:
       - checkout
@@ -88,9 +89,6 @@ jobs:
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: source "$HOME/.cargo/env" && rustup target add x86_64-pc-windows-gnu
       - run: node clean.mjs
-      - run: curl -L https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/mingw-w64/10.0.0-3/mingw-w64_10.0.0-3.debian.tar.xz -o mingw.tar.xz
-      # - run: sudo echo "w64-mingw32-<cpu>               mingw-<cpu>" | sudo tee -a /usr/share/dpkg/tupletable
-      # - run: sudo echo "w64-mingw32         w64-mingw32         mingw32[^-]*" | sudo tee -a /usr/share/dpkg/ostable
       - run: node compile-ffmpeg.mjs windows
       - run: source "$HOME/.cargo/env" && node generate-bindings.mjs windows
       - run: node zip.mjs
