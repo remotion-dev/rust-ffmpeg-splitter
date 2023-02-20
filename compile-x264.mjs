@@ -28,6 +28,7 @@ export const enableX264 = (isMusl, isWindows) => {
       path.posix.join(process.cwd().replace(/\\/g, "/"), "x264", "configure"),
       `--prefix=${path.join(PREFIX)}`,
       "--enable-static",
+      "--disable-cli",
       "--disable-opencl",
       "--enable-pic",
       isWindows
@@ -53,11 +54,6 @@ export const enableX264 = (isMusl, isWindows) => {
   execSync("make install", {
     cwd: "x264",
     stdio: "inherit",
-  });
-
-  execSync("rm -rf " + PREFIX + "/bin/x264", {
-    stdio: "inherit",
-    cwd: "x264",
   });
 
   execSync(`mv ${PREFIX} ../`, { cwd: "x264", stdio: "inherit" });
