@@ -44,12 +44,10 @@ execSync("git checkout n5.1.1", {
 const extraCFlags = [
   // TODO: should it always be static libgcc?
   isMusl ? "-static-libgcc" : null,
-  "-I" + path.join(process.cwd(), PREFIX) + "/include",
+  "-I" + PREFIX + "/include",
 ].filter(Boolean);
 
-const extraLdFlags = ["-L" + path.join(process.cwd(), PREFIX) + "/lib"].filter(
-  Boolean
-);
+const extraLdFlags = ["-L" + PREFIX + "/lib"].filter(Boolean);
 
 execSync("cp -r remotion ffmpeg", { stdio: "inherit" });
 
