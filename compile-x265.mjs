@@ -27,6 +27,18 @@ export const enableX265 = (isMusl, isWindows) => {
 
   const staticallyLinkCLibrary = isMusl || isWindows;
 
+  const env = {
+    ...process.env,
+    CMAKE_CROSSCOMPILING: isWindows ? "ON" : undefined,
+    CMAKE_C_COMPILER: isWindows ? "x86_64-w64-mingw32-gcc" : undefined,
+    CMAKE_CXX_COMPILER: isWindows ? "x86_64-w64-mingw32-g++" : undefined,
+    CMAKE_RC_COMPILER: isWindows ? "x86_64-w64-mingw32-windres" : undefined,
+    CMAKE_RANLIB: isWindows ? "x86_64-w64-mingw32-ranlib" : undefined,
+    CMAKE_SYSTEM_NAME: isWindows ? "Windows" : undefined,
+    CMAKE_ASM_YASM_COMPILER: isWindows ? "yasm" : undefined,
+    CFLAGS: extraCFlags.join(" "),
+  };
+
   execSync(
     [
       "cmake",
@@ -43,23 +55,14 @@ export const enableX265 = (isMusl, isWindows) => {
     {
       cwd: "x265",
       stdio: "inherit",
+      env,
     }
   );
 
   execSync("make", {
     cwd: "x265",
     stdio: "inherit",
-    env: {
-      ...process.env,
-      CMAKE_CROSSCOMPILING: isWindows ? "ON" : undefined,
-      CMAKE_C_COMPILER: isWindows ? "x86_64-w64-mingw32-gcc" : undefined,
-      CMAKE_CXX_COMPILER: isWindows ? "x86_64-w64-mingw32-g++" : undefined,
-      CMAKE_RC_COMPILER: isWindows ? "x86_64-w64-mingw32-windres" : undefined,
-      CMAKE_RANLIB: isWindows ? "x86_64-w64-mingw32-ranlib" : undefined,
-      CMAKE_SYSTEM_NAME: isWindows ? "Windows" : undefined,
-      CMAKE_ASM_YASM_COMPILER: isWindows ? "yasm" : undefined,
-      CFLAGS: extraCFlags.join(" "),
-    },
+    env,
   });
   execSync("make install", {
     cwd: "x265",
@@ -84,8 +87,16 @@ export const enableX265 = (isMusl, isWindows) => {
       }
       const shouldAddPthread =
         !isMusl && !isWindows && process.platform !== "darwin";
+      const shouldAddLibxx = isMusl;
       if (line.startsWith("Libs:")) {
-        return line + " " + extraLibs + (shouldAddPthread ? " -lpthread" : "");
+        return [
+          isWindows ? line.replace("-lrt", "").replace("-ldl", "") : line,
+          extraLibs,
+          shouldAddPthread ? "-lpthread" : null,
+          shouldAddLibxx ? "-lstdc++" : null,
+        ]
+          .filter(Boolean)
+          .join(" ");
       }
       if (line.startsWith("Libs.private")) {
         return null;
