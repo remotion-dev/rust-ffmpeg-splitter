@@ -18,6 +18,7 @@ jobs:
             - ffmpeg_source-linux-x64
       - run: sudo apt-get update
       - run: sudo apt-get install -y yasm nasm clang cargo
+      - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs
@@ -38,6 +39,7 @@ jobs:
             - ffmpeg_source-linux-x64-musl
       - run: apk add yasm nasm clang curl git cargo make clang-dev ca-certificates pkgconfig bash
       - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
+      - run: node clean.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs
       - store_artifacts:
@@ -60,6 +62,7 @@ jobs:
             - ffmpeg_source-linux-arm
       - run: sudo apt-get update
       - run: sudo apt-get install -y yasm nasm clang cargo ca-certificates pkg-config
+      - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs
@@ -84,6 +87,7 @@ jobs:
       - run: sudo apt-get install -y yasm nasm mingw-w64 cargo clang pkg-config
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: source "$HOME/.cargo/env" && rustup target add x86_64-pc-windows-gnu
+      - run: node clean.mjs
       - run: node compile-ffmpeg.mjs windows
       - run: source "$HOME/.cargo/env" && node generate-bindings.mjs windows
       - run: node zip.mjs
@@ -107,6 +111,7 @@ jobs:
             - ffmpeg_source-macos
       - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm nasm pkg-config
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs
