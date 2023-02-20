@@ -5,11 +5,6 @@ import { PREFIX } from "./const.mjs";
 import { compileFunction } from "vm";
 
 export const enableX265 = (isMusl, isWindows) => {
-  const extraCFlags = [
-    // TODO: should it always be static libgcc?
-    isMusl ? "-static-libgcc" : null,
-  ].filter(Boolean);
-
   if (!fs.existsSync("x265")) {
     execSync("git clone https://github.com/videolan/x265 x265", {
       stdio: "inherit",
