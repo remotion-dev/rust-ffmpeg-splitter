@@ -93,5 +93,3 @@ export const enableX265 = (isMusl, isWindows) => {
     stdio: "inherit",
   });
 };
-
-enableX265(false, false);
