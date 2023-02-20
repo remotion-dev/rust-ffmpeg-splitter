@@ -27,6 +27,7 @@ export const enableX265 = (isMusl, isWindows) => {
       "-DENABLE_SHARED:BOOL=OFF",
       "-DCMAKE_BUILD_TYPE=Release",
       "-DSTATIC_LINK_CRT:BOOL=OFF",
+      "-DENABLE_PIC=ON",
       "-DENABLE_CLI:BOOL=ON",
       "source",
     ]
