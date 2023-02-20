@@ -1,4 +1,4 @@
-import fs, { existsSync } from "fs";
+import fs, { existsSync, unlinkSync } from "fs";
 import path from "path";
 import { execSync } from "child_process";
 import { PREFIX } from "./const.mjs";
@@ -56,6 +56,21 @@ export const enableX265 = (isMusl, isWindows) => {
 
   execSync("make install", {
     cwd: "x265/build/linux",
+    stdio: "inherit",
+  });
+
+  execSync("sed -e 's/prefix=\\/.*/prefix=remotion/g' x265.pc > xx.pc", {
+    cwd: "x265/build/linux/remotion/lib/pkgconfig",
+    stdio: "inherit",
+  });
+
+  execSync("rm x265.pc", {
+    cwd: "x265/build/linux/remotion/lib/pkgconfig",
+    stdio: "inherit",
+  });
+
+  execSync("mv xx.pc x265.pc", {
+    cwd: "x265/build/linux/remotion/lib/pkgconfig",
     stdio: "inherit",
   });
 

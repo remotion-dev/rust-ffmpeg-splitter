@@ -51,6 +51,8 @@ const extraLdFlags = ["-L" + path.join(process.cwd(), PREFIX) + "/lib"].filter(
   Boolean
 );
 
+execSync("mv remotion ffmpeg", { stdio: "inherit" });
+
 execSync(
   [
     path.posix.join(process.cwd().replace(/\\/g, "/"), "ffmpeg", "configure"),
