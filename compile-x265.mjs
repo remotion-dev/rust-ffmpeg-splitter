@@ -20,13 +20,15 @@ export const enableX265 = (isMusl, isWindows) => {
     stdio: "inherit",
   });
 
+  const staticallyLinkCLibrary = isMusl || isWindows;
+
   execSync(
     [
       "cmake",
       '-DCMAKE_INSTALL_PREFIX="remotion"',
       "-DENABLE_SHARED:BOOL=OFF",
       "-DCMAKE_BUILD_TYPE=Release",
-      "-DSTATIC_LINK_CRT:BOOL=OFF",
+      "-DSTATIC_LINK_CRT:BOOL=" + (staticallyLinkCLibrary ? "ON" : "OFF"),
       "-DENABLE_PIC=ON",
       "-DENABLE_CLI:BOOL=ON",
       "source",
