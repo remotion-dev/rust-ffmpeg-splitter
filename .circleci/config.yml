@@ -24,7 +24,7 @@ jobs:
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
-          name: linux-x64.gz
+          destination: linux-x64.gz
       - save_cache:
           key: ffmpeg_source-linux-x64
           paths:
@@ -44,7 +44,7 @@ jobs:
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
-          name: linux-x64-musl.gz
+          destination: linux-x64-musl.gz
       - save_cache:
           key: ffmpeg_source-linux-x64-musl
           paths:
@@ -68,7 +68,7 @@ jobs:
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
-          name: linux-arm.gz
+          destination: linux-arm.gz
       - save_cache:
           key: ffmpeg_source-linux-arm
           paths:
@@ -86,7 +86,7 @@ jobs:
       - run: docker build . -t aarch-musl
       - store_artifacts:
           path: ffmpeg.tar.gz
-          name: linux-arm-musl.gz
+          destination: linux-arm-musl.gz
       - save_cache:
           key: ffmpeg_source-linux-arm-musl
           paths:
@@ -112,7 +112,7 @@ jobs:
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
-          name: windows.gz
+          destination: windows.gz
       - save_cache:
           key: ffmpeg_source-windows
           paths:
@@ -136,7 +136,7 @@ jobs:
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
-          name: macos-x64.gz
+          destination: macos-x64.gz
       - save_cache:
           key: ffmpeg_source-macos
           paths:
