@@ -23,6 +23,7 @@ jobs:
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
+          name: linux-x64.gz
       - save_cache:
           key: ffmpeg_source-linux-x64
           paths:
@@ -41,6 +42,7 @@ jobs:
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
+          name: linux-x64-musl.gz
       - save_cache:
           key: ffmpeg_source-linux-x64-musl
           paths:
@@ -63,6 +65,7 @@ jobs:
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
+          name: linux-arm.gz
       - save_cache:
           key: ffmpeg_source-linux-arm
           paths:
@@ -86,6 +89,7 @@ jobs:
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
+          name: windows.gz
       - save_cache:
           key: ffmpeg_source-windows
           paths:
@@ -108,6 +112,7 @@ jobs:
       - run: node zip.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
+          name: macos-x64.gz
       - save_cache:
           key: ffmpeg_source-macos
           paths:
