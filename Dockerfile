@@ -1,4 +1,4 @@
-FROM node:19-alpine3.13
+FROM node:17.3.0-alpine3.13
 
 RUN mkdir -p app
 COPY Cargo.toml app/Cargo.toml
