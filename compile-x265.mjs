@@ -42,7 +42,7 @@ export const enableX265 = (isMusl, isWindows) => {
         ...process.env,
         CMAKE_CROSSCOMPILING: isWindows ? "ON" : undefined,
         CMAKE_C_COMPILER: isWindows ? "x86_64-w64-mingw32-gcc" : undefined,
-        CMAKE_CXX_COMPILER: isWindows ? "x86_64-w64-mingw32-g++" : undefined,
+        CMAKE_CXX_COMPILER: isWindows ? "x86_64-w64-mingw32-g++" : "g++",
         CFLAGS: extraCFlags.join(" "),
         CXXFLAGS: isMusl ? "-static-libgcc -static-libstdc++" : undefined,
       },
