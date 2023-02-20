@@ -1,7 +1,6 @@
 FROM node:19-alpine3.17
 
 RUN mkdir -p app
-COPY src app/src
 COPY Cargo.toml app/Cargo.toml
 # COPY Cargo.lock Cargo.lock
 COPY compile-ffmpeg.mjs app/compile-ffmpeg.mjs
