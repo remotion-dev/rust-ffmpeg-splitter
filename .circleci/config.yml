@@ -82,10 +82,13 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-arm-musl
+      - node/install:
+          node-version: "16.13"
       - run: sudo apt-get install -y docker
       - run: docker build . -t aarch-musl
+      - run: node get-from-docker.mjs
       - store_artifacts:
-          path: ffmpeg.tar.gz
+          path: ffmpegmusl.tar.gz
           destination: linux-arm-musl.gz
       - save_cache:
           key: ffmpeg_source-linux-arm-musl

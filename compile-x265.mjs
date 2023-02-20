@@ -42,6 +42,7 @@ export const enableX265 = (isMusl, isWindows) => {
   execSync(
     [
       "cmake",
+      isWindows ? '-G "MSYS Makefiles"' : null,
       '-DCMAKE_INSTALL_PREFIX="remotion"',
       "-DENABLE_SHARED:BOOL=OFF",
       "-DCMAKE_BUILD_TYPE=Release",
