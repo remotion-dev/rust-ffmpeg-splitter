@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import { readdirSync, renameSync, unlinkSync } from "fs";
+import { copyFileSync, readdirSync, renameSync, unlinkSync } from "fs";
 import path from "path";
 import { PREFIX } from "./const.mjs";
 
@@ -8,6 +8,10 @@ const isWindows = process.argv[2] === "windows";
 if (isWindows) {
   const remotionBinDir = path.join(process.cwd(), "remotion", "bin");
   const remotionLibDir = path.join(process.cwd(), "remotion", "lib");
+  copyFileSync(
+    "libwinpthread-1.dll",
+    path.join(remotionLibDir, "libwinpthread-1.dll")
+  );
   const binFiles = readdirSync(remotionBinDir);
   for (const file of binFiles) {
     if (file.endsWith(".lib")) {
