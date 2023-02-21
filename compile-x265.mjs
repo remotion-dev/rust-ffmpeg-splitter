@@ -5,6 +5,12 @@ import { PREFIX } from "./const.mjs";
 import { compileFunction } from "vm";
 
 export const enableX265 = (isMusl, isWindows) => {
+  if (isWindows) {
+    execSync("cp -r x265-windows/ remotion", {
+      stdio: "inherit",
+    });
+    return;
+  }
   const extraCFlags = [
     // TODO: should it always be static libgcc?
     isMusl ? "-static-libgcc" : null,
@@ -130,3 +136,5 @@ export const enableX265 = (isMusl, isWindows) => {
     stdio: "inherit",
   });
 };
+
+enableX265(false, true);
