@@ -21,7 +21,7 @@ jobs:
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
-      - run: node zip.mjs
+      - run: node zip.mjs windows
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: linux-x64.gz
