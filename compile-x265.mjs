@@ -6,9 +6,14 @@ import { compileFunction } from "vm";
 
 export const enableX265 = (isMusl, isWindows) => {
   if (isWindows) {
-    execSync("cp -r x265-windows/ remotion", {
-      stdio: "inherit",
-    });
+    execSync("cp x265-windows/lib/libx265.a remotion/lib/libx265.a");
+    execSync(
+      "cp x265-windows/lib/pkgconfig/x265.pc remotion/lib/pkgconfig/x265.pc"
+    );
+    execSync(
+      "cp x265-windows/include/x265_config.h remotion/include/x265_config.h "
+    );
+    execSync("cp x265-windows/include/x265.h remotion/include/x265.h");
     return;
   }
   const extraCFlags = [
