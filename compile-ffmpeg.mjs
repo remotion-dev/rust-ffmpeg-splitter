@@ -5,6 +5,7 @@ import { fixLinks } from "./fix-macos-links.mjs";
 import { PREFIX } from "./const.mjs";
 import { enableX264 } from "./compile-x264.mjs";
 import { enableX265 } from "./compile-x265.mjs";
+import { enableLibMp3Lame } from "./compile-libmp3lame.mjs";
 
 if (!existsSync(PREFIX)) {
   fs.mkdirSync(PREFIX);
@@ -29,12 +30,9 @@ if (fs.existsSync("ffmpeg")) {
   });
 }
 
-execSync("rm -rf " + PREFIX, {
-  stdio: "inherit",
-});
-
 enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows);
+enableLibMp3Lame(isMusl, isWindows)
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",
@@ -70,6 +68,7 @@ execSync(
     "--disable-ffplay",
     "--disable-filters",
     "--disable-libxcb",
+    "--disable-sdl"
     "--enable-filter=aformat",
     "--enable-filter=atrim",
     "--enable-filter=adelay",
@@ -96,6 +95,7 @@ execSync(
     "--enable-encoder=pcm_s16le",
     "--enable-encoder=libx264",
     "--enable-encoder=libx265",
+    "--enable-encoder=libmp3lame",
     //"--disable-muxers",
     "--enable-muxer=webm",
     "--enable-muxer=opus",
@@ -109,6 +109,7 @@ execSync(
     "--enable-muxer=gif",
     "--enable-libx264",
     "--enable-libx265",
+    "--enable-libmp3lame",
   ]
     .filter(Boolean)
     .join(" "),

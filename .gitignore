@@ -6,3 +6,4 @@ ffmpeg.tar.gz
 target
 bindings.rs
 remotion
+libmp3lame
