@@ -116,6 +116,8 @@ jobs:
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: windows.gz
+      - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
       - save_cache:
           key: ffmpeg_source-windows
           paths:

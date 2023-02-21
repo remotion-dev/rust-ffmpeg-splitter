@@ -48,6 +48,7 @@ export const enableX265 = (isMusl, isWindows) => {
     CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS: isWindows
       ? "-static-libgcc -static-libstdc++ -static -O3 -s"
       : undefined,
+    CMAKE_INSTALL_PREFIX: PREFIX,
     CFLAGS: extraCFlags.join(" "),
   };
 
