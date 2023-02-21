@@ -1,5 +1,11 @@
 import { execSync } from "child_process";
-import fs, { existsSync, mkdirSync, unlinkSync, writeFileSync } from "fs";
+import fs, {
+  existsSync,
+  mkdirSync,
+  rmSync,
+  unlinkSync,
+  writeFileSync,
+} from "fs";
 import path from "path";
 import { PREFIX } from "./const.mjs";
 
@@ -49,7 +55,7 @@ export const enableLibMp3Lame = (isMusl, isWindows) => {
 
   unlinkSync("libmp3lame/remotion/lib/libmp3lame.la");
   unlinkSync("libmp3lame/remotion/bin/lame");
-  unlinkSync("libmp3lame/remotion/share");
+  rmSync("libmp3lame/remotion/share", { recursive: true });
 
   execSync(`cp -r ${PREFIX} ../`, { cwd: "libmp3lame", stdio: "inherit" });
 };
