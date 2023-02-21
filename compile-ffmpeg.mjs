@@ -95,6 +95,7 @@ execSync(
     "--enable-encoder=mjpeg",
     "--enable-encoder=pcm_s16le",
     "--enable-encoder=libx264",
+    "--enable-encoder=libx265",
     //"--disable-muxers",
     "--enable-muxer=webm",
     "--enable-muxer=opus",
