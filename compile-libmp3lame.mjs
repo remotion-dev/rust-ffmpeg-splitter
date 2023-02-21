@@ -49,6 +49,7 @@ export const enableLibMp3Lame = (isMusl, isWindows) => {
 
   unlinkSync("libmp3lame/remotion/lib/libmp3lame.la");
   unlinkSync("libmp3lame/remotion/bin/lame");
+  unlinkSync("libmp3lame/remotion/share");
 
   execSync(`cp -r ${PREFIX} ../`, { cwd: "libmp3lame", stdio: "inherit" });
 };

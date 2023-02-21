@@ -95,6 +95,7 @@ execSync(
     "--enable-encoder=pcm_s16le",
     "--enable-encoder=libx264",
     "--enable-encoder=libx265",
+    "--enable-encoder=gif",
     "--enable-encoder=libmp3lame",
     //"--disable-muxers",
     "--enable-muxer=webm",
