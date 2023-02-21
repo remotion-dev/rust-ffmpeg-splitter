@@ -32,7 +32,7 @@ if (fs.existsSync("ffmpeg")) {
 
 enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows);
-enableLibMp3Lame(isMusl, isWindows)
+enableLibMp3Lame(isMusl, isWindows);
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",
@@ -68,7 +68,7 @@ execSync(
     "--disable-ffplay",
     "--disable-filters",
     "--disable-libxcb",
-    "--disable-sdl"
+    "--disable-sdl",
     "--enable-filter=aformat",
     "--enable-filter=atrim",
     "--enable-filter=adelay",
