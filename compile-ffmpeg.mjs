@@ -68,7 +68,7 @@ execSync(
     "--disable-ffplay",
     "--disable-filters",
     "--disable-libxcb",
-    "--disable-sdl",
+    "--disable-outdev=sdl",
     "--enable-filter=aformat",
     "--enable-filter=atrim",
     "--enable-filter=adelay",
