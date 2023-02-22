@@ -6,6 +6,7 @@ COPY Cargo.lock app/Cargo.lock
 COPY *.mjs app/
 COPY *.rs app/
 COPY libmp3lame.zip app/libmp3lame.zip
+COPY libvpx-1.12.0.tar.gz app/libvpx-1.12.0.tar.gz
 
 RUN apk add curl 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y

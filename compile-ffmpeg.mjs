@@ -6,6 +6,7 @@ import { PREFIX } from "./const.mjs";
 import { enableX264 } from "./compile-x264.mjs";
 import { enableX265 } from "./compile-x265.mjs";
 import { enableLibMp3Lame } from "./compile-libmp3lame.mjs";
+import { enableVpx } from "./compile-vpx.mjs";
 
 if (!existsSync(PREFIX)) {
   fs.mkdirSync(PREFIX);
@@ -33,6 +34,7 @@ if (fs.existsSync("ffmpeg")) {
 enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
+enableVpx(isWindows);
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",
@@ -98,6 +100,8 @@ execSync(
     "--enable-encoder=gif",
     "--enable-encoder=libmp3lame",
     "--enable-encoder=prores_ks",
+    "--enable-encoder=libvpx",
+    "--enable-encoder=libvpx-vp9",
     //"--disable-muxers",
     "--enable-muxer=webm",
     "--enable-muxer=opus",
@@ -111,6 +115,7 @@ execSync(
     "--enable-muxer=gif",
     "--enable-libx264",
     "--enable-libx265",
+    "--enable-libvpx",
     "--enable-libmp3lame",
   ]
     .filter(Boolean)
