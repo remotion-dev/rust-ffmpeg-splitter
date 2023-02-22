@@ -29,6 +29,7 @@ export const enableLibMp3Lame = (isWindows) => {
       "--enable-static",
       "--with-pic",
       "--disable-shared",
+      "--disable-frontend",
       isWindows ? "--host=x86_64-w64-mingw32" : null,
       "--disable-decoder",
       "--enable-nasm",
@@ -53,7 +54,6 @@ export const enableLibMp3Lame = (isWindows) => {
   });
 
   unlinkSync("libmp3lame/remotion/lib/libmp3lame.la");
-  unlinkSync("libmp3lame/remotion/bin/lame");
   rmSync("libmp3lame/remotion/share", { recursive: true });
 
   execSync(`cp -r ${PREFIX} ../`, { cwd: "libmp3lame", stdio: "inherit" });
