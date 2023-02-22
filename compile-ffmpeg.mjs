@@ -97,6 +97,7 @@ execSync(
     "--enable-encoder=libx265",
     "--enable-encoder=gif",
     "--enable-encoder=libmp3lame",
+    "--enable-encoder=prores_ks",
     //"--disable-muxers",
     "--enable-muxer=webm",
     "--enable-muxer=opus",
