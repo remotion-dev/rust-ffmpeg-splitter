@@ -49,7 +49,7 @@ export const enableVpx = (isWindows) => {
       "--disable-unit-tests",
       "--disable-examples",
       "--as=yasm",
-      isWindows ? "--host=x86_64-w64-mingw32" : null,
+      isWindows ? "--target=x86_64-win64-gcc" : null,
       "--enable-vp9-highbitdepth",
     ].join(" "),
     {
