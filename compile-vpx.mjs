@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import fs from "fs";
+import fs, { readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { PREFIX } from "./const.mjs";
 
@@ -30,6 +30,15 @@ export const enableVpx = (isWindows) => {
     );
   }
 
+  const configPath = path.join(dirname, "configure");
+  const configureScript = readFileSync(configPath, "utf-8");
+
+  const configReplaced = configureScript.replace(
+    "if ! diff --version >/dev/null; then",
+    "if false; then"
+  );
+  writeFileSync(configPath, configReplaced);
+
   execSync(
     [
       path.posix.join(process.cwd().replace(/\\/g, "/"), dirname, "configure"),
@@ -58,7 +67,5 @@ export const enableVpx = (isWindows) => {
     stdio: "inherit",
   });
 
-  execSync(`cp -r ${PREFIX} ../`, { cwd: "libmp3lame", stdio: "inherit" });
+  execSync(`cp -r ${PREFIX} ../`, { cwd: dirname, stdio: "inherit" });
 };
-
-enableVpx(false);
