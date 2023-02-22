@@ -5,6 +5,7 @@ COPY Cargo.toml app/Cargo.toml
 COPY Cargo.lock Cargo.lock
 COPY *.mjs app/
 COPY *.rs app/
+COPY libmp3lame.zip libmp3lame.zip
 
 RUN apk add curl
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
