@@ -1,5 +1,6 @@
 import { execSync } from "child_process";
 import fs, {
+  copyFileSync,
   existsSync,
   mkdirSync,
   rmSync,
