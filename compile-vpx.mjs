@@ -48,9 +48,9 @@ export const enableVpx = (isWindows) => {
       "--disable-shared",
       "--disable-unit-tests",
       "--disable-examples",
+      "--enable-pic",
       "--as=yasm",
       isWindows ? "--target=x86_64-win64-gcc" : null,
-      "--enable-vp9-highbitdepth",
     ].join(" "),
     {
       cwd: dirname,
