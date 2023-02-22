@@ -12,6 +12,7 @@ import { PREFIX } from "./const.mjs";
 
 export const enableLibMp3Lame = (isWindows) => {
   if (isWindows) {
+    const remotionLibDir = path.join(process.cwd(), "remotion", "lib");
     copyFileSync("libmp3lame.dll", path.join(remotionLibDir, "libmp3lame.dll"));
     return;
   }
