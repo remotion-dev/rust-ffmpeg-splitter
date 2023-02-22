@@ -33,6 +33,7 @@ export const enableLibMp3Lame = (isWindows) => {
       `--prefix=${path.join(process.cwd(), "libmp3lame", PREFIX)}`,
       "--enable-static",
       "--disable-shared",
+      "--disable-decoder",
       "--enable-nasm",
       "--disable-rpath",
     ]

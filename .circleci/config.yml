@@ -17,7 +17,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-x64
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm nasm clang cargo make mpg123
+      - run: sudo apt-get install -y yasm nasm clang cargo make
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
@@ -37,7 +37,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64-musl
-      - run: apk add yasm nasm curl git cargo make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev mpg123
+      - run: apk add yasm nasm curl git cargo make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev
       - run: node clean.mjs
       - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
       - run: node generate-bindings.mjs musl
@@ -61,7 +61,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-arm
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm nasm clang cargo ca-certificates build-essential mpg123
+      - run: sudo apt-get install -y yasm nasm clang cargo ca-certificates build-essential
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
@@ -133,7 +133,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-macos
-      - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm nasm pkg-config cmake make mpg123
+      - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm nasm pkg-config cmake make
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
