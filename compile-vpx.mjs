@@ -54,6 +54,7 @@ export const enableVpx = (isWindows) => {
     ].join(" "),
     {
       cwd: dirname,
+      stdio: "inherit",
     }
   );
 
