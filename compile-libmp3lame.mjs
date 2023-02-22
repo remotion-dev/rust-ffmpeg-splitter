@@ -11,11 +11,6 @@ import path from "path";
 import { PREFIX } from "./const.mjs";
 
 export const enableLibMp3Lame = (isWindows) => {
-  if (isWindows) {
-    const remotionLibDir = path.join(process.cwd(), "remotion", "lib");
-    copyFileSync("libmp3lame.dll", path.join(remotionLibDir, "libmp3lame.dll"));
-    return;
-  }
   if (!fs.existsSync("libmp3lame")) {
     // Using newer than 3.100 because it has support for aarch64
     execSync("unzip libmp3lame.zip -d libmp3lame", {
@@ -33,6 +28,7 @@ export const enableLibMp3Lame = (isWindows) => {
       `--prefix=${path.join(process.cwd(), "libmp3lame", PREFIX)}`,
       "--enable-static",
       "--disable-shared",
+      isWindows ? "--host=x86_64-w64-mingw32" : null,
       "--disable-decoder",
       "--enable-nasm",
       "--disable-rpath",
