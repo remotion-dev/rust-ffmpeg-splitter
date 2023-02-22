@@ -32,7 +32,7 @@ if (fs.existsSync("ffmpeg")) {
 
 enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows);
-enableLibMp3Lame(isMusl, isWindows);
+enableLibMp3Lame(isWindows);
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",

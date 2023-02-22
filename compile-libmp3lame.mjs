@@ -9,7 +9,7 @@ import fs, {
 import path from "path";
 import { PREFIX } from "./const.mjs";
 
-export const enableLibMp3Lame = (isMusl, isWindows) => {
+export const enableLibMp3Lame = (isWindows) => {
   if (isWindows) {
     copyFileSync("libmp3lame.dll", path.join(remotionLibDir, "libmp3lame.dll"));
     return;
@@ -33,8 +33,6 @@ export const enableLibMp3Lame = (isMusl, isWindows) => {
       "--disable-shared",
       "--enable-nasm",
       "--disable-rpath",
-      isMusl ? '--extra-cxxflags="-static-libgcc -static-libstdc++"' : null,
-      isMusl ? '--extra-ldexeflags="-static-libgcc -static-libstdc++"' : null,
     ]
       .filter(Boolean)
       .join(" "),
