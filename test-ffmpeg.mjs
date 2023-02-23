@@ -1,13 +1,57 @@
-import { spawnSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
+import path from "path";
+import { test } from "node:test";
+import assert from "assert";
 
-const buildconf = spawnSync(
-  "/Users/jonathanburger/rust-ffmpeg-splitter/remotion/bin/ffmpeg",
-  ["-buildconf"],
-  {
-    env: {
-      DYLD_LIBRARY_PATH:
-        "/Users/jonathanburger/rust-ffmpeg-splitter/remotion/lib",
-    },
-  }
-);
-console.log(buildconf.stdout.toString());
+const lib = path.join(process.cwd(), "remotion", "lib");
+
+const env =
+  process.platform === "darwin"
+    ? {
+        ...process.env,
+        DYLD_LIBRARY_PATH: lib,
+      }
+    : process.platform === "win32"
+    ? {
+        ...process.env,
+
+        PATH: `${process.env.PATH};${lib}`,
+      }
+    : {
+        ...process.env,
+        LD_LIBRARY_PATH: lib,
+      };
+
+const ffmpegBinary = path.join(process.cwd(), "remotion", "bin", "ffmpeg");
+
+test("Should be able to run FFmpeg", () => {
+  const exit = spawnSync(ffmpegBinary, ["-buildconf"], {
+    env,
+    stdio: "inherit",
+  });
+  assert(exit.status === 0);
+});
+
+test("Should be able to convert webm to mp4", () => {
+  const exit = spawnSync(
+    ffmpegBinary,
+    ["-i", "sample-5s.webm", "out-test.mp4", "-y"],
+    {
+      env,
+      stdio: "inherit",
+    }
+  );
+  assert(exit.status === 0);
+});
+
+test("Should be able to convert mp4 to webm", () => {
+  const exit = spawnSync(
+    ffmpegBinary,
+    ["-i", "sample.mp4", "out-test.webm", "-c:v", "libvpx", "-y"],
+    {
+      env,
+      stdio: "inherit",
+    }
+  );
+  assert(exit.status === 0);
+});

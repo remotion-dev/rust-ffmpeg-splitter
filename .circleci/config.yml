@@ -22,6 +22,7 @@ jobs:
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs windows
+      - run: node test-ffmpeg.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: linux-x64.gz
@@ -37,11 +38,12 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64-musl
-      - run: apk add yasm nasm curl git cargo make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev perl
+      - run: apk add yasm nasm curl git cargo make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev perl zlib
       - run: node clean.mjs
       - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
       - run: node generate-bindings.mjs musl
       - run: node zip.mjs
+      - run: node test-ffmpeg.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: linux-x64-musl.gz
@@ -66,6 +68,7 @@ jobs:
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs
+      - run: node test-ffmpeg.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: linux-arm.gz
@@ -106,13 +109,14 @@ jobs:
           keys:
             - ffmpeg_source-windows
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm nasm mingw-w64 mingw-w64-tools cargo clang build-essential
+      - run: sudo apt-get install -y yasm nasm mingw-w64 mingw-w64-tools cargo clang build-essential zlib
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: source "$HOME/.cargo/env" && rustup target add x86_64-pc-windows-gnu
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs windows
       - run: source "$HOME/.cargo/env" && node generate-bindings.mjs windows
       - run: node zip.mjs
+      - run: node test-ffmpeg.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: windows.gz
@@ -139,6 +143,7 @@ jobs:
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs
+      - run: node test-ffmpeg.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: macos-x64.gz

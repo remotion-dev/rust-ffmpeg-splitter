@@ -8,3 +8,5 @@ bindings.rs
 remotion
 libmp3lame
 libvpx-1.12.0
+out-test.mp4
+out-test.webm
