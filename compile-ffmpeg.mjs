@@ -19,10 +19,8 @@ const decoders = [
   "mp3",
   "mpeg4",
   "opus",
-  "pcm_f16be",
   "pcm_f16le",
   "pcm_f24le",
-  "pcm_f24be",
   "pcm_f32le",
   "pcm_f32be",
   "pcm_f64le",
@@ -62,10 +60,6 @@ const demuxers = [
   "mov",
   "mp3",
   "ogg",
-  "pcm_f16be",
-  "pcm_f16le",
-  "pcm_f24le",
-  "pcm_f24be",
   "pcm_f32le",
   "pcm_f32be",
   "pcm_f64le",
@@ -76,8 +70,6 @@ const demuxers = [
   "pcm_s24le",
   "pcm_s32be",
   "pcm_s32le",
-  "pcm_s64be",
-  "pcm_s64le",
   "pcm_u16be",
   "pcm_u16le",
   "pcm_u24le",
@@ -110,10 +102,10 @@ if (fs.existsSync("ffmpeg")) {
   });
 }
 
-enableX264(isMusl, isWindows);
-enableX265(isMusl, isWindows);
-enableLibMp3Lame(isWindows);
-enableVpx(isWindows);
+// enableX264(isMusl, isWindows);
+// enableX265(isMusl, isWindows);
+// enableLibMp3Lame(isWindows);
+// enableVpx(isWindows);
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",
