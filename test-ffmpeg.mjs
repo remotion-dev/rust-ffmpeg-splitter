@@ -14,7 +14,6 @@ const env =
     : process.platform === "win32"
     ? {
         ...process.env,
-
         PATH: `${process.env.PATH};${lib}`,
       }
     : {
@@ -27,7 +26,6 @@ const ffmpegBinary = path.join(process.cwd(), "remotion", "bin", "ffmpeg");
 test("Should be able to run FFmpeg", () => {
   const exit = spawnSync(ffmpegBinary, ["-buildconf"], {
     env,
-    stdio: "inherit",
   });
   assert(exit.status === 0);
 });
@@ -38,7 +36,6 @@ test("Should be able to convert webm to mp4", () => {
     ["-i", "sample-5s.webm", "-t", "1", "out-test.mp4", "-y"],
     {
       env,
-      stdio: "inherit",
     }
   );
   assert(exit.status === 0);
@@ -62,10 +59,10 @@ test("Should be able to extract PNG from video", () => {
     [
       "-i",
       "sample.mp4",
-      "-frames:v",
-      "1",
       "-f",
       "image2",
+      "-frames:v",
+      "1",
       "-vcodec",
       "png",
       "out-test.png",
@@ -73,7 +70,6 @@ test("Should be able to extract PNG from video", () => {
     ],
     {
       env,
-      stdio: "inherit",
     }
   );
   assert(exit.status === 0);
@@ -85,17 +81,17 @@ test("Should be able to extract JPEG from video", () => {
     [
       "-i",
       "sample.mp4",
+      "-f",
+      "image2",
       "-frames:v",
       "1",
-      "-f",
-      "image2pipe",
       "-vcodec",
       "mjpeg",
-      "-",
+      "out-test.png",
+      "-y",
     ],
     {
       env,
-      stdio: "inherit",
     }
   );
   assert(exit.status === 0);
