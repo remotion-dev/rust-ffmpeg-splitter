@@ -12,7 +12,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: "16.13"
+          node-version: "18.12"
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64
@@ -58,7 +58,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: "16.13"
+          node-version: "18.12"
       - restore_cache:
           keys:
             - ffmpeg_source-linux-arm
@@ -86,7 +86,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-arm-musl
       - node/install:
-          node-version: "16.13"
+          node-version: "18.12"
       - run: sudo apt-get install -y docker
       - run: docker build . -t aarch-musl
       - run: node get-from-docker.mjs
@@ -104,7 +104,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: "16.13"
+          node-version: "18.12"
       - restore_cache:
           keys:
             - ffmpeg_source-windows
@@ -133,7 +133,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: "16.13"
+          node-version: "18.12"
       - restore_cache:
           keys:
             - ffmpeg_source-macos
