@@ -35,7 +35,7 @@ test("Should be able to run FFmpeg", () => {
 test("Should be able to convert webm to mp4", () => {
   const exit = spawnSync(
     ffmpegBinary,
-    ["-i", "sample-5s.webm", "out-test.mp4", "-y"],
+    ["-i", "sample-5s.webm", "-t", "1", "out-test.mp4", "-y"],
     {
       env,
       stdio: "inherit",
@@ -47,7 +47,40 @@ test("Should be able to convert webm to mp4", () => {
 test("Should be able to convert mp4 to webm", () => {
   const exit = spawnSync(
     ffmpegBinary,
-    ["-i", "sample.mp4", "out-test.webm", "-c:v", "libvpx", "-y"],
+    ["-i", "sample.mp4", "out-test.webm", "-1", "1", "-c:v", "libvpx", "-y"],
+    {
+      env,
+      stdio: "inherit",
+    }
+  );
+  assert(exit.status === 0);
+});
+
+test("Should be able to extract PNG from video", () => {
+  const exit = spawnSync(
+    ffmpegBinary,
+    ["-i", "sample.mp4", "-frames:v", "1", "-c:v", "png", "out-test.png", "-y"],
+    {
+      env,
+      stdio: "inherit",
+    }
+  );
+  assert(exit.status === 0);
+});
+
+test("Should be able to extract JPEG from video", () => {
+  const exit = spawnSync(
+    ffmpegBinary,
+    [
+      "-i",
+      "sample.mp4",
+      "-frames:v",
+      "1",
+      "-c:v",
+      "mjpeg",
+      "out-test.jpeg",
+      "-y",
+    ],
     {
       env,
       stdio: "inherit",
