@@ -59,7 +59,18 @@ test("Should be able to convert mp4 to webm", () => {
 test("Should be able to extract PNG from video", () => {
   const exit = spawnSync(
     ffmpegBinary,
-    ["-i", "sample.mp4", "-frames:v", "1", "-c:v", "png", "out-test.png", "-y"],
+    [
+      "-i",
+      "sample.mp4",
+      "-frames:v",
+      "1",
+      "-f",
+      "image2",
+      "-vcodec",
+      "png",
+      "out-test.png",
+      "-y",
+    ],
     {
       env,
       stdio: "inherit",
@@ -76,10 +87,11 @@ test("Should be able to extract JPEG from video", () => {
       "sample.mp4",
       "-frames:v",
       "1",
-      "-c:v",
+      "-f",
+      "image2pipe",
+      "-vcodec",
       "mjpeg",
-      "out-test.jpeg",
-      "-y",
+      "-",
     ],
     {
       env,
