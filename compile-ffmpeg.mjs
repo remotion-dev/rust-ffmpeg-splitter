@@ -8,6 +8,85 @@ import { enableX265 } from "./compile-x265.mjs";
 import { enableLibMp3Lame } from "./compile-libmp3lame.mjs";
 import { enableVpx } from "./compile-vpx.mjs";
 
+const decoders = [
+  "aac",
+  "av1",
+  "flac",
+  "h264",
+  "hevc",
+  "libvpx_vp8",
+  "libvpx_vp9",
+  "mp3",
+  "mpeg4",
+  "opus",
+  "pcm_f16be",
+  "pcm_f16le",
+  "pcm_f24le",
+  "pcm_f24be",
+  "pcm_f32le",
+  "pcm_f32be",
+  "pcm_f64le",
+  "pcm_f64be",
+  "pcm_s16be",
+  "pcm_s16le",
+  "pcm_s24be",
+  "pcm_s24le",
+  "pcm_s32be",
+  "pcm_s32le",
+  "pcm_s64be",
+  "pcm_s64le",
+  "pcm_u16be",
+  "pcm_u16le",
+  "pcm_u24le",
+  "pcm_u24be",
+  "pcm_u32be",
+  "pcm_u32le",
+  "prores",
+  "theora",
+  "vorbis",
+  "vp9",
+];
+
+const demuxers = [
+  "aac",
+  "av1",
+  "avi",
+  "caf",
+  "concat",
+  "flac",
+  "flv",
+  "h264",
+  "hevc",
+  "image2",
+  "matroska",
+  "mov",
+  "mp3",
+  "ogg",
+  "pcm_f16be",
+  "pcm_f16le",
+  "pcm_f24le",
+  "pcm_f24be",
+  "pcm_f32le",
+  "pcm_f32be",
+  "pcm_f64le",
+  "pcm_f64be",
+  "pcm_s16be",
+  "pcm_s16le",
+  "pcm_s24be",
+  "pcm_s24le",
+  "pcm_s32be",
+  "pcm_s32le",
+  "pcm_s64be",
+  "pcm_s64le",
+  "pcm_u16be",
+  "pcm_u16le",
+  "pcm_u24le",
+  "pcm_u24be",
+  "pcm_u32be",
+  "pcm_u32le",
+  "wav",
+];
+
 if (!existsSync(PREFIX)) {
   fs.mkdirSync(PREFIX);
 }
@@ -31,10 +110,10 @@ if (fs.existsSync("ffmpeg")) {
   });
 }
 
-// enableX264(isMusl, isWindows);
-// enableX265(isMusl, isWindows);
-// enableLibMp3Lame(isWindows);
-// enableVpx(isWindows);
+enableX264(isMusl, isWindows);
+enableX265(isMusl, isWindows);
+enableLibMp3Lame(isWindows);
+enableVpx(isWindows);
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",
@@ -68,6 +147,7 @@ execSync(
     "--enable-shared",
     "--disable-static",
     "--disable-ffplay",
+    "--disable-postproc",
     "--disable-filters",
     "--disable-libxcb",
     "--enable-filter=aformat",
@@ -105,7 +185,6 @@ execSync(
     "--enable-muxer=mp4",
     "--enable-muxer=mp3",
     "--enable-muxer=mov",
-    "--enable-muxer=mkvtimestamp_v2",
     "--enable-muxer=matroska",
     "--enable-muxer=hevc",
     "--enable-muxer=h264",
@@ -114,6 +193,10 @@ execSync(
     "--enable-libx265",
     "--enable-libmp3lame",
     "--enable-zlib",
+    "--disable-demuxers",
+    ...demuxers.map((d) => `--enable-demuxer=${d}`),
+    "--disable-decoders",
+    ...decoders.map((d) => `--enable-decoder=${d}`),
   ]
     .filter(Boolean)
     .join(" "),
