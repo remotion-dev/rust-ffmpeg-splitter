@@ -36,5 +36,3 @@ export const enableOpus = (isWindows) => {
 
   execSync(`cp -r ${PREFIX} ../`, { cwd: dirname, stdio: "inherit" });
 };
-
-enableOpus(false);

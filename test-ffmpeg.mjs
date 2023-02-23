@@ -47,11 +47,11 @@ test("Should be able to convert mp4 to webm", () => {
     [
       "-i",
       "sample.mp4",
+      "-t",
+      "1",
       "-c:v",
       "libvpx",
       "-c:a",
-      "-t",
-      "1",
       "libopus",
       "out-test.webm",
       "-y",
