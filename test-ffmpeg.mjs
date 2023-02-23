@@ -47,7 +47,7 @@ test("Should be able to convert webm to mp4", () => {
 test("Should be able to convert mp4 to webm", () => {
   const exit = spawnSync(
     ffmpegBinary,
-    ["-i", "sample.mp4", "out-test.webm", "-1", "1", "-c:v", "libvpx", "-y"],
+    ["-i", "sample.mp4", "-c:v", "libvpx", "out-test.webm", "-y"],
     {
       env,
       stdio: "inherit",
