@@ -19,6 +19,7 @@ export const enableOpus = (isWindows) => {
       `--prefix=${path.join(process.cwd(), dirname, PREFIX)}`,
       "--enable-static",
       "--disable-shared",
+      "--with-pic",
       isWindows ? "--target=x86_64-win64-gcc" : null,
     ].join(" "),
     { cwd: dirname, stdio: "inherit" }
