@@ -7,6 +7,7 @@ import { enableX264 } from "./compile-x264.mjs";
 import { enableX265 } from "./compile-x265.mjs";
 import { enableLibMp3Lame } from "./compile-libmp3lame.mjs";
 import { enableVpx } from "./compile-vpx.mjs";
+import { enableOpus } from "./compile-opus.mjs";
 
 const decoders = [
   "aac",
@@ -106,6 +107,7 @@ enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
 enableVpx(isWindows);
+enableOpus(isWindows);
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",
@@ -172,6 +174,7 @@ execSync(
     "--enable-encoder=libvpx_vp9",
     "--enable-encoder=gif",
     "--enable-encoder=libmp3lame",
+    "--enable-encoder=libopus",
     "--enable-encoder=prores_ks",
     "--disable-muxers",
     "--enable-muxer=webm",
@@ -189,6 +192,7 @@ execSync(
     "--enable-libx265",
     "--enable-libmp3lame",
     "--enable-zlib",
+    "--enable-libopus",
     "--disable-demuxers",
     ...demuxers.map((d) => `--enable-demuxer=${d}`),
     "--disable-decoders",

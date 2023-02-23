@@ -7,6 +7,7 @@ COPY *.mjs app/
 COPY *.rs app/
 COPY libmp3lame.zip app/libmp3lame.zip
 COPY vpx.gz app/vpx.gz
+COPY opus.gz app/opus.gz
 COPY sample-5s.webm app/sample-5s.webm
 COPY sample.mp4 app/sample.mp4
 
