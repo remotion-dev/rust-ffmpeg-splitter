@@ -116,7 +116,7 @@ execSync(
     "--enable-libx265",
     "--enable-libvpx",
     "--enable-libmp3lame",
-    "--disable-examples",
+    "--enable-zlib",
   ]
     .filter(Boolean)
     .join(" "),
