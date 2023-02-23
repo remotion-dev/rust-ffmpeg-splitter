@@ -17,5 +17,5 @@ RUN apk add yasm nasm curl git make ca-certificates pkgconfig bash cmake make cm
 RUN cd app && CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
 RUN source "$HOME/.cargo/env" && cd app && node generate-bindings.mjs musl
 RUN source "$HOME/.cargo/env" && cd app && node zip.mjs
-
+RUN source "$HOME/.cargo/env" && cd app && node test-ffmpeg.mjs
 
