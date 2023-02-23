@@ -50,6 +50,8 @@ test("Should be able to convert mp4 to webm", () => {
       "-c:v",
       "libvpx",
       "-c:a",
+      "-t",
+      "1",
       "libopus",
       "out-test.webm",
       "-y",
