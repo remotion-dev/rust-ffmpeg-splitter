@@ -17,6 +17,8 @@ const decoders = [
   "hevc",
   "libvpx_vp8",
   "libvpx_vp9",
+  "vp8",
+  "vp9",
   "mp3",
   "mpeg4",
   "opus",
