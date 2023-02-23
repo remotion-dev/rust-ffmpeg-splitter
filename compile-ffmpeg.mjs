@@ -96,6 +96,8 @@ execSync(
     "--enable-encoder=pcm_s16le",
     "--enable-encoder=libx264",
     "--enable-encoder=libx265",
+    "--enable-encoder=libvpx",
+    "--enable-encoder=libvpx-vp9",
     "--enable-encoder=gif",
     "--enable-encoder=libmp3lame",
     "--enable-encoder=prores_ks",
@@ -109,13 +111,12 @@ execSync(
     "--enable-muxer=matroska",
     "--enable-muxer=hevc",
     "--enable-muxer=h264",
-    "--enable-muxer=libvpx",
-    "--enable-muxer=libvpx-vp9",
     "--enable-muxer=gif",
     "--enable-libx264",
     "--enable-libx265",
     "--enable-libvpx",
     "--enable-libmp3lame",
+    "--disable-examples",
   ]
     .filter(Boolean)
     .join(" "),
