@@ -31,10 +31,10 @@ if (fs.existsSync("ffmpeg")) {
   });
 }
 
-enableX264(isMusl, isWindows);
-enableX265(isMusl, isWindows);
-enableLibMp3Lame(isWindows);
-enableVpx(isWindows);
+// enableX264(isMusl, isWindows);
+// enableX265(isMusl, isWindows);
+// enableLibMp3Lame(isWindows);
+// enableVpx(isWindows);
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",
@@ -84,7 +84,6 @@ execSync(
     "--enable-filter=pan",
     "--enable-filter=volume",
     "--enable-filter=scale",
-    //"--disable-indevs",
     "--disable-doc",
     "--enable-gpl",
     "--enable-nonfree",
@@ -96,8 +95,7 @@ execSync(
     "--enable-encoder=pcm_s16le",
     "--enable-encoder=libx264",
     "--enable-encoder=libx265",
-    "--enable-encoder=libvpx",
-    "--enable-encoder=libvpx-vp9",
+    "--enable-libvpx",
     "--enable-encoder=gif",
     "--enable-encoder=libmp3lame",
     "--enable-encoder=prores_ks",
@@ -114,7 +112,6 @@ execSync(
     "--enable-muxer=gif",
     "--enable-libx264",
     "--enable-libx265",
-    "--enable-libvpx",
     "--enable-libmp3lame",
     "--enable-zlib",
   ]
