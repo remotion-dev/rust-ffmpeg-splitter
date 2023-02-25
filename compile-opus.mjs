@@ -18,6 +18,7 @@ export const enableOpus = (isWindows) => {
       path.posix.join(process.cwd().replace(/\\/g, "/"), dirname, "configure"),
       `--prefix=${path.join(process.cwd(), dirname, PREFIX)}`,
       "--enable-static",
+      "--disable-shared",
       "--with-pic",
       isWindows ? "--target=x86_64-win64-gcc" : null,
     ].join(" "),
