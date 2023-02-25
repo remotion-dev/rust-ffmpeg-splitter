@@ -35,5 +35,33 @@ export const enableOpus = (isWindows) => {
     stdio: "inherit",
   });
 
+  const opus = readFileSync(
+    dirname + "/remotion/lib/pkgconfig/opus.pc",
+    "utf8"
+  );
+  console.log("pkgconfig/opus.pc is:", opus);
+  const lines = opus.split("\n");
+  const privLibs = lines.find((line) => line.startsWith("Libs.private"));
+  if (!privLibs) {
+    throw new Error("Could not find Libs.private in opus.pc");
+  }
+  const extraLibs = privLibs.replace("Libs.private: ", "");
+  const linesPkg = lines
+    .map((line) => {
+      if (line.startsWith("Libs:")) {
+        return [line, "-lm"].filter(Boolean).join(" ");
+      }
+      if (line.startsWith("Libs.private")) {
+        return null;
+      }
+
+      return line;
+    })
+    .filter((l) => l !== null)
+    .join("\n");
+
+  console.log("Replacing it with:", linesPkg);
+  fs.writeFileSync(dirname + "/remotion/lib/pkgconfig/opus.pc", linesPkg);
+
   execSync(`cp -r ${PREFIX} ../`, { cwd: dirname, stdio: "inherit" });
 };
