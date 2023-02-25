@@ -22,21 +22,21 @@ const env =
 
 const ffmpegBinary = path.join(process.cwd(), "remotion", "bin", "ffmpeg");
 
-const exit = spawnSync(ffmpegBinary, ["-buildconf"], {
+const exit1 = spawnSync(ffmpegBinary, ["-buildconf"], {
   env,
 });
-assert(exit.status === 0);
+assert(exit1.status === 0);
 
-const exit = spawnSync(
+const exit2 = spawnSync(
   ffmpegBinary,
   ["-i", "sample-5s.webm", "-t", "1", "out-test.mp4", "-y"],
   {
     env,
   }
 );
-assert(exit.status === 0);
+assert(exit2.status === 0);
 
-const exit = spawnSync(
+const exit3 = spawnSync(
   ffmpegBinary,
   [
     "-i",
@@ -55,9 +55,9 @@ const exit = spawnSync(
     stdio: "inherit",
   }
 );
-assert(exit.status === 0);
+assert(exit3.status === 0);
 
-const exit = spawnSync(
+const exit4 = spawnSync(
   ffmpegBinary,
   [
     "-i",
@@ -75,9 +75,9 @@ const exit = spawnSync(
     env,
   }
 );
-assert(exit.status === 0);
+assert(exit4.status === 0);
 
-const exit = spawnSync(
+const exit5 = spawnSync(
   ffmpegBinary,
   [
     "-i",
@@ -95,4 +95,4 @@ const exit = spawnSync(
     env,
   }
 );
-assert(exit.status === 0);
+assert(exit5.status === 0);
