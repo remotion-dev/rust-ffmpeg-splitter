@@ -47,6 +47,10 @@ export const enableOpus = (isWindows) => {
   const extraLibs = privLibs.replace("Libs.private: ", "");
   const linesPkg = lines
     .map((line) => {
+      if (line.startsWith("prefix=")) {
+        return "prefix=remotion";
+      }
+
       if (line.startsWith("Libs:")) {
         return [line, "-lm"].filter(Boolean).join(" ");
       }
