@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import { dir } from "console";
-import { existsSync } from "fs";
+import fs, { existsSync, readFileSync } from "fs";
 import path from "path";
 import { PREFIX } from "./const.mjs";
 
@@ -65,3 +65,5 @@ export const enableOpus = (isWindows) => {
 
   execSync(`cp -r ${PREFIX} ../`, { cwd: dirname, stdio: "inherit" });
 };
+
+enableOpus(false);
