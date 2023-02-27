@@ -55,7 +55,10 @@ export const enableOpus = (isWindows) => {
       }
 
       if (line.startsWith("Libs:")) {
-        return [line, "-lm"].filter(Boolean).join(" ");
+        // https://github.com/msys2/MINGW-packages/issues/5868#issuecomment-544107564
+        return [line, "-lm", isWindows ? "-lssp" : null]
+          .filter(Boolean)
+          .join(" ");
       }
       if (line.startsWith("Libs.private")) {
         return null;

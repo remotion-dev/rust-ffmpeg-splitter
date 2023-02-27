@@ -121,6 +121,8 @@ const extraCFlags = [
   isMusl ? "-static-libgcc" : null,
   "-I" + PREFIX + "/include",
   "-I" + PREFIX + "/include/opus",
+  "-I" + PREFIX + "/include/lame",
+  "-I" + PREFIX + "/include/vpx",
 ].filter(Boolean);
 
 const extraLdFlags = ["-L" + PREFIX + "/lib"].filter(Boolean);

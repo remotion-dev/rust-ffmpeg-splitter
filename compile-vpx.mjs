@@ -68,5 +68,27 @@ export const enableVpx = (isWindows) => {
     stdio: "inherit",
   });
 
+  const vpx = readFileSync(dirname + "/remotion/lib/pkgconfig/vpx.pc", "utf8");
+  console.log("pkgconfig/vpx.pc is:", vpx);
+  const lines = vpx.split("\n");
+  const privLibs = lines.find((line) => line.startsWith("Libs.private"));
+  if (!privLibs) {
+    throw new Error("Could not find Libs.private in vpx.pc");
+  }
+  const extraLibs = privLibs.replace("Libs.private: ", "");
+  const linesPkg = lines
+    .map((line) => {
+      if (line.startsWith("prefix=")) {
+        return "prefix=remotion";
+      }
+
+      return line;
+    })
+    .filter((l) => l !== null)
+    .join("\n");
+
+  console.log("Replacing it with:", linesPkg);
+  fs.writeFileSync(dirname + "/remotion/lib/pkgconfig/vpx.pc", linesPkg);
+
   execSync(`cp -r ${PREFIX} ../`, { cwd: dirname, stdio: "inherit" });
 };
