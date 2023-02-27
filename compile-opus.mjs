@@ -7,13 +7,6 @@ import { PREFIX } from "./const.mjs";
 const dirname = "opus-1.3.1";
 
 export const enableOpus = (isWindows) => {
-  if (isWindows) {
-    if (!path.join(dirname, "remotion", "lib")) {
-      mkdirSync(path.join(dirname, "remotion", "lib"));
-    }
-    copyFileSync("opus.dll", path.join(dirname, "remotion", "lib", "opus.dll"));
-  }
-
   if (!existsSync(dirname)) {
     execSync("tar xvf opus.gz", {
       stdio: "inherit",
@@ -27,9 +20,8 @@ export const enableOpus = (isWindows) => {
       "--enable-static",
       "--disable-shared",
       "--with-pic",
-      isWindows
-        ? "--build=x86_64-w64-mingw32 --target=x86_64-w64-mingw32"
-        : null,
+      "--enable-custom-modes",
+      isWindows ? "--host=x86_64-w64-mingw32" : null,
     ].join(" "),
     { cwd: dirname, stdio: "inherit" }
   );
