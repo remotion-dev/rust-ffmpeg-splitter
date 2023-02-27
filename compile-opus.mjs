@@ -24,11 +24,12 @@ export const enableOpus = (isWindows) => {
     [
       path.posix.join(process.cwd().replace(/\\/g, "/"), dirname, "configure"),
       `--prefix=${path.join(process.cwd(), dirname, PREFIX)}`,
-      `--exec-prefix=${path.join(process.cwd(), dirname, PREFIX)}`,
       "--enable-static",
       "--disable-shared",
       "--with-pic",
-      isWindows ? "--target=x86_64-win64-gcc" : null,
+      isWindows
+        ? "--build=x86_64-w64-mingw32 --target=x86_64-w64-mingw32"
+        : null,
     ].join(" "),
     { cwd: dirname, stdio: "inherit" }
   );
