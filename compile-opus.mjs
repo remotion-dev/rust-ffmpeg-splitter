@@ -21,6 +21,7 @@ export const enableOpus = (isWindows) => {
       "--disable-shared",
       "--with-pic",
       "--enable-custom-modes",
+      "--disable-extra-programs",
       isWindows ? "--host=x86_64-w64-mingw32" : null,
     ].join(" "),
     { cwd: dirname, stdio: "inherit" }

@@ -100,7 +100,7 @@ jobs:
   build-windows:
     docker:
       # Newer ubuntu is needed because mingw64-tools were not supported by previous one
-      - image: cimg/base:current-22.10
+      - image: cimg/base:current-22.04
     steps:
       - checkout
       - node/install:
