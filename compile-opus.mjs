@@ -1,12 +1,17 @@
 import { execSync } from "child_process";
 import { dir } from "console";
-import fs, { existsSync, readFileSync } from "fs";
+import fs, { existsSync, readFileSync, copyFileSync } from "fs";
 import path from "path";
 import { PREFIX } from "./const.mjs";
 
 const dirname = "opus-1.3.1";
 
 export const enableOpus = (isWindows) => {
+  if (isWindows) {
+    copyFileSync("opus.dll", path.join(dirname, "remotion", "lib", "opus.dll"));
+    return;
+  }
+
   if (!existsSync(dirname)) {
     execSync("tar xvf opus.gz", {
       stdio: "inherit",
