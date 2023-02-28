@@ -46,6 +46,7 @@ const decoders = [
   "theora",
   "vorbis",
   "vp9",
+  "mjpeg",
 ];
 
 const demuxers = [
@@ -59,6 +60,7 @@ const demuxers = [
   "h264",
   "hevc",
   "image2",
+  "image2pipe",
   "matroska",
   "mov",
   "mp3",
