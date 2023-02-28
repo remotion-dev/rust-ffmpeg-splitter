@@ -175,8 +175,6 @@ execSync(
     "--enable-encoder=libx264",
     "--enable-encoder=libx265",
     "--enable-libvpx",
-    "--enable-encoder=libvpx",
-    "--enable-encoder=libvpx-vp9",
     "--enable-encoder=libvpx_vp8",
     "--enable-encoder=libvpx_vp9",
     "--enable-encoder=gif",
