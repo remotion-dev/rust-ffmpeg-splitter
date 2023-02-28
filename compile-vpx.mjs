@@ -7,7 +7,8 @@ const dirname = "libvpx-1.12.0";
 
 export const enableVpx = (isWindows) => {
   if (isWindows) {
-    execSync("tar vfx vpx-windows.tar.gz vpx-windows");
+    execSync("mkdir -p vpx-windows", { stdio: "inherit" });
+    execSync("tar vfx vpx-windows.tar.gz -C vpx-windows");
     execSync(`cp -r vpx-windows ../`, { stdio: "inherit" });
 
     return;
