@@ -69,4 +69,7 @@ export const enableVpx = (isWindows) => {
   });
 
   execSync(`cp -r ${PREFIX} ../`, { cwd: dirname, stdio: "inherit" });
+
+  console.log("REMOTIONSYMBOLS");
+  execSync(`nm -gC ${PREFIX}/lib/libvpx.a`, { cwd: dirname, stdio: "inherit" });
 };
