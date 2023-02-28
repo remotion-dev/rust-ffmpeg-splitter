@@ -48,6 +48,7 @@ const decoders = [
   "vorbis",
   "vp9",
   "mjpeg",
+  "gif",
 ];
 
 const demuxers = [
