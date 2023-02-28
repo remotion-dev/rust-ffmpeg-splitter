@@ -105,10 +105,10 @@ if (fs.existsSync("ffmpeg")) {
   });
 }
 
+enableVpx(isWindows);
 enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
-enableVpx(isWindows);
 enableOpus(isWindows);
 
 execSync("git checkout n5.1.1", {
