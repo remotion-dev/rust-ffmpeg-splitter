@@ -186,7 +186,7 @@ execSync(
     "--enable-encoder=libopus",
     "--enable-encoder=prores_ks",
     "--disable-muxers",
-    "--enable-muxer=webm,opus,mp4,wav,mp3,mov,matroska,hevc,h264,gif,image2,image2pipe,ipod,null",
+    "--enable-muxer=webm,opus,mp4,wav,mp3,mov,matroska,hevc,h264,gif,image2,image2pipe,adts",
     "--enable-libx264",
     "--enable-libx265",
     "--enable-libmp3lame",
