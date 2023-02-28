@@ -185,6 +185,7 @@ execSync(
     "--enable-muxer=webm",
     "--enable-muxer=opus",
     "--enable-muxer=mp4",
+    "--enable-muxer=wav",
     "--enable-muxer=mp3",
     "--enable-muxer=mov",
     "--enable-muxer=matroska",
