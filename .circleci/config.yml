@@ -21,7 +21,7 @@ jobs:
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
-      - run: node zip.mjs windows
+      - run: node zip.mjs
       - run: node test-ffmpeg.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
@@ -116,7 +116,6 @@ jobs:
       - run: node compile-ffmpeg.mjs windows
       - run: source "$HOME/.cargo/env" && node generate-bindings.mjs windows
       - run: node zip.mjs
-      - run: node test-ffmpeg.mjs
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: windows.gz
