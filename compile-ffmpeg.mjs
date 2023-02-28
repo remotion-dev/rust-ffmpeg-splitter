@@ -200,8 +200,6 @@ execSync(
     "--enable-libopus",
     "--disable-demuxers",
     ...demuxers.map((d) => `--enable-demuxer=${d}`),
-    "--disable-decoders",
-    ...decoders.map((d) => `--enable-decoder=${d}`),
   ]
     .filter(Boolean)
     .join(" "),
