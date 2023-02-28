@@ -22,6 +22,7 @@ const decoders = [
   "mp3",
   "mpeg4",
   "opus",
+  "pcm_u8",
   "pcm_f16le",
   "pcm_f24le",
   "pcm_f32le",
