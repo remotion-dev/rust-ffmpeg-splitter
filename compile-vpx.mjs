@@ -6,6 +6,13 @@ import { PREFIX } from "./const.mjs";
 const dirname = "libvpx-1.12.0";
 
 export const enableVpx = (isWindows) => {
+  if (isWindows) {
+    execSync("tar xvz vpx-windows.zip");
+    execSync(`cp -r vpx-windows ../`, { stdio: "inherit" });
+
+    return;
+  }
+
   if (!fs.existsSync(dirname)) {
     // Using newer than 3.100 because it has support for aarch64
     execSync("tar xvf vpx.gz", {
@@ -69,12 +76,4 @@ export const enableVpx = (isWindows) => {
   });
 
   execSync(`cp -r ${PREFIX} ../`, { cwd: dirname, stdio: "inherit" });
-
-  console.log("REMOTIONSYMBOLS");
-  if (isWindows) {
-    execSync(`nm -gC ${PREFIX}/lib/libvpx.dll.a`, {
-      cwd: dirname,
-      stdio: "inherit",
-    });
-  }
 };

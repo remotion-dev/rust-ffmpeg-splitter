@@ -90,6 +90,12 @@ execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv[2] === "windows";
 const isMusl = process.argv[2] === "musl";
 
+enableVpx(isWindows);
+enableX264(isMusl, isWindows);
+enableX265(isMusl, isWindows);
+enableLibMp3Lame(isWindows);
+enableOpus(isWindows);
+
 if (fs.existsSync("ffmpeg")) {
   execSync("git checkout master", {
     cwd: "ffmpeg",
@@ -104,12 +110,6 @@ if (fs.existsSync("ffmpeg")) {
     stdio: "inherit",
   });
 }
-
-enableVpx(isWindows);
-enableX264(isMusl, isWindows);
-enableX265(isMusl, isWindows);
-enableLibMp3Lame(isWindows);
-enableOpus(isWindows);
 
 execSync("git checkout n5.1.1", {
   cwd: "ffmpeg",
