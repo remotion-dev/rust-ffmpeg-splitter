@@ -34,12 +34,6 @@ if (isWindows) {
   }
 }
 
-const extension =
-  process.platform === "darwin" ? "dylib" : isWindows ? "dll" : "so";
-
-execSync(
-  `tar cvzf ffmpeg.tar.gz ${PREFIX}/bin ${PREFIX}/include ${PREFIX}/lib/*.${extension} bindings.rs`,
-  {
-    stdio: "inherit",
-  }
-);
+execSync(`tar cvzf ffmpeg.tar.gz ${PREFIX} bindings.rs`, {
+  stdio: "inherit",
+});
