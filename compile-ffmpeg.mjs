@@ -161,6 +161,7 @@ execSync(
     "--enable-filter=atempo",
     "--enable-filter=apad",
     "--enable-filter=amerge",
+    "--enable-filter=amix",
     "--enable-filter=aresample",
     "--enable-filter=concat",
     "--enable-filter=tinterlace",
