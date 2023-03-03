@@ -156,6 +156,7 @@ execSync(
     "--disable-libxcb",
     "--enable-filter=aformat",
     "--enable-filter=atrim",
+    "--enable-filter=acopy",
     "--enable-filter=adelay",
     "--enable-filter=anullsrc",
     "--enable-filter=atempo",
