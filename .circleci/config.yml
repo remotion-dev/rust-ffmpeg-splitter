@@ -6,6 +6,10 @@ orbs:
   win: circleci/windows@2.4.1
 
 jobs:
+  windows-ssh:
+    executor: win/default
+    steps:
+      - checkout
   build-linux-x64-gnu:
     docker:
       - image: cimg/base:stable
@@ -160,3 +164,4 @@ workflows:
       - build-linux-arm-musl
       - build-macos
       - build-windows
+      - windows-ssh
