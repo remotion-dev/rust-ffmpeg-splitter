@@ -9,7 +9,9 @@ export const enableVpx = (isWindows) => {
   if (isWindows) {
     execSync("mkdir -p vpx-windows", { stdio: "inherit" });
     execSync("tar vfx vpx-windows.tar.gz -C vpx-windows");
-    execSync(`cp -r vpx-windows/* ./remotion`, { stdio: "inherit" });
+    execSync(`cp -r vpx-windows/lib/libvpx.a ./${PREFIX}/lib/libvpx.a`, {
+      stdio: "inherit",
+    });
 
     return;
   }
