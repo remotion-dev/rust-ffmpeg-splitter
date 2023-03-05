@@ -49,6 +49,7 @@ const decoders = [
   "vp9",
   "mjpeg",
   "gif",
+  "png",
 ];
 
 const demuxers = [
