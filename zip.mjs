@@ -13,6 +13,9 @@ if (isWindows) {
     path.join(remotionLibDir, "libwinpthread-1.dll")
   );
   copyFileSync("libvpx-1.dll", path.join(remotionLibDir, "libvpx-1.dll"));
+  copyFileSync("zlib1.dll", path.join(remotionLibDir, "zlib1.dll"));
+  copyFileSync("libssp-0.dll", path.join(remotionLibDir, "libssp-0.dll"));
+  copyFileSync("libstdc++-6.dll", path.join(remotionLibDir, "libstdc++-6.dll"));
   const binFiles = readdirSync(remotionBinDir);
   for (const file of binFiles) {
     if (file.endsWith(".lib")) {
