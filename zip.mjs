@@ -12,6 +12,7 @@ if (isWindows) {
     "libwinpthread-1.dll",
     path.join(remotionLibDir, "libwinpthread-1.dll")
   );
+  copyFileSync("libvpx-1.dll", path.join(remotionLibDir, "libvpx-1.dll"));
   const binFiles = readdirSync(remotionBinDir);
   for (const file of binFiles) {
     if (file.endsWith(".lib")) {
