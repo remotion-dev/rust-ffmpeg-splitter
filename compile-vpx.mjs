@@ -18,12 +18,6 @@ export const enableVpx = (isWindows) => {
       stdio: "inherit",
     });
     execSync(
-      `cp -r vpx-windows/lib/libvpx.dll.a ./${PREFIX}/lib/libvpx.dll.a`,
-      {
-        stdio: "inherit",
-      }
-    );
-    execSync(
       `cp -r vpx-windows/lib/pkgconfig/vpx.pc ./${PREFIX}/lib/pkgconfig/vpx.pc`,
       {
         stdio: "inherit",
