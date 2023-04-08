@@ -117,7 +117,7 @@ if (fs.existsSync("ffmpeg")) {
   });
 }
 
-execSync("git checkout n5.1.1", {
+execSync("git checkout n6.0", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
