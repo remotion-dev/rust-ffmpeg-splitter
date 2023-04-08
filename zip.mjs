@@ -62,6 +62,11 @@ for (const file of files) {
   }
   const stat = lstatSync(filePath);
   if (stat.isSymbolicLink()) {
+    if (filePath.endsWith(".so")) {
+      unlinkSync(filePath);
+      continue;
+    }
+
     const realpath = realpathSync(filePath);
     unlinkSync(filePath);
     copyFileSync(realpath, filePath);
