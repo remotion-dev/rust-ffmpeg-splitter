@@ -220,7 +220,7 @@ execSync("make clean", {
 
 // Disable generations of symlinks
 execSync(
-  `sed -i 's/^\(SLIBNAME_WITH_VERSION=\$(SLIBNAME)\)\.\$(LIBVERSION)$/\\1/' ffbuild/config.mak`,
+  `sed -i 's/^\\(SLIBNAME_WITH_VERSION=\\$(SLIBNAME)\\)\\.\\$(LIBVERSION)$/\\1/' ffbuild/config.mak`,
   {
     cwd: "ffmpeg",
     stdio: "inherit",
