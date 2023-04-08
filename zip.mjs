@@ -1,13 +1,5 @@
 import { execSync } from "child_process";
-import {
-  copyFileSync,
-  readdirSync,
-  renameSync,
-  unlinkSync,
-  existsSync,
-  lstatSync,
-  realpathSync,
-} from "fs";
+import { copyFileSync, readdirSync, renameSync, unlinkSync } from "fs";
 import path from "path";
 import { PREFIX } from "./const.mjs";
 
@@ -48,29 +40,6 @@ if (isWindows) {
     if (file.endsWith(".def")) {
       unlinkSync(path.join(remotionLibDir, file));
     }
-  }
-}
-
-// Fix symlinks
-
-const files = readdirSync(remotionLibDir);
-
-for (const file of files) {
-  const filePath = path.join(`${remotionLibDir}`, `${file}`);
-  if (!existsSync(filePath)) {
-    continue;
-  }
-  const stat = lstatSync(filePath);
-  if (stat.isSymbolicLink()) {
-    if (filePath.endsWith(".so")) {
-      unlinkSync(filePath);
-      continue;
-    }
-
-    const realpath = realpathSync(filePath);
-    unlinkSync(filePath);
-    copyFileSync(realpath, filePath);
-    unlinkSync(realpath);
   }
 }
 
