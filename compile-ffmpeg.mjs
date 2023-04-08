@@ -218,6 +218,36 @@ execSync("make clean", {
   stdio: "inherit",
 });
 
+// Disable generations of symlinks
+execSync(
+  "sed -i 's/(SLIBNAME_WITH_VERSION=$(SLIBNAME)).$(LIBVERSION)/\1/' ffbuild/config.mak",
+  {
+    cwd: "ffmpeg",
+    stdio: "inherit",
+  }
+);
+execSync(
+  "sed -i 's/SLIBNAME_WITH_MAJOR=$(SLIBNAME).$(LIBMAJOR)/SLIBNAME_WITH_MAJOR=$(SLIBNAME)/' ffbuild/config.mak",
+  {
+    cwd: "ffmpeg",
+    stdio: "inherit",
+  }
+);
+execSync(
+  "sed -i 's/SLIB_INSTALL_NAME=$(SLIBNAME_WITH_VERSION)/SLIB_INSTALL_NAME=$(SLIBNAME)/' ffbuild/config.mak",
+  {
+    cwd: "ffmpeg",
+    stdio: "inherit",
+  }
+);
+execSync(
+  "sed -i 's/SLIB_INSTALL_LINKS=$(SLIBNAME_WITH_MAJOR) $(SLIBNAME)/SLIB_INSTALL_LINKS=/' ffbuild/config.mak",
+  {
+    cwd: "ffmpeg",
+    stdio: "inherit",
+  }
+);
+
 execSync("make", {
   cwd: "ffmpeg",
   stdio: "inherit",
