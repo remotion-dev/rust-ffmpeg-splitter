@@ -25,6 +25,10 @@ const ffmpegBinary = path.join(process.cwd(), "remotion", "bin", "ffmpeg");
 const exit1 = spawnSync(ffmpegBinary, ["-buildconf"], {
   env,
 });
+if (exit1.status !== 0) {
+  console.log(exit1.stderr.toString("utf8"));
+  console.log(exit1.stdout.toString("utf8"));
+}
 assert(exit1.status === 0);
 
 const exit2 = spawnSync(
