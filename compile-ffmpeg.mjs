@@ -226,8 +226,17 @@ execSync(
     stdio: "inherit",
   }
 );
+// Linux
 execSync(
   "sed -i '' 's/SLIBNAME_WITH_MAJOR=$(SLIBNAME).$(LIBMAJOR)/SLIBNAME_WITH_MAJOR=$(SLIBNAME)/' ffbuild/config.mak",
+  {
+    cwd: "ffmpeg",
+    stdio: "inherit",
+  }
+);
+// macOS
+execSync(
+  "sed -i '' 's/SLIBNAME_WITH_MAJOR=$(SLIBPREF)$(FULLNAME).$(LIBMAJOR)$(SLIBSUF)/SLIBNAME_WITH_MAJOR=$(SLIBPREF)$(FULLNAME)$(SLIBSUF)/' ffbuild/config.mak",
   {
     cwd: "ffmpeg",
     stdio: "inherit",
