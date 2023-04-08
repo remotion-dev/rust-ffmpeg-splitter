@@ -235,13 +235,16 @@ execSync(
   }
 );
 // macOS
-execSync(
-  "sed -i '' 's/SLIBNAME_WITH_MAJOR=$(SLIBPREF)$(FULLNAME).$(LIBMAJOR)$(SLIBSUF)/SLIBNAME_WITH_MAJOR=$(SLIBPREF)$(FULLNAME)$(SLIBSUF)/' ffbuild/config.mak",
-  {
-    cwd: "ffmpeg",
-    stdio: "inherit",
-  }
-);
+if (process.platform === "darwin") {
+  execSync(
+    "sed -i '' 's/SLIBNAME_WITH_MAJOR=$(SLIBPREF)$(FULLNAME).$(LIBMAJOR)$(SLIBSUF)/SLIBNAME_WITH_MAJOR=$(SLIBPREF)$(FULLNAME)$(SLIBSUF)/' ffbuild/config.mak",
+    {
+      cwd: "ffmpeg",
+      stdio: "inherit",
+    }
+  );
+}
+
 execSync(
   "sed -i '' 's/SLIB_INSTALL_NAME=$(SLIBNAME_WITH_VERSION)/SLIB_INSTALL_NAME=$(SLIBNAME)/' ffbuild/config.mak",
   {
