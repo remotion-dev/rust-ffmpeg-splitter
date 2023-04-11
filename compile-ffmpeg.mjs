@@ -117,7 +117,7 @@ if (fs.existsSync("ffmpeg")) {
   });
 }
 
-execSync("git checkout n5.1.1", {
+execSync("git checkout n6.0", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
@@ -217,6 +217,55 @@ execSync("make clean", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
+
+const sedPrefix = process.platform === "darwin" ? "sed -i ''" : "sed -i";
+
+// Disable generations of symlinks
+execSync(
+  sedPrefix +
+    ` 's/^\\(SLIBNAME_WITH_VERSION=\\$(SLIBNAME)\\)\\.\\$(LIBVERSION)$/\\1/' ffbuild/config.mak`,
+  {
+    cwd: "ffmpeg",
+    stdio: "inherit",
+  }
+);
+// Linux
+execSync(
+  sedPrefix +
+    " 's/SLIBNAME_WITH_MAJOR=$(SLIBNAME).$(LIBMAJOR)/SLIBNAME_WITH_MAJOR=$(SLIBNAME)/' ffbuild/config.mak",
+  {
+    cwd: "ffmpeg",
+    stdio: "inherit",
+  }
+);
+// macOS
+if (process.platform === "darwin") {
+  execSync(
+    sedPrefix +
+      " 's/SLIBNAME_WITH_MAJOR=$(SLIBPREF)$(FULLNAME).$(LIBMAJOR)$(SLIBSUF)/SLIBNAME_WITH_MAJOR=$(SLIBPREF)$(FULLNAME)$(SLIBSUF)/' ffbuild/config.mak",
+    {
+      cwd: "ffmpeg",
+      stdio: "inherit",
+    }
+  );
+}
+
+execSync(
+  sedPrefix +
+    " 's/SLIB_INSTALL_NAME=$(SLIBNAME_WITH_VERSION)/SLIB_INSTALL_NAME=$(SLIBNAME)/' ffbuild/config.mak",
+  {
+    cwd: "ffmpeg",
+    stdio: "inherit",
+  }
+);
+execSync(
+  sedPrefix +
+    " 's/SLIB_INSTALL_LINKS=$(SLIBNAME_WITH_MAJOR) $(SLIBNAME)/SLIB_INSTALL_LINKS=/' ffbuild/config.mak",
+  {
+    cwd: "ffmpeg",
+    stdio: "inherit",
+  }
+);
 
 execSync("make", {
   cwd: "ffmpeg",
