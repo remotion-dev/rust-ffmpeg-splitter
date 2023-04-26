@@ -68,7 +68,7 @@ jobs:
             - ffmpeg_source-linux-arm
       - run: sudo apt-get install -y docker
       - run: docker build . -f Dockerfile-aws -t aarch-gnu
-      - run: node get-from-docker.mjs aarch-gnu
+      - run: node get-from-docker.mjs aarch-gnu /var/task/app/ffmpeg.tar.gz
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: linux-arm.gz
@@ -89,7 +89,7 @@ jobs:
           node-version: "18.12"
       - run: sudo apt-get install -y docker
       - run: docker build . -t aarch-musl
-      - run: node get-from-docker.mjs aarch-musl
+      - run: node get-from-docker.mjs aarch-musl /app/ffmpeg.tar.gz
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: linux-arm-musl.gz
