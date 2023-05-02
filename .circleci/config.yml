@@ -66,13 +66,9 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-arm
-      - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm nasm clang cargo ca-certificates build-essential
-      - run: node clean.mjs
-      - run: node compile-ffmpeg.mjs
-      - run: node generate-bindings.mjs
-      - run: node zip.mjs
-      - run: node test-ffmpeg.mjs
+      - run: sudo apt-get install -y docker
+      - run: docker build . -f Dockerfile-aws -t aarch-gnu
+      - run: node get-from-docker.mjs aarch-gnu /var/task/app/ffmpeg.tar.gz
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: aarch64-unknown-linux-gnu.gz
@@ -93,9 +89,9 @@ jobs:
           node-version: "18.12"
       - run: sudo apt-get install -y docker
       - run: docker build . -t aarch-musl
-      - run: node get-from-docker.mjs
+      - run: node get-from-docker.mjs aarch-musl /app/ffmpeg.tar.gz
       - store_artifacts:
-          path: ffmpegmusl.tar.gz
+          path: ffmpeg.tar.gz
           destination: aarch64-unknown-linux-musl.gz
       - save_cache:
           key: ffmpeg_source-linux-arm-musl

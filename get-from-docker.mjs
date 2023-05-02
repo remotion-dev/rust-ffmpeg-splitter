@@ -1,9 +1,12 @@
 import { execSync } from "child_process";
 
-const result = execSync("docker run -d aarch-musl");
+const containerName = process.argv[2];
+const path = process.argv[3];
 
-const id = result.toString();
+const result = execSync(`docker run -d ${containerName}`);
 
-execSync("docker cp " + id.trim() + ":/app/ffmpeg.tar.gz ffmpegmusl.tar.gz");
+const id = result.toString().trim();
+
+execSync(`docker cp ${id}:${path} ffmpeg.tar.gz`);
 
 execSync("docker stop " + result);
