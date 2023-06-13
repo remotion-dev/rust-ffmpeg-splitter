@@ -16,7 +16,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: "18.12"
+          node-version: "16.20"
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64
@@ -62,7 +62,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: "18.12"
+          node-version: "16.20"
       - restore_cache:
           keys:
             - ffmpeg_source-linux-arm
