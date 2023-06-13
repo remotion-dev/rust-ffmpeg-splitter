@@ -12,7 +12,7 @@ jobs:
       - checkout
   build-linux-x64-gnu:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/base:current-18.04
     steps:
       - checkout
       - node/install:
