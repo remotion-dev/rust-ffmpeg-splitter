@@ -1,14 +1,14 @@
 import { execSync } from "child_process";
-import { mkdirSync, rmSync } from "fs";
+import { existsSync, mkdirSync, rmSync } from "fs";
 
 export const enableAv1 = () => {
-  if (!fs.existsSync("x264")) {
+  if (!existsSync("av1")) {
     execSync("git clone https://code.videolan.org/videolan/dav1d av1", {
       stdio: "inherit",
     });
   }
 
-  execSync("git checkout 1.2.1 && git pull", {
+  execSync("git checkout 1.2.1", {
     cwd: "av1",
   });
 
@@ -23,9 +23,11 @@ export const enableAv1 = () => {
 
   execSync("meson setup .. --default-library=static", {
     cwd: "av1/build",
+    stdio: "inherit",
   });
 
   execSync("ninja", {
     cwd: "av1/build",
+    stdio: "inherit",
   });
 };

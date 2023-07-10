@@ -152,6 +152,7 @@ execSync(
     isMusl ? '--extra-ldexeflags="-static-libgcc -static-libstdc++"' : null,
     "--enable-small",
     "--enable-shared",
+    "--enable-libdav1d",
     "--disable-static",
     "--disable-ffplay",
     "--disable-postproc",
