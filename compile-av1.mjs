@@ -51,9 +51,7 @@ export const enableAv1 = (isWindows) => {
     stdio: "inherit",
   });
 
-  cpSync("av1/build/src/libdav1d.a", "remotion/lib/libdav1d.a");
-
-  const outPath = join(process.cwd(), "remotion/lib/pkgconfig/libdav1d.pc");
+  const outPath = join(process.cwd(), "remotion/lib/pkgconfig/dav1d.pc");
 
   if (!existsSync(dirname(outPath))) {
     mkdirSync(dirname(outPath), {
