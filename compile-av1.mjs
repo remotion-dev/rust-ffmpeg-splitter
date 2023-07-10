@@ -1,4 +1,5 @@
 import { execSync } from "child_process";
+import { join, dirname } from "node:path";
 import { existsSync, mkdirSync, rmSync, cpSync, writeFileSync } from "node:fs";
 
 const pkgConfig = `
@@ -52,7 +53,13 @@ export const enableAv1 = (isWindows) => {
 
   cpSync("av1/build/src/libdav1d.a", "remotion/lib/libdav1d.a");
 
-  writeFileSync("remotion/lib/pkgconfig/libdav1d.pc", pkgConfig);
-};
+  const outPath = join(process.cwd(), "remotion/lib/pkgconfig/libdav1d.pc");
 
-enableAv1();
+  if (!existsSync(dirname(outPath))) {
+    mkdirSync(dirname(outPath), {
+      recursive: true,
+    });
+  }
+
+  writeFileSync(outPath, pkgConfig);
+};
