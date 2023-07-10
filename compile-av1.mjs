@@ -1,5 +1,18 @@
 import { execSync } from "child_process";
-import { existsSync, mkdirSync, rmSync } from "fs";
+import { existsSync, mkdirSync, rmSync, cpSync, writeFileSync } from "node:fs";
+
+const pkgConfig = `
+prefix=${process.cwd()}/av1/build
+includedir=$\{prefix\}/include
+libdir=$\{prefix\}/lib
+srcdir=${process.cwd()}/av1
+
+Name: libdav1d
+Description: AV1 decoding library
+Version: 1.2.1
+Libs: -L$\{prefix\}/src -ldav1d
+Cflags: -I$\{prefix\}/src -I$\{srcdir\}/src -I$\{prefix\} -I$\{srcdir\} -I$\{prefix\}/include/dav1d -I$\{srcdir\}/include/dav1d -I$\{prefix\}/include -I$\{srcdir\}/include
+`.trim();
 
 export const enableAv1 = (isWindows) => {
   if (!existsSync("av1")) {
@@ -37,8 +50,9 @@ export const enableAv1 = (isWindows) => {
     stdio: "inherit",
   });
 
-  execSync("meson install", {
-    cwd: "av1/build",
-    stdio: "inherit",
-  });
+  cpSync("av1/build/src/libdav1d.a", "remotion/lib/libdav1d.a");
+
+  writeFileSync("remotion/lib/pkgconfig/libdav1d.pc", pkgConfig);
 };
+
+enableAv1();
