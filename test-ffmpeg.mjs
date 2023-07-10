@@ -117,6 +117,7 @@ const exit6 = spawnSync(
   ],
   {
     env,
+    stdio: "inherit",
   }
 );
 assert(exit6.status === 0);

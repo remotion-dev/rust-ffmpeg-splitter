@@ -12,7 +12,7 @@ jobs:
       - checkout
   build-linux-x64-gnu:
     docker:
-      - image: cimg/base:current-18.04
+      - image: cimg/base:current-20.04
     steps:
       - checkout
       - node/install:
@@ -136,7 +136,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-macos
-      - run: brew install yasm nasm pkg-config cmake make meson ninja-build
+      - run: brew install yasm nasm pkg-config cmake make meson ninja
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
