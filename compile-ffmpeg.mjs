@@ -8,6 +8,7 @@ import { enableX265 } from "./compile-x265.mjs";
 import { enableLibMp3Lame } from "./compile-libmp3lame.mjs";
 import { enableVpx } from "./compile-vpx.mjs";
 import { enableOpus } from "./compile-opus.mjs";
+import { enableAv1 } from "./compile-av1.mjs";
 
 const decoders = [
   "aac",
@@ -96,6 +97,7 @@ execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv[2] === "windows";
 const isMusl = process.argv[2] === "musl";
 
+enableAv1();
 enableVpx(isWindows);
 enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows);
