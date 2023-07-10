@@ -97,7 +97,7 @@ execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv[2] === "windows";
 const isMusl = process.argv[2] === "musl";
 
-enableAv1();
+enableAv1(isWindows);
 enableVpx(isWindows);
 enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows);
