@@ -37,7 +37,7 @@ export const enableAv1 = (isWindows) => {
     stdio: "inherit",
   });
 
-  execSync("ninja install", {
+  execSync("sudo ninja install", {
     cwd: "av1/build",
     stdio: "inherit",
   });
