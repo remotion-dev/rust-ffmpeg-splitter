@@ -37,7 +37,7 @@ export const enableAv1 = (isWindows) => {
     stdio: "inherit",
   });
 
-  execSync("ninja install", {
+  execSync("meson install", {
     cwd: "av1/build",
     stdio: "inherit",
   });
