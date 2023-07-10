@@ -100,3 +100,24 @@ const exit5 = spawnSync(
   }
 );
 assert(exit5.status === 0);
+
+const exit6 = spawnSync(
+  ffmpegBinary,
+  [
+    "-i",
+    "sample-av1.webm",
+    "-f",
+    "image2",
+    "-frames:v",
+    "1",
+    "-vcodec",
+    "mjpeg",
+    "out-test-av1.png",
+    "-y",
+  ],
+  {
+    env,
+  }
+);
+assert(exit6.status === 0);
+console.log("Hooray!");

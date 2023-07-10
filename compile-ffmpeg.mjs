@@ -51,6 +51,7 @@ const decoders = [
   "mjpeg",
   "gif",
   "png",
+  "libdav1d",
 ];
 
 const demuxers = [
