@@ -28,6 +28,9 @@ jobs:
       - run: node zip.mjs
       - run: node test-ffmpeg.mjs
       - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
+      - store_artifacts:
           path: ffmpeg.tar.gz
           destination: x86_64-unknown-linux-gnu.gz
       - save_cache:
@@ -48,6 +51,9 @@ jobs:
       - run: node generate-bindings.mjs musl
       - run: node zip.mjs
       - run: node test-ffmpeg.mjs
+      - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: x86_64-unknown-linux-musl.gz
@@ -70,6 +76,9 @@ jobs:
       - run: docker build . -f Dockerfile-aws -t aarch-gnu
       - run: node get-from-docker.mjs aarch-gnu /var/task/app/ffmpeg.tar.gz
       - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
+      - store_artifacts:
           path: ffmpeg.tar.gz
           destination: aarch64-unknown-linux-gnu.gz
       - save_cache:
@@ -90,6 +99,9 @@ jobs:
       - run: sudo apt-get install -y docker
       - run: docker build . -t aarch-musl
       - run: node get-from-docker.mjs aarch-musl /app/ffmpeg.tar.gz
+      - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: aarch64-unknown-linux-musl.gz
@@ -117,6 +129,9 @@ jobs:
       - run: source "$HOME/.cargo/env" && node generate-bindings.mjs windows
       - run: node zip.mjs windows
       - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
+      - store_artifacts:
           path: ffmpeg.tar.gz
           destination: x86_64-pc-windows-gnu.gz
       - store_artifacts:
@@ -143,6 +158,9 @@ jobs:
       - run: node generate-bindings.mjs
       - run: node zip.mjs
       - run: node test-ffmpeg.mjs
+      - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: x86_64-apple-darwin.gz
