@@ -24,7 +24,7 @@ export const enableAv1 = (isWindows) => {
   execSync(
     "meson setup .. --default-library=static " +
       (isWindows
-        ? "--cross-file=package/crossfiles/x86_64-w64-mingw32.meson"
+        ? "--cross-file=..package/crossfiles/x86_64-w64-mingw32.meson"
         : ""),
     {
       cwd: "av1/build",
