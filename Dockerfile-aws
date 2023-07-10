@@ -16,7 +16,8 @@ RUN source "$HOME/.cargo/env"
 RUN yum install amazon-linux-extras -y
 RUN amazon-linux-extras list
 RUN amazon-linux-extras install epel python3.8 -y
-RUN yum install yasm nasm unzip curl gcc gcc-c++ tar git make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev perl zlib zlib-devel clang-libs clang meson ninja -y
+RUN pip3 install --user meson
+RUN yum install yasm nasm unzip curl gcc gcc-c++ tar git make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev perl zlib zlib-devel clang-libs clang ninja -y
 RUN cd app && CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs
 RUN source "$HOME/.cargo/env" && cd app && node generate-bindings.mjs
 RUN source "$HOME/.cargo/env" && cd app && node zip.mjs
