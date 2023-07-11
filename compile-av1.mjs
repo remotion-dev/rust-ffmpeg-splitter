@@ -11,7 +11,7 @@ srcdir=${process.cwd()}/av1
 Name: libdav1d
 Description: AV1 decoding library
 Version: 1.2.1
-Libs: -L$\{prefix\}/src -ldav1d -lpthread -ldl
+Libs: -L$\{prefix\}/src -ldav1d -lpthread ${isWindows ? "" : "-ldl"}
 Cflags: -I$\{prefix\}/src -I$\{srcdir\}/src -I$\{prefix\} -I$\{srcdir\} -I$\{prefix\}/include/dav1d -I$\{srcdir\}/include/dav1d -I$\{prefix\}/include -I$\{srcdir\}/include
 `.trim();
 
