@@ -2,7 +2,8 @@ import { execSync } from "child_process";
 import { join, dirname } from "node:path";
 import { existsSync, mkdirSync, rmSync, cpSync, writeFileSync } from "node:fs";
 
-const pkgConfig = `
+export const enableAv1 = (isWindows) => {
+  const pkgConfig = `
 prefix=${process.cwd()}/av1/build
 includedir=$\{prefix\}/include
 libdir=$\{prefix\}/lib
@@ -13,9 +14,8 @@ Description: AV1 decoding library
 Version: 1.2.1
 Libs: -L$\{prefix\}/src -ldav1d -lpthread ${isWindows ? "" : "-ldl"}
 Cflags: -I$\{prefix\}/src -I$\{srcdir\}/src -I$\{prefix\} -I$\{srcdir\} -I$\{prefix\}/include/dav1d -I$\{srcdir\}/include/dav1d -I$\{prefix\}/include -I$\{srcdir\}/include
-`.trim();
+  `.trim();
 
-export const enableAv1 = (isWindows) => {
   if (!existsSync("av1")) {
     execSync("git clone https://code.videolan.org/videolan/dav1d av1", {
       stdio: "inherit",
