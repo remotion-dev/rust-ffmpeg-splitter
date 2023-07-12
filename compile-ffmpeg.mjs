@@ -8,6 +8,7 @@ import { enableX265 } from "./compile-x265.mjs";
 import { enableLibMp3Lame } from "./compile-libmp3lame.mjs";
 import { enableVpx } from "./compile-vpx.mjs";
 import { enableOpus } from "./compile-opus.mjs";
+import { enableAv1 } from "./compile-av1.mjs";
 
 const decoders = [
   "aac",
@@ -50,6 +51,7 @@ const decoders = [
   "mjpeg",
   "gif",
   "png",
+  "libdav1d",
 ];
 
 const demuxers = [
@@ -96,6 +98,7 @@ execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv[2] === "windows";
 const isMusl = process.argv[2] === "musl";
 
+enableAv1(isWindows);
 enableVpx(isWindows);
 enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows);
@@ -150,6 +153,7 @@ execSync(
     isMusl ? '--extra-ldexeflags="-static-libgcc -static-libstdc++"' : null,
     "--enable-small",
     "--enable-shared",
+    "--enable-libdav1d",
     "--disable-static",
     "--disable-ffplay",
     "--disable-postproc",

@@ -12,7 +12,7 @@ jobs:
       - checkout
   build-linux-x64-gnu:
     docker:
-      - image: cimg/base:current-18.04
+      - image: cimg/base:current-20.04
     steps:
       - checkout
       - node/install:
@@ -21,12 +21,15 @@ jobs:
           keys:
             - ffmpeg_source-linux-x64
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm nasm clang cargo make zlib1g-dev
+      - run: sudo apt-get install -y yasm nasm clang cargo make zlib1g-dev meson ninja-build
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs
       - run: node test-ffmpeg.mjs
+      - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: x86_64-unknown-linux-gnu.gz
@@ -42,12 +45,15 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64-musl
-      - run: apk add yasm nasm curl git cargo make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev perl zlib
+      - run: apk add yasm nasm curl git cargo make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev perl zlib meson ninja-build
       - run: node clean.mjs
       - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
       - run: node generate-bindings.mjs musl
       - run: node zip.mjs
       - run: node test-ffmpeg.mjs
+      - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: x86_64-unknown-linux-musl.gz
@@ -70,6 +76,9 @@ jobs:
       - run: docker build . -f Dockerfile-aws -t aarch-gnu
       - run: node get-from-docker.mjs aarch-gnu /var/task/app/ffmpeg.tar.gz
       - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
+      - store_artifacts:
           path: ffmpeg.tar.gz
           destination: aarch64-unknown-linux-gnu.gz
       - save_cache:
@@ -91,6 +100,9 @@ jobs:
       - run: docker build . -t aarch-musl
       - run: node get-from-docker.mjs aarch-musl /app/ffmpeg.tar.gz
       - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
+      - store_artifacts:
           path: ffmpeg.tar.gz
           destination: aarch64-unknown-linux-musl.gz
       - save_cache:
@@ -109,13 +121,16 @@ jobs:
           keys:
             - ffmpeg_source-windows
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm nasm mingw-w64 mingw-w64-tools libz-mingw-w64-dev cargo clang build-essential zlib1g zlib1g-dev
+      - run: sudo apt-get install -y yasm nasm mingw-w64 mingw-w64-tools libz-mingw-w64-dev cargo clang build-essential zlib1g zlib1g-dev meson ninja-build
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: source "$HOME/.cargo/env" && rustup target add x86_64-pc-windows-gnu
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs windows
       - run: source "$HOME/.cargo/env" && node generate-bindings.mjs windows
       - run: node zip.mjs windows
+      - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: x86_64-pc-windows-gnu.gz
@@ -136,13 +151,16 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-macos
-      - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm nasm pkg-config cmake make
+      - run: brew install yasm nasm pkg-config cmake make meson ninja
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
       - run: node zip.mjs
       - run: node test-ffmpeg.mjs
+      - store_artifacts:
+          path: ffmpeg/ffbuild/config.log
+          destination: ffbuild.log
       - store_artifacts:
           path: ffmpeg.tar.gz
           destination: x86_64-apple-darwin.gz
