@@ -10,7 +10,7 @@ path = "main.rs"
 
 [dependencies]
 ffmpeg-next = "6.0.0"
-bindgen    = { version = "0.59", default-features = false, features = ["runtime"] }
+bindgen = { version = "0.59", default-features = false, features = ["static"] }
 
 [profile.dev]
 rpath = true
