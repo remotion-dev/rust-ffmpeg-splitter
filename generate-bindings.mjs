@@ -16,7 +16,6 @@ execSync(
         process.platform === "darwin"
           ? "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"
           : undefined,
-      RUSTFLAGS: isMusl ? "-Ctarget-feature=-crt-static" : undefined,
     },
     stdio: "inherit",
   }
