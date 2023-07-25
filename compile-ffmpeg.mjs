@@ -175,6 +175,7 @@ execSync(
     "--enable-filter=pan",
     "--enable-filter=volume",
     "--enable-filter=scale",
+    "--enable-filter=split",
     "--disable-doc",
     "--enable-gpl",
     "--enable-nonfree",
