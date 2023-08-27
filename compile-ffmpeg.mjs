@@ -170,6 +170,7 @@ execSync(
     "--enable-filter=amix",
     "--enable-filter=aresample",
     "--enable-filter=concat",
+    "--enable-filter=colorspace",
     "--enable-filter=tinterlace",
     "--enable-filter=fieldorder",
     "--enable-filter=pan",
