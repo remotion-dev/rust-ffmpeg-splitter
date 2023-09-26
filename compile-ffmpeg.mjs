@@ -52,6 +52,7 @@ const decoders = [
   "gif",
   "png",
   "libdav1d",
+  "hls",
 ];
 
 const demuxers = [
