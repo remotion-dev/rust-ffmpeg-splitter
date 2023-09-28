@@ -102,6 +102,7 @@ const demuxers = [
   "pcm_u32le",
   "wav",
   "gif",
+  "hls",
 ];
 
 if (!existsSync(PREFIX)) {
