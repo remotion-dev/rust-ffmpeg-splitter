@@ -15,14 +15,14 @@ if (existsSync("/opt/homebrew/opt/libx11/lib/libX11.6.dylib")) {
   console.log(
     "/opt/homebrew/opt/libx11/lib/libX11.6.dylib exists. Check that there is no dependency for libavcodec.dylib that requires it! Not all macOS systems have this library."
   );
-  //process.exit(1);
+  process.exit(1);
 }
 
 if (existsSync("/opt/homebrew/opt/sdl2/lib/libSDL2-2.0.0.dylib")) {
   console.log(
     "/opt/homebrew/opt/sdl2/lib/libSDL2-2.0.0.dylib exists. Check that there is no dependency for libavcodec.dylib that requires it! Not all macOS systems have this library."
   );
-  // process.exit(1);
+  process.exit(1);
 }
 const decoders = [
   "aac",
