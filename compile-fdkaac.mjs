@@ -28,7 +28,7 @@ export const enableFdkAac = async (isWindows) => {
       `--prefix=${path.resolve("fdk-aac-2.0.2", PREFIX)}`,
       "--enable-static",
       "--disable-shared",
-      "--enable-pic",
+      "--with-pic",
       isWindows
         ? "--host=x86_64-w64-mingw32 --cross-prefix=x86_64-w64-mingw32-"
         : null,
