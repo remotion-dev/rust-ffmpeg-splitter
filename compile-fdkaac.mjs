@@ -3,7 +3,7 @@ import { execSync } from "child_process";
 import { PREFIX } from "./const.mjs";
 import path from "path";
 
-export const enableFdkAac = async (isMusl, isWindows) => {
+export const enableFdkAac = async (isWindows) => {
   if (!fs.existsSync("fdkaac")) {
     const response = await fetch(
       "https://sourceforge.net/projects/opencore-amr/files/fdk-aac/fdk-aac-2.0.2.tar.gz/download?use_mirror=gigenet"
@@ -25,15 +25,13 @@ export const enableFdkAac = async (isMusl, isWindows) => {
         "fdk-aac-2.0.2",
         "configure"
       ),
-      `--prefix=${path.resolve(PREFIX)}`,
+      `--prefix=${path.resolve("fdk-aac-2.0.2", PREFIX)}`,
       "--enable-static",
       "--disable-shared",
       "--enable-pic",
       isWindows
         ? "--host=x86_64-w64-mingw32 --cross-prefix=x86_64-w64-mingw32-"
         : null,
-      isMusl ? '--extra-cxxflags="-static-libgcc -static-libstdc++"' : null,
-      isMusl ? '--extra-ldexeflags="-static-libgcc -static-libstdc++"' : null,
     ]
       .filter(Boolean)
       .join(" "),

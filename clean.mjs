@@ -18,8 +18,13 @@ const paths = [
   path.join(process.cwd(), "opus"),
   path.join(process.cwd(), "libmp3lame"),
   path.join(process.cwd(), "libvpx-1.12.0"),
+  path.join(process.cwd(), "opus-1.3.1"),
+  path.join(process.cwd(), "fdk-aac-2.0.2"),
   path.join(process.cwd(), "bindings.rs"),
   path.join(process.cwd(), "ffmpeg.tar.gz"),
+  path.join(process.cwd(), "out-test.mp4"),
+  path.join(process.cwd(), "out-test.webm"),
+  path.join(process.cwd(), "out-test.png"),
 ];
 
 for (const path of paths) {
