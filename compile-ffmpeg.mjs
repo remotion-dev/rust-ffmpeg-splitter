@@ -9,6 +9,7 @@ import { enableLibMp3Lame } from "./compile-libmp3lame.mjs";
 import { enableVpx } from "./compile-vpx.mjs";
 import { enableOpus } from "./compile-opus.mjs";
 import { enableAv1 } from "./compile-av1.mjs";
+import { enableFdkAac } from "./compile-fdkaac.mjs";
 
 if (existsSync("/opt/homebrew/opt/libx11/lib/libX11.6.dylib")) {
   console.log(
@@ -113,6 +114,7 @@ execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv[2] === "windows";
 const isMusl = process.argv[2] === "musl";
 
+await enableFdkAac(isMusl, isWindows);
 enableAv1(isWindows);
 enableVpx(isWindows);
 enableX264(isMusl, isWindows);
@@ -169,7 +171,7 @@ execSync(
     "--enable-small",
     "--enable-shared",
     "--enable-libdav1d",
-    "--enable-libfkd-aac",
+    "--enable-libfdk-aac",
     "--disable-static",
     "--disable-ffplay",
     "--disable-postproc",
