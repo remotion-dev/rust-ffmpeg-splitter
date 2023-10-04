@@ -29,9 +29,7 @@ export const enableFdkAac = async (isWindows) => {
       "--enable-static",
       "--disable-shared",
       "--with-pic",
-      isWindows
-        ? "--host=x86_64-w64-mingw32 --cross-prefix=x86_64-w64-mingw32-"
-        : null,
+      isWindows ? "--host=x86_64-w64-mingw32" : null,
     ]
       .filter(Boolean)
       .join(" "),
