@@ -67,6 +67,7 @@ const decoders = [
   "png",
   "libdav1d",
   "hls",
+  "m4a",
 ];
 
 const demuxers = [
@@ -104,6 +105,7 @@ const demuxers = [
   "wav",
   "gif",
   "hls",
+  "m4a",
 ];
 
 if (!existsSync(PREFIX)) {
@@ -218,13 +220,15 @@ execSync(
     "--enable-encoder=libopus",
     "--enable-encoder=prores_ks",
     "--disable-muxers",
-    "--enable-muxer=webm,opus,mp4,wav,mp3,mov,matroska,hevc,h264,gif,image2,image2pipe,adts,null",
+    "--enable-muxer=webm,opus,mp4,wav,mp3,mov,matroska,hevc,h264,gif,image2,image2pipe,adts,m4a,null",
     "--enable-libx264",
     "--enable-libx265",
     "--enable-libmp3lame",
     "--enable-zlib",
     "--enable-libopus",
     "--disable-demuxers",
+    "--disable-sdl2",
+    "--disable-xlib",
     `--enable-demuxer=${demuxers.map((d) => d).join(",")}`,
     "--disable-decoders",
     `--enable-decoder=${decoders.map((d) => d).join(",")}`,
