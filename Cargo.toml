@@ -9,8 +9,8 @@ name = "split"
 path = "main.rs"
 
 [dependencies]
-ffmpeg-next = "6.0.0"
-bindgen    = { version = "0.59", default-features = false, features = ["runtime"] }
+ffmpeg-next = { git = "https://github.com/JonnyBurger/rust-ffmpeg-upstream", rev = "8ac86804d137223c84cf3305f82b5055239a92ba" }
+bindgen = { version = "0.59", default-features = false, features = ["runtime"] }
 
 [profile.dev]
 rpath = true
