@@ -139,7 +139,7 @@ if (fs.existsSync("ffmpeg")) {
   });
 }
 
-execSync("git checkout n6.0", {
+execSync("git checkout n6.1", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
@@ -200,6 +200,8 @@ execSync(
     "--enable-filter=split",
     "--enable-filter=nullsrc",
     "--enable-filter=silencedetect",
+    "--enable-filter=palettegen",
+    "--enable-filter=paletteuse",
     "--disable-doc",
     "--enable-gpl",
     "--enable-nonfree",
