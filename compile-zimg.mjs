@@ -9,6 +9,10 @@ export const enableZimg = () => {
       stdio: "inherit",
     });
   }
+  execSync("git stash", {
+    cwd: "zimg",
+    stdio: "inherit",
+  });
   execSync("git submodule update --init --recursive", {
     cwd: "zimg",
     stdio: "inherit",
@@ -16,6 +20,11 @@ export const enableZimg = () => {
 
   execSync("git checkout release-2.9.3", {
     cwd: "zimg",
+  });
+
+  execSync(`sed -i 's/size_t/std::size_t/g' src/zimg/colorspace/matrix3.cpp`, {
+    cwd: "zimg",
+    stdio: "inherit",
   });
 
   execSync("sh autogen.sh", {
