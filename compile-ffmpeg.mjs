@@ -126,6 +126,10 @@ enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
 enableOpus(isWindows);
 
+execSync("git stash", {
+  stdio: "inherit",
+  cwd: "ffmpeg",
+});
 if (fs.existsSync("ffmpeg")) {
   execSync("git checkout master", {
     cwd: "ffmpeg",
@@ -178,7 +182,7 @@ execSync(
     "--enable-small",
     "--enable-shared",
     "--enable-libdav1d",
-    "--enable-zimg",
+    "--enable-libzimg",
     "--enable-libfdk-aac",
     "--disable-static",
     "--disable-ffplay",
