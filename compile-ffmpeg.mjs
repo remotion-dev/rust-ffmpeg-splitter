@@ -126,11 +126,11 @@ enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
 enableOpus(isWindows);
 
-execSync("git stash", {
-  stdio: "inherit",
-  cwd: "ffmpeg",
-});
 if (fs.existsSync("ffmpeg")) {
+  execSync("git stash", {
+    stdio: "inherit",
+    cwd: "ffmpeg",
+  });
   execSync("git checkout master", {
     cwd: "ffmpeg",
     stdio: "inherit",
