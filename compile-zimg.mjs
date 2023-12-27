@@ -9,6 +9,10 @@ export const enableZimg = () => {
       stdio: "inherit",
     });
   }
+  execSync("git submodule update --init --recursive", {
+    cwd: "zimg",
+    stdio: "inherit",
+  });
 
   execSync("git checkout release-2.9.3", {
     cwd: "zimg",
