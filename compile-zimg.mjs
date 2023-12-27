@@ -84,6 +84,7 @@ Cflags: -I$\{includedir\}
     stdio: "inherit",
   });
 
+  execSync(`cp -r ${PREFIX} ../`, { cwd: dirname, stdio: "inherit" });
   const outPath = path.join(process.cwd(), "remotion/lib/pkgconfig/zimg.pc");
 
   if (!existsSync(path.dirname(outPath))) {
@@ -91,6 +92,5 @@ Cflags: -I$\{includedir\}
       recursive: true,
     });
   }
-
-  execSync(`cp -r ${PREFIX} ../`, { cwd: dirname, stdio: "inherit" });
+  writeFileSync(outPath, pkgConfig);
 };
