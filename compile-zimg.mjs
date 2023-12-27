@@ -4,6 +4,23 @@ import path from "path";
 import { PREFIX } from "./const.mjs";
 
 export const enableZimg = () => {
+  const pkgConfig = `
+prefix=${process.cwd()}/zimg/remotion
+exec_prefix=$\{prefix\}
+libdir=$\{exec_prefix\}/lib
+includedir=$\{prefix\}/include
+
+Name: zimg
+Description: Scaling, colorspace conversion, and dithering library
+Version: 2.9.3
+
+# If building a static library against a C++ runtime other than libstdc++,
+# define STL_LIBS when running configure.
+Libs: -L$\{libdir\} -lzimg
+Libs.private: -lstdc++
+Cflags: -I$\{includedir\}  
+  `.trim();
+
   if (!existsSync("zimg")) {
     execSync("git clone https://github.com/sekrit-twc/zimg zimg", {
       stdio: "inherit",
@@ -64,4 +81,14 @@ export const enableZimg = () => {
     cwd: "zimg",
     stdio: "inherit",
   });
+
+  const outPath = join(process.cwd(), "remotion/lib/pkgconfig/zimg.pc");
+
+  if (!existsSync(dirname(outPath))) {
+    mkdirSync(dirname(outPath), {
+      recursive: true,
+    });
+  }
+
+  writeFileSync(outPath, pkgConfig);
 };
