@@ -3,6 +3,8 @@ import { existsSync, writeFileSync } from "fs";
 import path from "path";
 import { PREFIX } from "./const.mjs";
 
+const dirname = "zimg";
+
 export const enableZimg = () => {
   const pkgConfig = `
 prefix=${process.cwd()}/zimg/remotion
@@ -16,34 +18,33 @@ Version: 2.9.3
 
 # If building a static library against a C++ runtime other than libstdc++,
 # define STL_LIBS when running configure.
-Libs: -L$\{libdir\} -lzimg
-Libs.private: -lstdc++
+Libs: -L$\{libdir\} -lzimg -lstdc++
 Cflags: -I$\{includedir\}  
   `.trim();
 
-  if (!existsSync("zimg")) {
+  if (!existsSync(dirname)) {
     execSync("git clone https://github.com/sekrit-twc/zimg zimg", {
       stdio: "inherit",
     });
   }
   execSync("git stash", {
-    cwd: "zimg",
+    cwd: dirname,
     stdio: "inherit",
   });
   execSync("git submodule update --init --recursive", {
-    cwd: "zimg",
+    cwd: dirname,
     stdio: "inherit",
   });
 
   execSync("git checkout release-2.9.3", {
-    cwd: "zimg",
+    cwd: dirname,
   });
 
   if (process.platform === "darwin") {
     execSync(
       `sed -i '' 's/size_t/std::size_t/g' src/zimg/colorspace/matrix3.cpp`,
       {
-        cwd: "zimg",
+        cwd: dirname,
         stdio: "inherit",
       }
     );
@@ -51,34 +52,35 @@ Cflags: -I$\{includedir\}
     execSync(
       `sed -i 's/size_t/std::size_t/g' src/zimg/colorspace/matrix3.cpp`,
       {
-        cwd: "zimg",
+        cwd: dirname,
         stdio: "inherit",
       }
     );
   }
 
   execSync("sh autogen.sh", {
-    cwd: "zimg",
+    cwd: dirname,
   });
 
   execSync(
     `./configure --enable-static  --prefix=${path.join(
       process.cwd(),
-      "zimg",
+      dirname,
       PREFIX
     )} --disable-shared`,
     {
-      cwd: "zimg",
+      cwd: dirname,
+      stdio: "inherit",
     }
   );
 
   execSync("make", {
-    cwd: "zimg",
+    cwd: dirname,
     stdio: "inherit",
   });
 
   execSync("make install", {
-    cwd: "zimg",
+    cwd: dirname,
     stdio: "inherit",
   });
 
@@ -90,5 +92,5 @@ Cflags: -I$\{includedir\}
     });
   }
 
-  writeFileSync(outPath, pkgConfig);
+  execSync(`cp -r ${PREFIX} ../`, { cwd: dirname, stdio: "inherit" });
 };
