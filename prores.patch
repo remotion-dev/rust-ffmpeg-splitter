@@ -1,0 +1,16 @@
+ libavcodec/proresenc_kostya.c   | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+diff --git a/libavcodec/proresenc_kostya.c b/libavcodec/proresenc_kostya.c
+index e904632f8e..8d45e42d1a 100644
+--- a/libavcodec/proresenc_kostya.c
++++ b/libavcodec/proresenc_kostya.c
+@@ -562,8 +562,7 @@ static void encode_alpha_plane(ProresContext *ctx, PutBitContext *pb,
+             run++;
+         }
+     } while (idx < num_coeffs);
+-    if (run)
+-        put_alpha_run(pb, run);
++    put_alpha_run(pb, run);
+ }
+ 
+ static int encode_slice(AVCodecContext *avctx, const AVFrame *pic,

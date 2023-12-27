@@ -10,6 +10,7 @@ import { enableVpx } from "./compile-vpx.mjs";
 import { enableOpus } from "./compile-opus.mjs";
 import { enableAv1 } from "./compile-av1.mjs";
 import { enableFdkAac } from "./compile-fdkaac.mjs";
+import { enableZimg } from "./compile-zimg.mjs";
 
 if (existsSync("/opt/homebrew/opt/libx11/lib/libX11.6.dylib")) {
   console.log(
@@ -118,6 +119,7 @@ const isMusl = process.argv[2] === "musl";
 
 await enableFdkAac(isWindows);
 enableAv1(isWindows);
+enableZimg(isWindows);
 enableVpx(isWindows);
 enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows);
@@ -135,6 +137,9 @@ if (fs.existsSync("ffmpeg")) {
   });
 } else {
   execSync("git clone https://github.com/ffmpeg/ffmpeg.git", {
+    stdio: "inherit",
+  });
+  execSync("git apply prores.patch --directory ffmpeg", {
     stdio: "inherit",
   });
 }
@@ -173,6 +178,7 @@ execSync(
     "--enable-small",
     "--enable-shared",
     "--enable-libdav1d",
+    "--enable-zimg",
     "--enable-libfdk-aac",
     "--disable-static",
     "--disable-ffplay",
