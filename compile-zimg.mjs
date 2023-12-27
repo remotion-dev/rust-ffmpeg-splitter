@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import { existsSync } from "fs";
+import { existsSync, writeFileSync } from "fs";
 import path from "path";
 import { PREFIX } from "./const.mjs";
 
@@ -82,10 +82,10 @@ Cflags: -I$\{includedir\}
     stdio: "inherit",
   });
 
-  const outPath = join(process.cwd(), "remotion/lib/pkgconfig/zimg.pc");
+  const outPath = path.join(process.cwd(), "remotion/lib/pkgconfig/zimg.pc");
 
-  if (!existsSync(dirname(outPath))) {
-    mkdirSync(dirname(outPath), {
+  if (!existsSync(path.dirname(outPath))) {
+    mkdirSync(path.dirname(outPath), {
       recursive: true,
     });
   }
