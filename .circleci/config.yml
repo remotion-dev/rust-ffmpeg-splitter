@@ -151,7 +151,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-macos
-      - run: brew install yasm nasm pkg-config cmake make meson ninja
+      - run: brew install yasm nasm pkg-config cmake make meson ninja libtool
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
