@@ -5,7 +5,7 @@ import { PREFIX } from "./const.mjs";
 
 const dirname = "zimg";
 
-export const enableZimg = () => {
+export const enableZimg = (isWindows) => {
   const pkgConfig = `
 prefix=${process.cwd()}/zimg/remotion
 exec_prefix=$\{prefix\}
@@ -18,7 +18,7 @@ Version: 2.9.3
 
 # If building a static library against a C++ runtime other than libstdc++,
 # define STL_LIBS when running configure.
-Libs: -L$\{libdir\} -lzimg -lstdc++
+Libs: -L$\{libdir\} -lzimg -lstdc++ -lm ${isWindows ? "" : "-ldl"}
 Cflags: -I$\{includedir\}  
   `.trim();
 
