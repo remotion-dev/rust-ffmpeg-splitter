@@ -45,7 +45,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64-musl
-      - run: apk add yasm nasm curl git cargo make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev perl zlib meson ninja-build autoconf
+      - run: apk add yasm nasm curl git cargo make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev perl zlib meson ninja-build autoconf automake
       - run: node clean.mjs
       - run: CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
       - run: node generate-bindings.mjs musl
