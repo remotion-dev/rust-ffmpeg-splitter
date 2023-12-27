@@ -126,6 +126,8 @@ enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
 enableOpus(isWindows);
 
+const TAG = "n6.1";
+
 if (fs.existsSync("ffmpeg")) {
   execSync("git stash", {
     stdio: "inherit",
@@ -139,19 +141,22 @@ if (fs.existsSync("ffmpeg")) {
     cwd: "ffmpeg",
     stdio: "inherit",
   });
+  execSync(`git checkout ${TAG}`, {
+    cwd: "ffmpeg",
+    stdio: "inherit",
+  });
 } else {
   execSync("git clone https://github.com/ffmpeg/ffmpeg.git", {
+    stdio: "inherit",
+  });
+  execSync(`git checkout ${TAG}`, {
+    cwd: "ffmpeg",
     stdio: "inherit",
   });
   execSync("git apply prores.patch --directory ffmpeg", {
     stdio: "inherit",
   });
 }
-
-execSync("git checkout n6.1", {
-  cwd: "ffmpeg",
-  stdio: "inherit",
-});
 
 const extraCFlags = [
   // TODO: should it always be static libgcc?
