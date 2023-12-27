@@ -67,7 +67,7 @@ Cflags: -I$\{includedir\}
       process.cwd(),
       dirname,
       PREFIX
-    )} --disable-shared ${isWindows ? "--host=x86_64-w64-mingw32" : null}`,
+    )} --disable-shared ${isWindows ? "--host=x86_64-w64-mingw32" : ""}`,
     {
       cwd: dirname,
       stdio: "inherit",
