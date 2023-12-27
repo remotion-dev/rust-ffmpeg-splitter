@@ -21,7 +21,7 @@ jobs:
           keys:
             - ffmpeg_source-linux-x64
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm nasm clang cargo make zlib1g-dev meson ninja-build
+      - run: sudo apt-get install -y yasm nasm clang cargo make zlib1g-dev meson ninja-build autoconf automake libtool
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs

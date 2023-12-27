@@ -22,10 +22,23 @@ export const enableZimg = () => {
     cwd: "zimg",
   });
 
-  execSync(`sed -i 's/size_t/std::size_t/g' src/zimg/colorspace/matrix3.cpp`, {
-    cwd: "zimg",
-    stdio: "inherit",
-  });
+  if (process.platform === "darwin") {
+    execSync(
+      `sed -i '' 's/size_t/std::size_t/g' src/zimg/colorspace/matrix3.cpp`,
+      {
+        cwd: "zimg",
+        stdio: "inherit",
+      }
+    );
+  } else {
+    execSync(
+      `sed -i 's/size_t/std::size_t/g' src/zimg/colorspace/matrix3.cpp`,
+      {
+        cwd: "zimg",
+        stdio: "inherit",
+      }
+    );
+  }
 
   execSync("sh autogen.sh", {
     cwd: "zimg",
