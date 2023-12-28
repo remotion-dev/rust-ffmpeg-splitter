@@ -217,6 +217,7 @@ execSync(
     "--enable-filter=silencedetect",
     "--enable-filter=palettegen",
     "--enable-filter=paletteuse",
+    "--enable-filter=zscale",
     "--disable-doc",
     "--enable-gpl",
     "--enable-nonfree",
