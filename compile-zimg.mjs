@@ -63,7 +63,7 @@ Cflags: -I$\{includedir\}
   });
 
   execSync(
-    `./configure --enable-static  --prefix=${path.join(
+    `./configure --enable-static --with-pic --prefix=${path.join(
       process.cwd(),
       dirname,
       PREFIX
