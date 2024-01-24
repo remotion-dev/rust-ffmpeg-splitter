@@ -335,7 +335,7 @@ execSync("rm -rf " + PREFIX + "/share", {
 
 if (process.platform === "darwin") {
   fixMacOsLinks();
-} else if (process.platform === "linux") {
+} else if (!isWindows) {
   fixLinuxLinks();
 }
 execSync("cp -r " + PREFIX + " ../", {
