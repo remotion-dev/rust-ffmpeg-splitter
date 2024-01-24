@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "*.heml": "html",
+    "climits": "cpp"
+  }
+}

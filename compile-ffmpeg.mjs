@@ -1,7 +1,7 @@
 import path from "path";
 import fs, { existsSync } from "fs";
 import { execSync } from "child_process";
-import { fixLinks } from "./fix-macos-links.mjs";
+import { fixMacOsLinks } from "./fix-links.mjs";
 import { PREFIX } from "./const.mjs";
 import { enableX264 } from "./compile-x264.mjs";
 import { enableX265 } from "./compile-x265.mjs";
@@ -11,6 +11,7 @@ import { enableOpus } from "./compile-opus.mjs";
 import { enableAv1 } from "./compile-av1.mjs";
 import { enableFdkAac } from "./compile-fdkaac.mjs";
 import { enableZimg } from "./compile-zimg.mjs";
+import { fixLinuxLinks } from "./fix-linux-links.mjs";
 
 if (existsSync("/opt/homebrew/opt/libx11/lib/libX11.6.dylib")) {
   console.log(
@@ -333,9 +334,10 @@ execSync("rm -rf " + PREFIX + "/share", {
 });
 
 if (process.platform === "darwin") {
-  fixLinks();
+  fixMacOsLinks();
+} else if (process.platform === "linux") {
+  fixLinuxLinks();
 }
-
 execSync("cp -r " + PREFIX + " ../", {
   cwd: "ffmpeg",
   stdio: "inherit",

@@ -2,7 +2,7 @@ import { execSync } from "child_process";
 import { lstatSync, readdirSync, statSync } from "fs";
 import path from "path";
 
-export const fixLinks = () => {
+export const fixMacOsLinks = () => {
   const files = readdirSync("ffmpeg/remotion/lib").filter((f) =>
     f.endsWith(".dylib")
   );

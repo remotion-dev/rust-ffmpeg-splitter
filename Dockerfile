@@ -16,7 +16,7 @@ COPY prores.patch app/prores.patch
 RUN apk add curl 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 RUN source "$HOME/.cargo/env"
-RUN apk add yasm nasm curl git make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev perl zlib zlib-dev meson ninja autoconf automake libtool
+RUN apk add yasm nasm curl git make ca-certificates pkgconfig bash cmake make cmake build-base llvm-static llvm-dev clang-static clang-dev perl zlib zlib-dev meson ninja autoconf automake libtool patchelf
 RUN cd app && CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs musl
 RUN source "$HOME/.cargo/env" && cd app && node generate-bindings.mjs musl
 RUN source "$HOME/.cargo/env" && cd app && node zip.mjs
