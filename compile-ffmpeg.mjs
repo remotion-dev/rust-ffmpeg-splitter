@@ -1,5 +1,5 @@
 import path from "path";
-import fs, { existsSync, cpSync } from "fs";
+import fs, { existsSync } from "fs";
 import { execSync } from "child_process";
 import { fixLinks } from "./fix-macos-links.mjs";
 import { PREFIX } from "./const.mjs";
@@ -339,30 +339,4 @@ if (process.platform === "darwin") {
 execSync("cp -r " + PREFIX + " ../", {
   cwd: "ffmpeg",
   stdio: "inherit",
-});
-
-execSync("mkdir -p out", {
-  stdio: "inherit",
-});
-
-execSync("cp remotion/lib/* out", {
-  stdio: "inherit",
-});
-
-execSync("cp remotion/bin/* out", {
-  stdio: "inherit",
-});
-
-execSync("rm -rf out/pkgconfig", {
-  stdio: "inherit",
-});
-
-execSync("patchelf --force-rpath --set-rpath '$ORIGIN' ./ffmpeg", {
-  stdio: "inherit",
-  cwd: "out",
-});
-
-execSync("patchelf --force-rpath --set-rpath '$ORIGIN' ./ffprobe", {
-  stdio: "inherit",
-  cwd: "out",
 });

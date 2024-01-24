@@ -2,6 +2,24 @@ import { execSync, spawnSync } from "child_process";
 import path from "path";
 import assert from "assert";
 
+const lib = path.join(process.cwd(), "remotion", "lib");
+
+const env =
+  process.platform === "darwin"
+    ? {
+        ...process.env,
+        DYLD_LIBRARY_PATH: lib,
+      }
+    : process.platform === "win32"
+    ? {
+        ...process.env,
+        PATH: `${process.env.PATH};${lib}`,
+      }
+    : {
+        ...process.env,
+        LD_LIBRARY_PATH: lib,
+      };
+
 const ffmpegBinary = path.join(process.cwd(), "remotion", "bin", "ffmpeg");
 
 const exit1 = spawnSync(ffmpegBinary, ["-buildconf"], {
