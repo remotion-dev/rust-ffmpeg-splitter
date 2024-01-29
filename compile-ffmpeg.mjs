@@ -157,6 +157,9 @@ if (fs.existsSync("ffmpeg")) {
   execSync("git apply prores.patch --directory ffmpeg", {
     stdio: "inherit",
   });
+  execSync("git apply aac.patch --directory ffmpeg", {
+    stdio: "inherit",
+  });
 }
 
 const extraCFlags = [
