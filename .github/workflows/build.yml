@@ -20,7 +20,6 @@ jobs:
         run: HOMEBREW_INSTALL_FROM_API=1 brew install yasm nasm pkg-config cmake make meson ninja libtool
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: rm /opt/homebrew/opt/libx11/lib/libX11.6.dylib
-      - run: rm /opt/homebrew/opt/sdl2/lib/libSDL2-2.0.0.dylib
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
