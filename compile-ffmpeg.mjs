@@ -146,12 +146,18 @@ if (fs.existsSync("ffmpeg")) {
     cwd: "ffmpeg",
     stdio: "inherit",
   });
+  execSync("sh revert-ffmpeg-aac.sh", {
+    stdio: "inherit",
+  });
 } else {
   execSync("git clone https://github.com/ffmpeg/ffmpeg.git", {
     stdio: "inherit",
   });
   execSync(`git checkout ${TAG}`, {
     cwd: "ffmpeg",
+    stdio: "inherit",
+  });
+  execSync("sh revert-ffmpeg-aac.sh", {
     stdio: "inherit",
   });
   execSync("git apply prores.patch --directory ffmpeg", {
