@@ -49,6 +49,6 @@ if (isWindows) {
   }
 }
 
-execSync(`tar cvzf ffmpeg.tar.gz ${PREFIX} bindings.rs`, {
+execSync(`tar cvzf ffmpeg.tar.gz ${PREFIX}`, {
   stdio: "inherit",
 });
