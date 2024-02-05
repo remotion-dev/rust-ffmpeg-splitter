@@ -127,7 +127,7 @@ enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
 enableOpus(isWindows);
 
-const TAG = "n6.0";
+const TAG = "master";
 
 if (fs.existsSync("ffmpeg")) {
   execSync("git stash", {
