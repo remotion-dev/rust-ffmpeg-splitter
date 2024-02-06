@@ -127,7 +127,7 @@ enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
 enableOpus(isWindows);
 
-const TAG = "master";
+const TAG = "n6.1";
 
 if (fs.existsSync("ffmpeg")) {
   execSync("git stash", {
@@ -146,20 +146,12 @@ if (fs.existsSync("ffmpeg")) {
     cwd: "ffmpeg",
     stdio: "inherit",
   });
-  /*
-  execSync("sh revert-ffmpeg-aac.sh", {
-    stdio: "inherit",
-  });
-  */
-  /*
   execSync("git apply prores.patch --directory ffmpeg", {
     stdio: "inherit",
   });
-  */
-  /*execSync("git apply aac.patch --directory ffmpeg", {
+  execSync("git apply aac.patch --directory ffmpeg", {
     stdio: "inherit",
   });
-  */
 } else {
   execSync("git clone https://github.com/ffmpeg/ffmpeg.git", {
     stdio: "inherit",
@@ -168,21 +160,13 @@ if (fs.existsSync("ffmpeg")) {
     cwd: "ffmpeg",
     stdio: "inherit",
   });
-  /*
-  execSync("sh revert-ffmpeg-aac.sh", {
+  execSync("git apply prores.patch --directory ffmpeg", {
     stdio: "inherit",
   });
-  */
-  /**
-  * 
- execSync("git apply prores.patch --directory ffmpeg", {
-   stdio: "inherit",
-  });
-  /*
+
   execSync("git apply aac.patch --directory ffmpeg", {
     stdio: "inherit",
   });
-  */
 }
 
 const extraCFlags = [
