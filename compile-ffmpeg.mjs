@@ -127,7 +127,7 @@ enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
 enableOpus(isWindows);
 
-const TAG = "e734e165442b4bf1598b167c373928d993371f0d";
+const TAG = "09dd9c5f4129d080ac50c4ac19b24d17ccd8a472";
 
 if (fs.existsSync("ffmpeg")) {
   execSync("git stash", {
