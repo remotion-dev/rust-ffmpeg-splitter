@@ -49,6 +49,6 @@ if (isWindows) {
   }
 }
 
-execSync(`tar cvzf ffmpeg.tar.gz ${PREFIX}`, {
+execSync(`tar cvzf ffmpeg.tar.gz ${PREFIX} zip.mjs`, {
   stdio: "inherit",
 });
