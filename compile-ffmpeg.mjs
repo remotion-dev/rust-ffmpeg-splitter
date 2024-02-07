@@ -127,7 +127,7 @@ enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
 enableOpus(isWindows);
 
-const TAG = "d85c6aba0cf27db2a6c4dfa3452cfb9c248d1b4a";
+const TAG = "n6.1";
 
 if (fs.existsSync("ffmpeg")) {
   execSync("git stash", {
@@ -146,12 +146,24 @@ if (fs.existsSync("ffmpeg")) {
     cwd: "ffmpeg",
     stdio: "inherit",
   });
+  execSync("git apply prores.patch --directory ffmpeg", {
+    stdio: "inherit",
+  });
+  execSync("git apply fix-aac.patch --directory ffmpeg", {
+    stdio: "inherit",
+  });
 } else {
   execSync("git clone https://github.com/ffmpeg/ffmpeg.git", {
     stdio: "inherit",
   });
   execSync(`git checkout ${TAG}`, {
     cwd: "ffmpeg",
+    stdio: "inherit",
+  });
+  execSync("git apply prores.patch --directory ffmpeg", {
+    stdio: "inherit",
+  });
+  execSync("git apply fix-aac.patch --directory ffmpeg", {
     stdio: "inherit",
   });
 }

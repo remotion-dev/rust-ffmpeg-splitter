@@ -1,0 +1,62 @@
+diff --git a/fftools/ffmpeg_dec.c b/fftools/ffmpeg_dec.c
+index fcee8b65ac..4da170ead3 100644
+--- a/fftools/ffmpeg_dec.c
++++ b/fftools/ffmpeg_dec.c
+@@ -162,48 +162,7 @@ static int send_frame_to_filters(InputStream *ist, AVFrame *decoded_frame)
+     return ret;
+ }
+ 
+-static AVRational audio_samplerate_update(void *logctx, Decoder *d,
+-                                          const AVFrame *frame)
+-{
+-    const int prev = d->last_frame_tb.den;
+-    const int sr   = frame->sample_rate;
+-
+-    AVRational tb_new;
+-    int64_t gcd;
+-
+-    if (frame->sample_rate == d->last_frame_sample_rate)
+-        goto finish;
+ 
+-    gcd  = av_gcd(prev, sr);
+-
+-    if (prev / gcd >= INT_MAX / sr) {
+-        av_log(logctx, AV_LOG_WARNING,
+-               "Audio timestamps cannot be represented exactly after "
+-               "sample rate change: %d -> %d\n", prev, sr);
+-
+-        // LCM of 192000, 44100, allows to represent all common samplerates
+-        tb_new = (AVRational){ 1, 28224000 };
+-    } else
+-        tb_new = (AVRational){ 1, prev / gcd * sr };
+-
+-    // keep the frame timebase if it is strictly better than
+-    // the samplerate-defined one
+-    if (frame->time_base.num == 1 && frame->time_base.den > tb_new.den &&
+-        !(frame->time_base.den % tb_new.den))
+-        tb_new = frame->time_base;
+-
+-    if (d->last_frame_pts != AV_NOPTS_VALUE)
+-        d->last_frame_pts = av_rescale_q(d->last_frame_pts,
+-                                         d->last_frame_tb, tb_new);
+-    d->last_frame_duration_est = av_rescale_q(d->last_frame_duration_est,
+-                                              d->last_frame_tb, tb_new);
+-
+-    d->last_frame_tb          = tb_new;
+-    d->last_frame_sample_rate = frame->sample_rate;
+-
+-finish:
+-    return d->last_frame_tb;
+-}
+ 
+ static void audio_ts_process(void *logctx, Decoder *d, AVFrame *frame)
+ {
+@@ -214,7 +173,7 @@ static void audio_ts_process(void *logctx, Decoder *d, AVFrame *frame)
+     // on samplerate change, choose a new internal timebase for timestamp
+     // generation that can represent timestamps from all the samplerates
+     // seen so far
+-    tb = audio_samplerate_update(logctx, d, frame);
++    tb = d->last_frame_tb;
+     pts_pred = d->last_frame_pts == AV_NOPTS_VALUE ? 0 :
+                d->last_frame_pts + d->last_frame_duration_est;
+ 
