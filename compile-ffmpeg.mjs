@@ -149,7 +149,7 @@ if (fs.existsSync("ffmpeg")) {
   execSync("git apply prores.patch --directory ffmpeg", {
     stdio: "inherit",
   });
-  execSync("git apply fix-aac.patch --directory ffmpeg", {
+  execSync("git apply aac.patch --directory ffmpeg", {
     stdio: "inherit",
   });
 } else {
@@ -163,7 +163,7 @@ if (fs.existsSync("ffmpeg")) {
   execSync("git apply prores.patch --directory ffmpeg", {
     stdio: "inherit",
   });
-  execSync("git apply fix-aac.patch --directory ffmpeg", {
+  execSync("git apply aac.patch --directory ffmpeg", {
     stdio: "inherit",
   });
 }
