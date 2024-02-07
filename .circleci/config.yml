@@ -172,5 +172,10 @@ jobs:
 workflows:
   build_ffmpeg:
     jobs:
+      - build-linux-x64-gnu
       - build-linux-arm-gnu
+      - build-linux-x64-musl
+      - build-linux-arm-musl
+      - build-macos
+      - build-windows
       - windows-ssh
