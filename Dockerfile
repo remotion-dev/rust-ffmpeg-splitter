@@ -13,7 +13,6 @@ COPY sample.mp4 app/sample.mp4
 COPY sample-av1.webm app/sample-av1.webm
 COPY prores.patch app/prores.patch
 COPY aac.patch app/aac.patch
-COPY revert-ffmpeg-aac.sh app/revert-ffmpeg-aac.sh
 
 RUN apk add curl 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
