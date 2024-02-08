@@ -1,5 +1,5 @@
 diff --git a/fftools/ffmpeg_dec.c b/fftools/ffmpeg_dec.c
-index fcee8b65ac..9be16b512a 100644
+index fcee8b65ac..07edcef4f2 100644
 --- a/fftools/ffmpeg_dec.c
 +++ b/fftools/ffmpeg_dec.c
 @@ -214,7 +214,7 @@ static void audio_ts_process(void *logctx, Decoder *d, AVFrame *frame)
@@ -11,12 +11,3 @@ index fcee8b65ac..9be16b512a 100644
      pts_pred = d->last_frame_pts == AV_NOPTS_VALUE ? 0 :
                 d->last_frame_pts + d->last_frame_duration_est;
  
-@@ -230,7 +230,7 @@ static void audio_ts_process(void *logctx, Decoder *d, AVFrame *frame)
- 
-     frame->pts = av_rescale_delta(frame->time_base, frame->pts,
-                                   tb, frame->nb_samples,
--                                  &d->last_filter_in_rescale_delta, tb);
-+                                  &d->last_filter_in_rescale_delta, tb_filter);
- 
-     d->last_frame_pts          = frame->pts;
-     d->last_frame_duration_est = av_rescale_q(frame->nb_samples,
