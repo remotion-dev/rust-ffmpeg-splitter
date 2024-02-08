@@ -1,46 +1,22 @@
 diff --git a/fftools/ffmpeg_dec.c b/fftools/ffmpeg_dec.c
-index fcee8b65ac..0c88236274 100644
+index fcee8b65ac..9be16b512a 100644
 --- a/fftools/ffmpeg_dec.c
 +++ b/fftools/ffmpeg_dec.c
-@@ -208,36 +208,32 @@ finish:
- static void audio_ts_process(void *logctx, Decoder *d, AVFrame *frame)
- {
-     AVRational tb_filter = (AVRational){1, frame->sample_rate};
--    AVRational tb;
-     int64_t pts_pred;
- 
+@@ -214,7 +214,7 @@ static void audio_ts_process(void *logctx, Decoder *d, AVFrame *frame)
      // on samplerate change, choose a new internal timebase for timestamp
      // generation that can represent timestamps from all the samplerates
      // seen so far
 -    tb = audio_samplerate_update(logctx, d, frame);
++    tb = frame->time_base;
      pts_pred = d->last_frame_pts == AV_NOPTS_VALUE ? 0 :
                 d->last_frame_pts + d->last_frame_duration_est;
  
-     if (frame->pts == AV_NOPTS_VALUE) {
-         frame->pts = pts_pred;
--        frame->time_base = tb;
-+        frame->time_base = AV_TIME_BASE_Q;
-     } else if (d->last_frame_pts != AV_NOPTS_VALUE &&
--               frame->pts > av_rescale_q_rnd(pts_pred, tb, frame->time_base,
-+               frame->pts > av_rescale_q_rnd(pts_pred, tb_filter, frame->time_base,
-                                              AV_ROUND_UP)) {
-         // there was a gap in timestamps, reset conversion state
-         d->last_filter_in_rescale_delta = AV_NOPTS_VALUE;
-     }
+@@ -230,7 +230,7 @@ static void audio_ts_process(void *logctx, Decoder *d, AVFrame *frame)
  
      frame->pts = av_rescale_delta(frame->time_base, frame->pts,
--                                  tb, frame->nb_samples,
+                                   tb, frame->nb_samples,
 -                                  &d->last_filter_in_rescale_delta, tb);
-+                                  tb_filter, frame->nb_samples,
 +                                  &d->last_filter_in_rescale_delta, tb_filter);
  
      d->last_frame_pts          = frame->pts;
--    d->last_frame_duration_est = av_rescale_q(frame->nb_samples,
--                                              tb_filter, tb);
-+    d->last_frame_duration_est = frame->nb_samples;
- 
-     // finally convert to filtering timebase
--    frame->pts       = av_rescale_q(frame->pts, tb, tb_filter);
-     frame->duration  = frame->nb_samples;
-     frame->time_base = tb_filter;
- }
+     d->last_frame_duration_est = av_rescale_q(frame->nb_samples,
