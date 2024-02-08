@@ -1,8 +1,8 @@
 diff --git a/fftools/ffmpeg_dec.c b/fftools/ffmpeg_dec.c
-index fcee8b65ac..d10a2df75a 100644
+index fcee8b65ac..0c88236274 100644
 --- a/fftools/ffmpeg_dec.c
 +++ b/fftools/ffmpeg_dec.c
-@@ -208,38 +208,36 @@ finish:
+@@ -208,36 +208,32 @@ finish:
  static void audio_ts_process(void *logctx, Decoder *d, AVFrame *frame)
  {
      AVRational tb_filter = (AVRational){1, frame->sample_rate};
@@ -35,16 +35,12 @@ index fcee8b65ac..d10a2df75a 100644
 +                                  &d->last_filter_in_rescale_delta, tb_filter);
  
      d->last_frame_pts          = frame->pts;
-     d->last_frame_duration_est = av_rescale_q(frame->nb_samples,
+-    d->last_frame_duration_est = av_rescale_q(frame->nb_samples,
 -                                              tb_filter, tb);
-+                                              tb_filter, tb_filter);
++    d->last_frame_duration_est = frame->nb_samples;
  
      // finally convert to filtering timebase
 -    frame->pts       = av_rescale_q(frame->pts, tb, tb_filter);
-+    frame->pts       = frame->pts;
      frame->duration  = frame->nb_samples;
--    frame->time_base = tb_filter;
-+    // frame->time_base = tb_filter;
+     frame->time_base = tb_filter;
  }
- 
- static int64_t video_duration_estimate(const InputStream *ist, const AVFrame *frame)
