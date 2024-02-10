@@ -222,6 +222,7 @@ execSync(
     "--enable-filter=pan",
     "--enable-filter=volume",
     "--enable-filter=scale",
+    "--enable-filter=sine",
     "--enable-filter=split",
     "--enable-filter=nullsrc",
     "--enable-filter=silencedetect",
