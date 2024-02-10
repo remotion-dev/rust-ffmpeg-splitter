@@ -177,7 +177,10 @@ const extraCFlags = [
   "-I" + PREFIX + "/include/vpx",
 ].filter(Boolean);
 
-const extraLdFlags = ["-L" + PREFIX + "/lib"].filter(Boolean);
+const extraLdFlags = [
+  "-L" + PREFIX + "/lib",
+  process.platform === "darwin" ? "-Wl,-ld_classic" : null,
+].filter(Boolean);
 
 execSync("cp -r remotion ffmpeg", { stdio: "inherit" });
 
