@@ -208,6 +208,7 @@ execSync(
     "--enable-filter=amerge",
     "--enable-filter=amix",
     "--enable-filter=asetrate",
+    "--enable-filter=asetpts",
     "--enable-filter=aresample",
     "--enable-filter=concat",
     "--enable-filter=colorspace",
