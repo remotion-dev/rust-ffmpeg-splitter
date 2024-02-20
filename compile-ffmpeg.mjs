@@ -232,6 +232,7 @@ execSync(
     "--enable-filter=palettegen",
     "--enable-filter=paletteuse",
     "--enable-filter=zscale",
+    "--enable-filter=tonemap",
     "--disable-doc",
     "--enable-gpl",
     "--enable-nonfree",
