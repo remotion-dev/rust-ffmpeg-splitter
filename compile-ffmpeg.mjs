@@ -235,6 +235,7 @@ execSync(
     "--enable-filter=paletteuse",
     "--enable-filter=zscale",
     "--enable-filter=tonemap",
+    "--enable-filter=copy",
     "--disable-doc",
     "--enable-gpl",
     "--enable-nonfree",
