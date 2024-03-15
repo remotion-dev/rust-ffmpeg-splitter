@@ -12,6 +12,7 @@ import { enableAv1 } from "./compile-av1.mjs";
 import { enableFdkAac } from "./compile-fdkaac.mjs";
 import { enableZimg } from "./compile-zimg.mjs";
 import { fixLinuxLinks } from "./fix-linux-links.mjs";
+import { enableLibRubberband } from "./compile-librubberband.mjs";
 
 if (existsSync("/opt/homebrew/opt/libx11/lib/libX11.6.dylib")) {
   console.log(
@@ -118,6 +119,7 @@ execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv[2] === "windows";
 const isMusl = process.argv[2] === "musl";
 
+enableLibRubberband();
 await enableFdkAac(isWindows);
 enableAv1(isWindows);
 enableZimg(isWindows);
@@ -234,6 +236,7 @@ execSync(
     "--enable-filter=silencedetect",
     "--enable-filter=palettegen",
     "--enable-filter=paletteuse",
+    "--enable-filter=rubberband",
     "--enable-filter=zscale",
     "--enable-filter=tonemap",
     "--enable-filter=copy",
@@ -261,6 +264,7 @@ execSync(
     "--enable-muxer=webm,opus,mp4,wav,mp3,mov,matroska,hevc,h264,gif,image2,image2pipe,adts,m4a,mpegts,null",
     "--enable-libx264",
     "--enable-libx265",
+    "--enable-librubberband",
     "--enable-libmp3lame",
     "--enable-zlib",
     "--enable-libopus",
