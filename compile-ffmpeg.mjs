@@ -256,7 +256,6 @@ execSync(
     "--enable-encoder=libvpx_vp8",
     "--enable-encoder=libvpx_vp9",
     "--enable-encoder=gif",
-    "--enable-encoder=mpegts",
     "--enable-encoder=libmp3lame",
     "--enable-encoder=libopus",
     "--enable-encoder=prores_ks",

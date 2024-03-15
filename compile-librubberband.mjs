@@ -32,6 +32,10 @@ Cflags: -I$\{includedir\}
   const file = writeFileSync("rubberband/Makefile", contents.join("\n"));
   execSync("make", {
     cwd: "rubberband",
+    env: {
+      ...process.env,
+      PREFIX: "remotion",
+    },
   });
 
   cpSync("rubberband/lib/librubberband.a", "remotion/lib/librubberband.a");
@@ -46,4 +50,8 @@ Cflags: -I$\{includedir\}
     recursive: true,
   });
   writeFileSync(pkgConfigPath, pkgConfig);
+  writeFileSync(
+    pkgConfigPath.replace("librubberband.pc", "rubberband.pc"),
+    pkgConfig
+  );
 };
