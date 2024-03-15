@@ -43,15 +43,11 @@ Cflags: -I$\{includedir\}
 
   const pkgConfigPath = join(
     process.cwd(),
-    "remotion/lib/pkgconfig/librubberband.pc"
+    "remotion/lib/pkgconfig/rubberband.pc"
   );
 
   mkdirSync(path.dirname(pkgConfigPath), {
     recursive: true,
   });
   writeFileSync(pkgConfigPath, pkgConfig);
-  writeFileSync(
-    pkgConfigPath.replace("librubberband.pc", "rubberband.pc"),
-    pkgConfig
-  );
 };
