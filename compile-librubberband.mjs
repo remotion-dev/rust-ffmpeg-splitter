@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
-import { cpSync, existsSync, readFileSync, writeFileSync } from "fs";
-import { join } from "path";
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import path, { join } from "path";
 
 export const enableLibRubberband = () => {
   const pkgConfig = `
@@ -42,5 +42,8 @@ Cflags: -I$\{includedir\}
     "remotion/lib/pkgconfig/librubberband.pc"
   );
 
+  mkdirSync(path.dirname(pkgConfigPath), {
+    recursive: true,
+  });
   writeFileSync(pkgConfigPath, pkgConfig);
 };
