@@ -70,6 +70,7 @@ const decoders = [
   "libdav1d",
   "hls",
   "m4a",
+  "rawvideo",
 ];
 
 const demuxers = [
