@@ -233,6 +233,7 @@ execSync(
     "--enable-filter=zscale",
     "--enable-filter=tonemap",
     "--enable-filter=copy",
+    "--enable-filter=overlay",
     "--disable-doc",
     "--enable-gpl",
     "--enable-nonfree",
