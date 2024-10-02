@@ -25,7 +25,7 @@ jobs:
       - run: sudo apt-get install -y yasm nasm clang make zlib1g-dev meson ninja-build autoconf automake libtool patchelf
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
-      - run: node generate-bindings.mjs
+      - run: source "$HOME/.cargo/env" && node generate-bindings.mjs
       - run: node zip.mjs
       - run: node test-ffmpeg.mjs
       - store_artifacts:
