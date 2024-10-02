@@ -21,7 +21,8 @@ jobs:
           keys:
             - ffmpeg_source-linux-x64
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm nasm clang cargo make zlib1g-dev meson ninja-build autoconf automake libtool patchelf
+      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      - run: sudo apt-get install -y yasm nasm clang make zlib1g-dev meson ninja-build autoconf automake libtool patchelf
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
@@ -121,7 +122,7 @@ jobs:
           keys:
             - ffmpeg_source-windows
       - run: sudo apt-get update
-      - run: sudo apt-get install -y yasm nasm mingw-w64 mingw-w64-tools libz-mingw-w64-dev cargo clang build-essential zlib1g zlib1g-dev meson ninja-build autoconf automake libtool
+      - run: sudo apt-get install -y yasm nasm mingw-w64 mingw-w64-tools libz-mingw-w64-dev clang build-essential zlib1g zlib1g-dev meson ninja-build autoconf automake libtool
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: source "$HOME/.cargo/env" && rustup target add x86_64-pc-windows-gnu
       - run: node clean.mjs
@@ -151,7 +152,7 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-macos
-      - run: brew install yasm nasm pkg-config cmake make meson ninja libtool automake
+      - run: brew install yasm nasm pkg-config cmake make meson ninja libtool automake gcc
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
