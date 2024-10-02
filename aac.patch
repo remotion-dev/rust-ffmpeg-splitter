@@ -10,3 +10,4 @@ index 2723a0312e..8d5c7e68f6 100644
 +    tb = frame->time_base;
      pts_pred = dp->last_frame_pts == AV_NOPTS_VALUE ? 0 :
                 dp->last_frame_pts + dp->last_frame_duration_est;
+ 
