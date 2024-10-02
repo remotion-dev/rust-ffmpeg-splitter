@@ -63,7 +63,7 @@ jobs:
             - ffmpeg
   build-linux-arm-gnu:
     machine:
-      image: ubuntu-2004:202101-01
+      image: ubuntu-2004:2024.05.1
     resource_class: arm.medium
     steps:
       - checkout
@@ -87,7 +87,7 @@ jobs:
             - ffmpeg
   build-linux-arm-musl:
     machine:
-      image: ubuntu-2004:202101-01
+      image: ubuntu-2004:2024.05.1
     resource_class: arm.medium
     steps:
       - checkout
@@ -143,7 +143,7 @@ jobs:
 
   build-macos:
     macos:
-      xcode: 12.5.1
+      xcode: 13.4.1
     steps:
       - checkout
       - node/install:
