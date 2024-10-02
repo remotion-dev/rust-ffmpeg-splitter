@@ -128,7 +128,7 @@ enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
 enableOpus(isWindows);
 
-const TAG = "n6.1";
+const TAG = "n7.1";
 
 if (fs.existsSync("ffmpeg")) {
   execSync("git stash", {
@@ -145,9 +145,6 @@ if (fs.existsSync("ffmpeg")) {
   });
   execSync(`git checkout ${TAG}`, {
     cwd: "ffmpeg",
-    stdio: "inherit",
-  });
-  execSync("git apply prores.patch --directory ffmpeg", {
     stdio: "inherit",
   });
   execSync("git apply aac.patch --directory ffmpeg", {
