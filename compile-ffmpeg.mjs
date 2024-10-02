@@ -174,9 +174,7 @@ const extraCFlags = [
 
 const extraLdFlags = [
   "-L" + PREFIX + "/lib",
-  process.platform === "darwin" && process.arch === "arm64"
-    ? "-Wl,-ld_classic"
-    : null,
+  process.platform === "darwin" && process.arch === "arm64" ? "-Wl" : null,
 ].filter(Boolean);
 
 execSync("cp -r remotion ffmpeg", { stdio: "inherit" });
