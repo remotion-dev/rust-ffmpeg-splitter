@@ -8,8 +8,8 @@ name: Install and Test
 env:
   FORCE_COLOR: 1
 jobs:
-  build-macos-arm:
-    name: Build on macOS M1
+  build:
+    name: Build on macOS x64
     runs-on: macos-14
     steps:
       - uses: actions/checkout@main
@@ -19,7 +19,6 @@ jobs:
       - name: Install deps
         run: HOMEBREW_INSTALL_FROM_API=1 brew install yasm nasm pkg-config cmake make meson ninja libtool autoconf automake
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: rm /opt/homebrew/opt/libx11/lib/libX11.6.dylib
       - run: node clean.mjs
       - run: node compile-ffmpeg.mjs
       - run: node generate-bindings.mjs
