@@ -141,34 +141,6 @@ jobs:
           paths:
             - ffmpeg
 
-  build-macos:
-    macos:
-      xcode: 12.5.1
-    steps:
-      - checkout
-      - node/install:
-          node-version: "18.12"
-      - restore_cache:
-          keys:
-            - ffmpeg_source-macos
-      - run: brew install yasm nasm pkg-config cmake make meson ninja libtool
-      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: node clean.mjs
-      - run: node compile-ffmpeg.mjs
-      - run: node generate-bindings.mjs
-      - run: node zip.mjs
-      - run: node test-ffmpeg.mjs
-      - store_artifacts:
-          path: ffmpeg/ffbuild/config.log
-          destination: ffbuild.log
-      - store_artifacts:
-          path: ffmpeg.tar.gz
-          destination: x86_64-apple-darwin.gz
-      - save_cache:
-          key: ffmpeg_source-macos
-          paths:
-            - ffmpeg
-
 workflows:
   build_ffmpeg:
     jobs:
@@ -176,6 +148,5 @@ workflows:
       - build-linux-arm-gnu
       - build-linux-x64-musl
       - build-linux-arm-musl
-      - build-macos
       - build-windows
       - windows-ssh
