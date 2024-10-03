@@ -128,7 +128,7 @@ enableX265(isMusl, isWindows);
 enableLibMp3Lame(isWindows);
 enableOpus(isWindows);
 
-const TAG = "n7.0";
+const TAG = "n7.1";
 
 if (fs.existsSync("ffmpeg")) {
   execSync("git stash", {
@@ -174,9 +174,7 @@ const extraCFlags = [
 
 const extraLdFlags = [
   "-L" + PREFIX + "/lib",
-  process.platform === "darwin" && process.arch === "arm64"
-    ? "-Wl,-ld_classic"
-    : null,
+  process.platform === "darwin" && process.arch === "arm64" ? "-Wl" : null,
 ].filter(Boolean);
 
 execSync("cp -r remotion ffmpeg", { stdio: "inherit" });
