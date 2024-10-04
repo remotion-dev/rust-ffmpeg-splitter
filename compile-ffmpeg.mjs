@@ -253,6 +253,7 @@ execSync(
     "--enable-encoder=prores_ks",
     "--enable-encoder=rawvideo",
     "--enable-encoder=null",
+    process.platform === "darwin" ? "--enable-videotoolbox" : null,
     "--disable-muxers",
     "--enable-muxer=webm,opus,mp4,wav,mp3,mov,matroska,hevc,h264,gif,image2,image2pipe,adts,m4a,mpegts,null,avi",
     "--enable-libx264",
