@@ -9,8 +9,30 @@ env:
   FORCE_COLOR: 1
 jobs:
   build:
-    name: Build on macOS x64
+    name: Build on macOS M1
     runs-on: macos-14
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install deps
+        run: HOMEBREW_INSTALL_FROM_API=1 brew install yasm nasm pkg-config cmake make meson ninja libtool autoconf automake
+      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      - run: rm /opt/homebrew/opt/libx11/lib/libX11.6.dylib
+      - run: node clean.mjs
+      - run: node compile-ffmpeg.mjs
+      - run: node generate-bindings.mjs
+      - run: node zip.mjs
+      - run: node test-ffmpeg.mjs
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: aarch64-apple-darwin.gz
+          path: ffmpeg.tar.gz
+  build-macos-x64:
+    name: Build on macOS x64
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@main
       - uses: actions/setup-node@v3
@@ -27,5 +49,5 @@ jobs:
       - name: Archive code coverage results
         uses: actions/upload-artifact@v4
         with:
-          name: aarch64-apple-darwin.gz
+          name: x86_64-apple-darwin.gz
           path: ffmpeg.tar.gz
