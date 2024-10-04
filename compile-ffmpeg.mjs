@@ -71,7 +71,9 @@ const decoders = [
   "hls",
   "m4a",
   "rawvideo",
-];
+  process.platform === "darwin" ? "h264_videotoolbox" : null,
+  process.platform === "darwin" ? "hevc_videotoolbox" : null,
+].filter(Boolean);
 
 const demuxers = [
   "aac",
@@ -109,6 +111,8 @@ const demuxers = [
   "gif",
   "hls",
   "m4a",
+  "mpeg2_videotoolbox"
+  "mpeg4_videotoolbox"
 ];
 
 if (!existsSync(PREFIX)) {
@@ -254,6 +258,8 @@ execSync(
     "--enable-encoder=rawvideo",
     "--enable-encoder=null",
     process.platform === "darwin" ? "--enable-videotoolbox" : null,
+    process.platform === "darwin" ? "--enable-encoder=h264_videotoolbox" : null,
+    process.platform === "darwin" ? "--enable-encoder=hevc_videotoolbox" : null,
     "--disable-muxers",
     "--enable-muxer=webm,opus,mp4,wav,mp3,mov,matroska,hevc,h264,gif,image2,image2pipe,adts,m4a,mpegts,null,avi",
     "--enable-libx264",
