@@ -111,8 +111,8 @@ const demuxers = [
   "gif",
   "hls",
   "m4a",
-  "mpeg2_videotoolbox"
-  "mpeg4_videotoolbox"
+  "mpeg2_videotoolbox",
+  "mpeg4_videotoolbox",
 ];
 
 if (!existsSync(PREFIX)) {
