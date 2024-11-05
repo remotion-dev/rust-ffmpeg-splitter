@@ -260,6 +260,9 @@ execSync(
     process.platform === "darwin" ? "--enable-videotoolbox" : null,
     process.platform === "darwin" ? "--enable-encoder=h264_videotoolbox" : null,
     process.platform === "darwin" ? "--enable-encoder=hevc_videotoolbox" : null,
+    process.platform === "darwin"
+      ? "--enable-encoder=prores_videotoolbox"
+      : null,
     "--disable-muxers",
     "--enable-muxer=webm,opus,mp4,wav,mp3,mov,matroska,hevc,h264,gif,image2,image2pipe,adts,m4a,mpegts,null,avi",
     "--enable-libx264",
