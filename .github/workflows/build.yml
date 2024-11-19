@@ -10,7 +10,7 @@ env:
 jobs:
   build:
     name: Build on macOS M1
-    runs-on: macos-13-arm64
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@main
       - uses: actions/setup-node@v3
