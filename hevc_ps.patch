@@ -1,3 +1,32 @@
+diff --git a/libavcodec/codec_desc.c b/libavcodec/codec_desc.c
+index 03dea5751a..f2aece7566 100644
+--- a/libavcodec/codec_desc.c
++++ b/libavcodec/codec_desc.c
+@@ -1274,9 +1274,9 @@ static const AVCodecDescriptor codec_descriptors[] = {
+         .id        = AV_CODEC_ID_HEVC,
+         .type      = AVMEDIA_TYPE_VIDEO,
+         .name      = "hevc",
+-        .long_name = NULL_IF_CONFIG_SMALL("H.265 / HEVC (High Efficiency Video Coding)"),
++        .long_name = "H.265 / HEVC (High Efficiency Video Coding)",
+         .props     = AV_CODEC_PROP_LOSSY | AV_CODEC_PROP_REORDER,
+-        .profiles  = NULL_IF_CONFIG_SMALL(ff_hevc_profiles),
++        .profiles  = ff_hevc_profiles,
+     },
+     {
+         .id        = AV_CODEC_ID_FIC,
+diff --git a/libavcodec/hevc/hevcdec.c b/libavcodec/hevc/hevcdec.c
+index 0dc24f82f8..abbb949aef 100644
+--- a/libavcodec/hevc/hevcdec.c
++++ b/libavcodec/hevc/hevcdec.c
+@@ -4079,7 +4079,7 @@ const FFCodec ff_hevc_decoder = {
+     .caps_internal         = FF_CODEC_CAP_EXPORTS_CROPPING |
+                              FF_CODEC_CAP_USES_PROGRESSFRAMES |
+                              FF_CODEC_CAP_INIT_CLEANUP,
+-    .p.profiles            = NULL_IF_CONFIG_SMALL(ff_hevc_profiles),
++    .p.profiles            = ff_hevc_profiles,
+     .hw_configs            = (const AVCodecHWConfigInternal *const []) {
+ #if CONFIG_HEVC_DXVA2_HWACCEL
+                                HWACCEL_DXVA2(hevc),
 diff --git a/libavcodec/hevc/ps.c b/libavcodec/hevc/ps.c
 index f18b88489b..2cd4d24c5a 100644
 --- a/libavcodec/hevc/ps.c
