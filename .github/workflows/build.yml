@@ -32,7 +32,7 @@ jobs:
           path: ffmpeg.tar.gz
   build-macos-x64:
     name: Build on macOS x64
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@main
       - uses: actions/setup-node@v3
