@@ -12,6 +12,7 @@ COPY sample-5s.webm app/sample-5s.webm
 COPY sample.mp4 app/sample.mp4
 COPY sample-av1.webm app/sample-av1.webm
 COPY aac.patch app/aac.patch
+COPY hevc_ps.patch app/hevc_ps.patch
 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 RUN source "$HOME/.cargo/env"

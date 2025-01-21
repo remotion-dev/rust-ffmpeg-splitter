@@ -1,0 +1,18 @@
+diff --git a/libavcodec/hevc/ps.c b/libavcodec/hevc/ps.c
+index f18b88489b..2cd4d24c5a 100644
+--- a/libavcodec/hevc/ps.c
++++ b/libavcodec/hevc/ps.c
+@@ -248,13 +248,11 @@ static int decode_profile_tier_level(GetBitContext *gb, AVCodecContext *avctx,
+     ptl->tier_flag     = get_bits1(gb);
+     ptl->profile_idc   = get_bits(gb, 5);
+ 
+-#if !CONFIG_SMALL
+     for (int i = 0; ff_hevc_profiles[i].profile != AV_PROFILE_UNKNOWN; i++)
+         if (ff_hevc_profiles[i].profile == ptl->profile_idc) {
+             profile_name = ff_hevc_profiles[i].name;
+             break;
+         }
+-#endif
+     av_log(avctx, profile_name ? AV_LOG_DEBUG : AV_LOG_WARNING,
+            "%s profile bitstream\n", profile_name ? profile_name : "Unknown");
+ 
