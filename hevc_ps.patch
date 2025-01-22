@@ -45,3 +45,20 @@ index f18b88489b..2cd4d24c5a 100644
      av_log(avctx, profile_name ? AV_LOG_DEBUG : AV_LOG_WARNING,
             "%s profile bitstream\n", profile_name ? profile_name : "Unknown");
  
+diff --git a/libavcodec/profiles.c b/libavcodec/profiles.c
+index 3cef82be3b..d7b10490de 100644
+--- a/libavcodec/profiles.c
++++ b/libavcodec/profiles.c
+@@ -22,7 +22,6 @@
+ #include "defs.h"
+ #include "profiles.h"
+ 
+-#if !CONFIG_SMALL
+ 
+ const AVProfile ff_aac_profiles[] = {
+     { AV_PROFILE_AAC_LOW,   "LC"       },
+@@ -203,4 +202,3 @@ const AVProfile ff_evc_profiles[] = {
+     { AV_PROFILE_UNKNOWN },
+ };
+ 
+-#endif /* !CONFIG_SMALL */
