@@ -155,9 +155,9 @@ if (fs.existsSync("ffmpeg")) {
   execSync("git apply aac.patch --directory ffmpeg", {
     stdio: "inherit",
   });
-  execSync("git apply hevc_ps.patch --directory ffmpeg", {
+  /*execSync("git apply hevc_ps.patch --directory ffmpeg", {
     stdio: "inherit",
-  });
+  });*/
 } else {
   execSync("git clone https://github.com/ffmpeg/ffmpeg.git", {
     stdio: "inherit",
@@ -169,9 +169,11 @@ if (fs.existsSync("ffmpeg")) {
   execSync("git apply aac.patch --directory ffmpeg", {
     stdio: "inherit",
   });
+  /*
   execSync("git apply hevc_ps.patch --directory ffmpeg", {
     stdio: "inherit",
   });
+  */
 }
 
 const extraCFlags = [
