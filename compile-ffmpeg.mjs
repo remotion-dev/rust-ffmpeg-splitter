@@ -202,6 +202,7 @@ execSync(
     '--extra-ldflags="' + extraLdFlags.join(" ") + '"',
     isMusl ? '--extra-cxxflags="-static-libgcc -static-libstdc++"' : null,
     isMusl ? '--extra-ldexeflags="-static-libgcc -static-libstdc++"' : null,
+    "--enable-small",
     "--enable-shared",
     "--enable-libdav1d",
     "--enable-libzimg",
