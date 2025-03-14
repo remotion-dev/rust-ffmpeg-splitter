@@ -55,5 +55,3 @@ export const enableFdkAac = async (isWindows) => {
     stdio: "inherit",
   });
 };
-
-await enableFdkAac(false);
