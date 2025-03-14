@@ -4,23 +4,29 @@ import { PREFIX } from "./const.mjs";
 import path from "path";
 
 export const enableFdkAac = async (isWindows) => {
-  if (!fs.existsSync("fdkaac")) {
+  if (!fs.existsSync("fdk-aac-free-2.0.0")) {
     const response = execSync(
-      "curl -L https://sourceforge.net/projects/opencore-amr/files/fdk-aac/fdk-aac-2.0.2.tar.gz/download?use_mirror=gigenet > fdkaac.tar.gz"
+      // Free version of fdk-aac, without any license issues
+      // https://src.fedoraproject.org/rpms/fdk-aac-free/tree/rawhide
+      // https://en.wikipedia.org/wiki/Fraunhofer_FDK_AAC
+      // > However, Fedora states that this will not affect the fdk-aac-free package, which enables only the commonly used "Low Complexity AAC" profile, which is what most people use.
+      "curl -L https://people.freedesktop.org/~wtay/fdk-aac-free-2.0.0.tar.gz > fdkaac.tar.gz"
     );
     execSync("tar -xzf fdkaac.tar.gz", {
       stdio: "inherit",
     });
   }
 
+  execSync("autoreconf -vif", { cwd: "fdk-aac-free-2.0.0" });
+
   execSync(
     [
       path.posix.join(
         process.cwd().replace(/\\/g, "/"),
-        "fdk-aac-2.0.2",
+        "fdk-aac-free-2.0.0",
         "configure"
       ),
-      `--prefix=${path.resolve("fdk-aac-2.0.2", PREFIX)}`,
+      `--prefix=${path.resolve("fdk-aac-free-2.0.0", PREFIX)}`,
       "--enable-static",
       "--disable-shared",
       "--with-pic",
@@ -29,20 +35,23 @@ export const enableFdkAac = async (isWindows) => {
       .filter(Boolean)
       .join(" "),
     {
-      cwd: "fdk-aac-2.0.2",
+      cwd: "fdk-aac-free-2.0.0",
       stdio: "inherit",
     }
   );
 
   execSync("make", {
-    cwd: "fdk-aac-2.0.2",
+    cwd: "fdk-aac-free-2.0.0",
     stdio: "inherit",
   });
 
   execSync("make install", {
-    cwd: "fdk-aac-2.0.2",
+    cwd: "fdk-aac-free-2.0.0",
     stdio: "inherit",
   });
 
-  execSync(`cp -r ${PREFIX} ../`, { cwd: "fdk-aac-2.0.2", stdio: "inherit" });
+  execSync(`cp -r ${PREFIX} ../`, {
+    cwd: "fdk-aac-free-2.0.0",
+    stdio: "inherit",
+  });
 };
