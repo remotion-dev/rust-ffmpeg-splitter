@@ -21,7 +21,11 @@ export const enableFdkAac = async (isWindows) => {
 
   execSync(
     [
-      "./configure",
+      path.posix.join(
+        process.cwd().replace(/\\/g, "/"),
+        "fdk-aac-free-2.0.0",
+        "configure"
+      ),
       `--prefix=${path.resolve("fdk-aac-free-2.0.0", PREFIX)}`,
       "--enable-static",
       "--disable-shared",
