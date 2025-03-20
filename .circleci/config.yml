@@ -11,8 +11,8 @@ jobs:
     steps:
       - checkout
   build-linux-x64-gnu:
-    docker:
-      - image: cimg/base:current-20.04
+    machine:
+      image: ubuntu-2004:2024.05.1
     steps:
       - checkout
       - node/install:
@@ -20,14 +20,9 @@ jobs:
       - restore_cache:
           keys:
             - ffmpeg_source-linux-x64
-      - run: sudo apt-get update
-      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: sudo apt-get install -y yasm nasm clang make zlib1g-dev meson ninja-build autoconf automake libtool patchelf
-      - run: node clean.mjs
-      - run: node compile-ffmpeg.mjs
-      - run: source "$HOME/.cargo/env" && node generate-bindings.mjs
-      - run: node zip.mjs
-      - run: node test-ffmpeg.mjs
+      - run: sudo apt-get install -y docker
+      - run: docker build . -f Dockerfile-aws -t x64-gnu
+      - run: node get-from-docker.mjs x64-gnu /var/task/app/ffmpeg.tar.gz
       - store_artifacts:
           path: ffmpeg/ffbuild/config.log
           destination: ffbuild.log
