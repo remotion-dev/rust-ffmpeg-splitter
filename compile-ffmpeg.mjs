@@ -252,6 +252,7 @@ execSync(
     "--enable-encoder=png",
     "--enable-encoder=mjpeg",
     "--enable-encoder=pcm_s16le",
+    "--enable-encoder=pcm_s24le",
     "--enable-encoder=libx264",
     "--enable-encoder=libx265",
     "--enable-libvpx",
