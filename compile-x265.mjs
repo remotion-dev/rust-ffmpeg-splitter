@@ -1,8 +1,6 @@
-import fs, { existsSync, readFileSync, unlinkSync } from "fs";
-import path from "path";
+import fs, { readFileSync } from "fs";
 import { execSync } from "child_process";
 import { PREFIX } from "./const.mjs";
-import { compileFunction } from "vm";
 
 export const enableX265 = (isMusl, isWindows) => {
   if (isWindows) {
@@ -22,7 +20,8 @@ export const enableX265 = (isMusl, isWindows) => {
   ].filter(Boolean);
 
   if (!fs.existsSync("x265")) {
-    execSync("git clone https://github.com/videolan/x265 x265", {
+    // Because https://github.com/videolan/x265/pull/17
+    execSync("git clone https://github.com/MarkusVolk/x265 x265", {
       stdio: "inherit",
     });
   }
@@ -67,7 +66,6 @@ export const enableX265 = (isMusl, isWindows) => {
     [
       "cmake",
       '-DCMAKE_INSTALL_PREFIX="remotion"',
-      "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
       "-DENABLE_SHARED:BOOL=OFF",
       "-DCMAKE_BUILD_TYPE=Release",
       "-DSTATIC_LINK_CRT:BOOL=" + (staticallyLinkCLibrary ? "ON" : "OFF"),
