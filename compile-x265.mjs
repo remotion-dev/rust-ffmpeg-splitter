@@ -26,7 +26,7 @@ export const enableX265 = (isMusl, isWindows) => {
     });
   }
 
-  execSync("git checkout stable", {
+  execSync("git checkout 6e3f6f1752cf8110cc75a1b9c337c0a8ccac2a81", {
     cwd: "x265",
     stdio: "inherit",
   });
