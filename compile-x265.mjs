@@ -30,10 +30,6 @@ export const enableX265 = (isMusl, isWindows) => {
     cwd: "x265",
     stdio: "inherit",
   });
-  execSync("git pull", {
-    cwd: "x265",
-    stdio: "inherit",
-  });
 
   const staticallyLinkCLibrary = isMusl || isWindows;
 
