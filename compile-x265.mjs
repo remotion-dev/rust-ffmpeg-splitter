@@ -67,6 +67,7 @@ export const enableX265 = (isMusl, isWindows) => {
     [
       "cmake",
       '-DCMAKE_INSTALL_PREFIX="remotion"',
+      "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
       "-DENABLE_SHARED:BOOL=OFF",
       "-DCMAKE_BUILD_TYPE=Release",
       "-DSTATIC_LINK_CRT:BOOL=" + (staticallyLinkCLibrary ? "ON" : "OFF"),
