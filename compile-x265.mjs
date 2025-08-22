@@ -1,6 +1,8 @@
-import fs, { readFileSync } from "fs";
+import fs, { existsSync, readFileSync, unlinkSync } from "fs";
+import path from "path";
 import { execSync } from "child_process";
 import { PREFIX } from "./const.mjs";
+import { compileFunction } from "vm";
 
 export const enableX265 = (isMusl, isWindows) => {
   if (isWindows) {
@@ -20,13 +22,20 @@ export const enableX265 = (isMusl, isWindows) => {
   ].filter(Boolean);
 
   if (!fs.existsSync("x265")) {
-    // Because https://github.com/videolan/x265/pull/17
-    execSync("git clone https://github.com/MarkusVolk/x265 x265", {
-      stdio: "inherit",
-    });
+    execSync(
+      "git clone https://bitbucket.org/multicoreware/x265_git.git x265",
+      {
+        stdio: "inherit",
+      }
+    );
   }
 
-  execSync("git checkout 6e3f6f1752cf8110cc75a1b9c337c0a8ccac2a81", {
+  execSync("git fetch", {
+    cwd: "x265",
+    stdio: "inherit",
+  });
+
+  execSync("git checkout 8f11c33acc267ba3f1d2bde60a6aa906e494cbde", {
     cwd: "x265",
     stdio: "inherit",
   });
