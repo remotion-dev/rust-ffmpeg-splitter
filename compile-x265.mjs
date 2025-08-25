@@ -4,7 +4,7 @@ import { execSync } from "child_process";
 import { PREFIX } from "./const.mjs";
 import { compileFunction } from "vm";
 
-export const enableX265 = (isMusl, isWindows) => {
+export const enableX265 = (isMusl, isWindows, isArm) => {
   if (isWindows) {
     execSync("cp x265-windows/lib/libx265.a remotion/lib/libx265.a");
     execSync(
@@ -22,12 +22,18 @@ export const enableX265 = (isMusl, isWindows) => {
   ].filter(Boolean);
 
   if (!fs.existsSync("x265")) {
-    execSync(
-      "git clone https://bitbucket.org/multicoreware/x265_git.git x265",
-      {
+    if (isArm && isMusl) {
+      execSync("git clone https://github.com/videolan/x265 x265", {
         stdio: "inherit",
-      }
-    );
+      });
+    } else {
+      execSync(
+        "git clone https://bitbucket.org/multicoreware/x265_git.git x265",
+        {
+          stdio: "inherit",
+        }
+      );
+    }
   }
 
   execSync("git fetch", {
@@ -35,10 +41,17 @@ export const enableX265 = (isMusl, isWindows) => {
     stdio: "inherit",
   });
 
-  execSync("git checkout 8f11c33acc267ba3f1d2bde60a6aa906e494cbde", {
-    cwd: "x265",
-    stdio: "inherit",
-  });
+  if (isArm && isMusl) {
+    execSync("git checkout 8f11c33acc267ba3f1d2bde60a6aa906e494cbde", {
+      cwd: "x265",
+      stdio: "inherit",
+    });
+  } else {
+    execSync("git checkout stable", {
+      cwd: "x265",
+      stdio: "inherit",
+    });
+  }
 
   const staticallyLinkCLibrary = isMusl || isWindows;
 
