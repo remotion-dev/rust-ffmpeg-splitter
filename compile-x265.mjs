@@ -22,18 +22,12 @@ export const enableX265 = (isMusl, isWindows, isArm) => {
   ].filter(Boolean);
 
   if (!fs.existsSync("x265")) {
-    if (isArm && isMusl) {
-      execSync("git clone https://github.com/videolan/x265 x265", {
+    execSync(
+      "git clone https://bitbucket.org/multicoreware/x265_git.git x265",
+      {
         stdio: "inherit",
-      });
-    } else {
-      execSync(
-        "git clone https://bitbucket.org/multicoreware/x265_git.git x265",
-        {
-          stdio: "inherit",
-        }
-      );
-    }
+      }
+    );
   }
 
   execSync("git fetch", {
@@ -42,12 +36,15 @@ export const enableX265 = (isMusl, isWindows, isArm) => {
   });
 
   if (isArm && isMusl) {
-    execSync("git checkout 8f11c33acc267ba3f1d2bde60a6aa906e494cbde", {
+    // stable as marked on the github repo
+    // for older cmake versions
+    execSync("git checkout 02d2f496c94c0ef253766b826d95af3404b2781e", {
       cwd: "x265",
       stdio: "inherit",
     });
   } else {
-    execSync("git checkout stable", {
+    // for newer cmake versions
+    execSync("git checkout 8f11c33acc267ba3f1d2bde60a6aa906e494cbde", {
       cwd: "x265",
       stdio: "inherit",
     });
