@@ -22,12 +22,18 @@ export const enableX265 = (isMusl, isWindows, isArm) => {
   ].filter(Boolean);
 
   if (!fs.existsSync("x265")) {
-    execSync(
-      "git clone https://bitbucket.org/multicoreware/x265_git.git x265",
-      {
+    if (isArm && isMusl) {
+      execSync("git clone https://github.com/videolan/x265 x265", {
         stdio: "inherit",
-      }
-    );
+      });
+    } else {
+      execSync(
+        "git clone https://bitbucket.org/multicoreware/x265_git.git x265",
+        {
+          stdio: "inherit",
+        }
+      );
+    }
   }
 
   execSync("git fetch", {
