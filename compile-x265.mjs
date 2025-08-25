@@ -83,9 +83,23 @@ export const enableX265 = (isMusl, isWindows, isArm) => {
     CFLAGS: extraCFlags.join(" "),
   };
 
+  // Determine whether to use 'cmake' or 'cmake3'
+  const whichSync = require("child_process").execSync;
+  let cmakeCmd = "cmake";
+  try {
+    whichSync("cmake --version", { stdio: "ignore" });
+  } catch {
+    try {
+      whichSync("cmake3 --version", { stdio: "ignore" });
+      cmakeCmd = "cmake3";
+    } catch {
+      throw new Error("Neither cmake nor cmake3 is available in PATH.");
+    }
+  }
+
   execSync(
     [
-      "cmake",
+      cmakeCmd,
       '-DCMAKE_INSTALL_PREFIX="remotion"',
       "-DENABLE_SHARED:BOOL=OFF",
       "-DCMAKE_BUILD_TYPE=Release",
