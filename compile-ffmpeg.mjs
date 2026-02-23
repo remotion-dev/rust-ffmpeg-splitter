@@ -159,6 +159,9 @@ if (fs.existsSync("ffmpeg")) {
   execSync("git apply hevc_ps.patch --directory ffmpeg", {
     stdio: "inherit",
   });
+  execSync("git apply x265-api.patch --directory ffmpeg", {
+    stdio: "inherit",
+  });
 } else {
   execSync("git clone https://github.com/ffmpeg/ffmpeg.git", {
     stdio: "inherit",
@@ -171,6 +174,9 @@ if (fs.existsSync("ffmpeg")) {
     stdio: "inherit",
   });
   execSync("git apply hevc_ps.patch --directory ffmpeg", {
+    stdio: "inherit",
+  });
+  execSync("git apply x265-api.patch --directory ffmpeg", {
     stdio: "inherit",
   });
 }

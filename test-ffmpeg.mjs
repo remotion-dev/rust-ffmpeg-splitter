@@ -101,6 +101,28 @@ const exit5 = spawnSync(
 );
 assert(exit5.status === 0);
 
+const exit_x265 = spawnSync(
+  ffmpegBinary,
+  [
+    "-i",
+    "sample.mp4",
+    "-t",
+    "1",
+    "-c:v",
+    "libx265",
+    "out-test-x265.mp4",
+    "-y",
+  ],
+  {
+    env,
+    stdio: "inherit",
+  }
+);
+if (exit_x265.status !== 0) {
+  console.log("x265 encoding test failed with status", exit_x265.status, "signal", exit_x265.signal);
+}
+assert(exit_x265.status === 0);
+
 const exit6 = spawnSync(
   ffmpegBinary,
   [
