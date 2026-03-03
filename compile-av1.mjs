@@ -1,8 +1,23 @@
 import { execSync } from "child_process";
 import { join, dirname } from "node:path";
-import { existsSync, mkdirSync, rmSync, cpSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { PREFIX } from "./const.mjs";
 
-export const enableAv1 = (isWindows) => {
+const getCmakeCommand = () => {
+  try {
+    execSync("cmake --version", { stdio: "ignore" });
+    return "cmake";
+  } catch {
+    try {
+      execSync("cmake3 --version", { stdio: "ignore" });
+      return "cmake3";
+    } catch {
+      throw new Error("Neither cmake nor cmake3 is available in PATH.");
+    }
+  }
+};
+
+const enableDav1d = (isWindows) => {
   const pkgConfig = `
 prefix=${process.cwd()}/av1/build
 includedir=$\{prefix\}/include
@@ -60,4 +75,81 @@ Cflags: -I$\{prefix\}/src -I$\{srcdir\}/src -I$\{prefix\} -I$\{srcdir\} -I$\{pre
   }
 
   writeFileSync(outPath, pkgConfig);
+};
+
+const enableLibaom = (isWindows) => {
+  const AOM_TAG = "v3.9.1";
+  if (!existsSync("aom")) {
+    execSync("git clone https://aomedia.googlesource.com/aom aom", {
+      stdio: "inherit",
+    });
+  }
+
+  execSync("git fetch --tags", {
+    cwd: "aom",
+    stdio: "inherit",
+  });
+
+  execSync(`git checkout ${AOM_TAG}`, {
+    cwd: "aom",
+    stdio: "inherit",
+  });
+
+  rmSync("aom/build", {
+    force: true,
+    recursive: true,
+  });
+  mkdirSync("aom/build", {
+    recursive: true,
+  });
+
+  const cmakeCmd = getCmakeCommand();
+  execSync(
+    [
+      cmakeCmd,
+      "..",
+      `-DCMAKE_INSTALL_PREFIX=${join(process.cwd(), "aom", PREFIX)}`,
+      "-DBUILD_SHARED_LIBS=OFF",
+      "-DENABLE_TESTS=0",
+      "-DENABLE_TESTDATA=0",
+      "-DENABLE_DOCS=0",
+      "-DENABLE_EXAMPLES=0",
+      "-DENABLE_TOOLS=0",
+      "-DENABLE_NASM=1",
+      "-DCONFIG_PIC=1",
+      "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
+      isWindows ? "-DCMAKE_SYSTEM_NAME=Windows" : null,
+      isWindows ? "-DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc" : null,
+      isWindows ? "-DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++" : null,
+      isWindows ? "-DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres" : null,
+      isWindows ? "-DCMAKE_AR=x86_64-w64-mingw32-ar" : null,
+      isWindows ? "-DCMAKE_RANLIB=x86_64-w64-mingw32-ranlib" : null,
+    ]
+      .filter(Boolean)
+      .join(" "),
+    {
+      cwd: "aom/build",
+      stdio: "inherit",
+    }
+  );
+
+  execSync("make", {
+    cwd: "aom/build",
+    stdio: "inherit",
+  });
+
+  execSync("make install", {
+    cwd: "aom/build",
+    stdio: "inherit",
+  });
+
+  execSync("cp -r " + PREFIX + " ../", {
+    cwd: "aom",
+    stdio: "inherit",
+  });
+};
+
+export const enableAv1 = (isWindows) => {
+  enableDav1d(isWindows);
+  enableLibaom(isWindows);
 };

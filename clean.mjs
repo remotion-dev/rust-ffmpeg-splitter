@@ -15,6 +15,7 @@ const paths = [
   path.join(process.cwd(), "x264"),
   path.join(process.cwd(), "x265"),
   path.join(process.cwd(), "av1"),
+  path.join(process.cwd(), "aom"),
   path.join(process.cwd(), "zimg"),
   path.join(process.cwd(), "opus"),
   path.join(process.cwd(), "libmp3lame"),
