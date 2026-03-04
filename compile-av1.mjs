@@ -79,6 +79,7 @@ Cflags: -I$\{prefix\}/src -I$\{srcdir\}/src -I$\{prefix\} -I$\{srcdir\} -I$\{pre
 
 const enableLibaom = (isWindows) => {
   const AOM_TAG = "v3.9.1";
+  const AOM_BUILD_DIR = "aom-build";
   if (!existsSync("aom")) {
     execSync("git clone https://aomedia.googlesource.com/aom aom", {
       stdio: "inherit",
@@ -95,11 +96,11 @@ const enableLibaom = (isWindows) => {
     stdio: "inherit",
   });
 
-  rmSync("aom/build", {
+  rmSync(AOM_BUILD_DIR, {
     force: true,
     recursive: true,
   });
-  mkdirSync("aom/build", {
+  mkdirSync(AOM_BUILD_DIR, {
     recursive: true,
   });
 
@@ -107,8 +108,9 @@ const enableLibaom = (isWindows) => {
   execSync(
     [
       cmakeCmd,
-      "..",
+      join(process.cwd(), "aom"),
       `-DCMAKE_INSTALL_PREFIX=${join(process.cwd(), "aom", PREFIX)}`,
+      "-DCMAKE_BUILD_TYPE=MinSizeRel",
       "-DBUILD_SHARED_LIBS=OFF",
       "-DENABLE_TESTS=0",
       "-DENABLE_TESTDATA=0",
@@ -118,6 +120,8 @@ const enableLibaom = (isWindows) => {
       "-DENABLE_NASM=1",
       "-DCONFIG_PIC=1",
       "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
+      "-DCONFIG_AV1_DECODER=0",
+      "-DCONFIG_AV1_ENCODER=1",
       isWindows ? "-DCMAKE_SYSTEM_NAME=Windows" : null,
       isWindows ? "-DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc" : null,
       isWindows ? "-DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++" : null,
@@ -128,18 +132,18 @@ const enableLibaom = (isWindows) => {
       .filter(Boolean)
       .join(" "),
     {
-      cwd: "aom/build",
+      cwd: AOM_BUILD_DIR,
       stdio: "inherit",
     }
   );
 
   execSync("make", {
-    cwd: "aom/build",
+    cwd: AOM_BUILD_DIR,
     stdio: "inherit",
   });
 
   execSync("make install", {
-    cwd: "aom/build",
+    cwd: AOM_BUILD_DIR,
     stdio: "inherit",
   });
 
