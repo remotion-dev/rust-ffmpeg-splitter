@@ -197,6 +197,11 @@ const extraLdFlags = [
 
 execSync("cp -r remotion ffmpeg", { stdio: "inherit" });
 
+const pkgConfigDirs = [
+  path.join(process.cwd(), PREFIX, "lib", "pkgconfig"),
+  path.join(process.cwd(), PREFIX, "lib64", "pkgconfig"),
+];
+
 execSync(
   [
     path.posix.join(process.cwd().replace(/\\/g, "/"), "ffmpeg", "configure"),
@@ -297,7 +302,7 @@ execSync(
   {
     env: {
       ...process.env,
-      PKG_CONFIG_PATH: path.join(process.cwd(), PREFIX) + "/lib/pkgconfig",
+      PKG_CONFIG_PATH: pkgConfigDirs.join(path.delimiter),
     },
     cwd: "ffmpeg",
     stdio: "inherit",
