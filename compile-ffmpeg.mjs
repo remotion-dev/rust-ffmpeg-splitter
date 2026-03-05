@@ -29,7 +29,6 @@ if (existsSync("/opt/homebrew/opt/sdl2/lib/libSDL2-2.0.0.dylib")) {
 const decoders = [
   "aac",
   "ac3",
-  "av1",
   "flac",
   "h264",
   "hevc",

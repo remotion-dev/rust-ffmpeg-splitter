@@ -147,6 +147,7 @@ const enableLibaom = (isWindows) => {
       "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
       "-DCONFIG_AV1_DECODER=0",
       "-DCONFIG_AV1_ENCODER=1",
+      "-DCONFIG_AV1_HIGHBITDEPTH=0",
       isWindows ? "-DCMAKE_SYSTEM_NAME=Windows" : null,
       isWindows ? `-DCMAKE_C_COMPILER=${windowsToolchain.cc}` : null,
       isWindows ? `-DCMAKE_CXX_COMPILER=${windowsToolchain.cxx}` : null,
