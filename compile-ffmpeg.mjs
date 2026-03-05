@@ -255,6 +255,7 @@ execSync(
     "--enable-filter=tonemap",
     "--enable-filter=copy",
     "--disable-doc",
+    "--disable-debug",
     "--enable-gpl",
     "--enable-nonfree",
     "--disable-encoders",
