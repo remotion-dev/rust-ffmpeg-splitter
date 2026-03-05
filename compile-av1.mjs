@@ -91,6 +91,10 @@ Cflags: -I$\{prefix\}/src -I$\{srcdir\}/src -I$\{prefix\} -I$\{srcdir\} -I$\{pre
 const enableLibaom = (isWindows) => {
   const AOM_TAG = "v3.9.1";
   const AOM_BUILD_DIR = "aom-build";
+  const shouldEnableNasm = !(
+    process.platform === "darwin" &&
+    process.arch === "x64"
+  );
   const windowsToolchain = isWindows
     ? {
         cc: getToolPath("x86_64-w64-mingw32-gcc"),
@@ -138,7 +142,7 @@ const enableLibaom = (isWindows) => {
       "-DENABLE_DOCS=0",
       "-DENABLE_EXAMPLES=0",
       "-DENABLE_TOOLS=0",
-      "-DENABLE_NASM=1",
+      `-DENABLE_NASM=${shouldEnableNasm ? "1" : "0"}`,
       "-DCONFIG_PIC=1",
       "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
       "-DCONFIG_AV1_DECODER=0",
