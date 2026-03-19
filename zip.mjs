@@ -72,7 +72,6 @@ const stripFilesInDir = (dir, shouldStrip, stripTool, stripArgs) => {
 
 const removeDevArtifacts = () => {
   const devPaths = [
-    path.join(process.cwd(), "remotion", "include"),
     path.join(remotionLibDir, "pkgconfig"),
     path.join(remotionLib64Dir, "pkgconfig"),
     path.join(remotionLibDir, "cmake"),
