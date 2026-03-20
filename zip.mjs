@@ -1,6 +1,7 @@
 import { execSync } from "child_process";
 import {
   copyFileSync,
+  rmSync,
   readdirSync,
   renameSync,
   unlinkSync,
@@ -11,9 +12,103 @@ import { PREFIX } from "./const.mjs";
 
 const isWindows = process.argv[2] === "windows";
 const remotionLibDir = path.join(process.cwd(), "remotion", "lib");
+const remotionLib64Dir = path.join(process.cwd(), "remotion", "lib64");
+const remotionBinDir = path.join(process.cwd(), "remotion", "bin");
+
+const getStripTool = () => {
+  const candidates = isWindows
+    ? ["x86_64-w64-mingw32-strip"]
+    : process.platform === "darwin"
+    ? ["strip", "llvm-strip"]
+    : ["strip", "llvm-strip"];
+
+  for (const tool of candidates) {
+    try {
+      execSync(`command -v ${tool}`, {
+        stdio: "ignore",
+      });
+      return tool;
+    } catch {
+      // Continue trying alternatives.
+    }
+  }
+
+  return null;
+};
+
+const stripFilesInDir = (dir, shouldStrip, stripTool, stripArgs) => {
+  if (!existsSync(dir)) {
+    return;
+  }
+
+  const files = readdirSync(dir, {
+    withFileTypes: true,
+  });
+
+  for (const file of files) {
+    if (!file.isFile()) {
+      continue;
+    }
+
+    if (!shouldStrip(file.name)) {
+      continue;
+    }
+
+    const fullPath = path.join(dir, file.name);
+    try {
+      execSync(
+        [stripTool, ...stripArgs, `"${fullPath.replaceAll('"', '\\"')}"`].join(
+          " "
+        ),
+        {
+          stdio: "inherit",
+        }
+      );
+    } catch (err) {
+      console.warn(`Skipping strip for ${fullPath}:`, err.message);
+    }
+  }
+};
+
+const removeDevArtifacts = () => {
+  const devPaths = [
+    path.join(remotionLibDir, "pkgconfig"),
+    path.join(remotionLib64Dir, "pkgconfig"),
+    path.join(remotionLibDir, "cmake"),
+    path.join(remotionLib64Dir, "cmake"),
+  ];
+
+  for (const devPath of devPaths) {
+    if (existsSync(devPath)) {
+      rmSync(devPath, {
+        force: true,
+        recursive: true,
+      });
+    }
+  }
+
+  for (const libDir of [remotionLibDir, remotionLib64Dir]) {
+    if (!existsSync(libDir)) {
+      continue;
+    }
+
+    const files = readdirSync(libDir, {
+      withFileTypes: true,
+    });
+    for (const file of files) {
+      if (!file.isFile()) {
+        continue;
+      }
+      if (file.name.endsWith(".a") || file.name.endsWith(".la")) {
+        rmSync(path.join(libDir, file.name), {
+          force: true,
+        });
+      }
+    }
+  }
+};
 
 if (isWindows) {
-  const remotionBinDir = path.join(process.cwd(), "remotion", "bin");
   copyFileSync(
     "libwinpthread-1.dll",
     path.join(remotionLibDir, "libwinpthread-1.dll")
@@ -48,6 +143,35 @@ if (isWindows) {
     }
   }
 }
+
+const stripTool = getStripTool();
+if (stripTool) {
+  const stripArgs =
+    process.platform === "darwin" ? ["-x"] : ["--strip-unneeded"];
+  stripFilesInDir(
+    remotionBinDir,
+    (fileName) => (isWindows ? fileName.endsWith(".exe") : true),
+    stripTool,
+    stripArgs
+  );
+  stripFilesInDir(
+    remotionLibDir,
+    (fileName) =>
+      isWindows
+        ? fileName.endsWith(".dll")
+        : fileName.endsWith(".dylib") || fileName.includes(".so"),
+    stripTool,
+    stripArgs
+  );
+  stripFilesInDir(
+    remotionLib64Dir,
+    (fileName) => fileName.endsWith(".dylib") || fileName.includes(".so"),
+    stripTool,
+    stripArgs
+  );
+}
+
+removeDevArtifacts();
 
 execSync(`tar cvzf ffmpeg.tar.gz ${PREFIX} bindings.rs`, {
   stdio: "inherit",

@@ -29,7 +29,6 @@ if (existsSync("/opt/homebrew/opt/sdl2/lib/libSDL2-2.0.0.dylib")) {
 const decoders = [
   "aac",
   "ac3",
-  "av1",
   "flac",
   "h264",
   "hevc",
@@ -197,6 +196,11 @@ const extraLdFlags = [
 
 execSync("cp -r remotion ffmpeg", { stdio: "inherit" });
 
+const pkgConfigDirs = [
+  path.join(process.cwd(), PREFIX, "lib", "pkgconfig"),
+  path.join(process.cwd(), PREFIX, "lib64", "pkgconfig"),
+];
+
 execSync(
   [
     path.posix.join(process.cwd().replace(/\\/g, "/"), "ffmpeg", "configure"),
@@ -213,6 +217,7 @@ execSync(
     "--enable-small",
     "--enable-shared",
     "--enable-libdav1d",
+    "--enable-libaom",
     "--enable-libzimg",
     "--enable-libfdk-aac",
     "--disable-static",
@@ -250,6 +255,7 @@ execSync(
     "--enable-filter=tonemap",
     "--enable-filter=copy",
     "--disable-doc",
+    "--disable-debug",
     "--enable-gpl",
     "--enable-nonfree",
     "--disable-encoders",
@@ -262,6 +268,7 @@ execSync(
     "--enable-encoder=pcm_s24le",
     "--enable-encoder=libx264",
     "--enable-encoder=libx265",
+    "--enable-encoder=libaom-av1",
     "--enable-libvpx",
     "--enable-encoder=libvpx_vp8",
     "--enable-encoder=libvpx_vp9",
@@ -295,7 +302,7 @@ execSync(
   {
     env: {
       ...process.env,
-      PKG_CONFIG_PATH: path.join(process.cwd(), PREFIX) + "/lib/pkgconfig",
+      PKG_CONFIG_PATH: pkgConfigDirs.join(path.delimiter),
     },
     cwd: "ffmpeg",
     stdio: "inherit",
