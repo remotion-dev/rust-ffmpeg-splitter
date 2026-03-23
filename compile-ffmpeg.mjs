@@ -119,7 +119,6 @@ if (!existsSync(PREFIX)) {
   fs.mkdirSync(PREFIX);
 }
 
-execSync("git config --global advice.detachedHead false");
 const isWindows = process.argv.includes("windows");
 const isMusl = process.argv.includes("musl");
 const isOldCmake = process.argv.includes("old-cmake");
@@ -268,7 +267,7 @@ execSync(
     "--enable-encoder=pcm_s24le",
     "--enable-encoder=libx264",
     "--enable-encoder=libx265",
-    "--enable-encoder=libaom-av1",
+    "--enable-encoder=libaom_av1",
     "--enable-libvpx",
     "--enable-encoder=libvpx_vp8",
     "--enable-encoder=libvpx_vp9",
