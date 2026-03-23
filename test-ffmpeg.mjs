@@ -31,6 +31,16 @@ if (exit1.status !== 0) {
 }
 assert(exit1.status === 0);
 
+const encoders = spawnSync(ffmpegBinary, ["-hide_banner", "-encoders"], {
+  env,
+});
+if (encoders.status !== 0) {
+  console.log(encoders.stderr.toString("utf8"));
+  console.log(encoders.stdout.toString("utf8"));
+}
+assert(encoders.status === 0);
+assert(encoders.stdout.toString("utf8").includes("libaom-av1"));
+
 const exit2 = spawnSync(
   ffmpegBinary,
   ["-i", "sample-5s.webm", "-t", "1", "out-test.mp4", "-y"],
@@ -143,4 +153,24 @@ const exit6 = spawnSync(
   }
 );
 assert(exit6.status === 0);
+
+const exit7 = spawnSync(
+  ffmpegBinary,
+  [
+    "-i",
+    "sample.mp4",
+    "-frames:v",
+    "1",
+    "-an",
+    "-c:v",
+    "libaom-av1",
+    "out-test-libaom-av1.mkv",
+    "-y",
+  ],
+  {
+    env,
+    stdio: "inherit",
+  }
+);
+assert(exit7.status === 0);
 console.log("Hooray!");
