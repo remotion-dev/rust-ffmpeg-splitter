@@ -179,7 +179,12 @@ const enableLibaom = (isWindows) => {
   });
 };
 
-export const enableAv1 = (isWindows) => {
+export const enableAv1 = ({
+  isWindows,
+  enableEncoder,
+}) => {
   enableDav1d(isWindows);
-  enableLibaom(isWindows);
+  if (enableEncoder) {
+    enableLibaom(isWindows);
+  }
 };

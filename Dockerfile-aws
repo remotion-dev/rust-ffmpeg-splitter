@@ -26,5 +26,5 @@ RUN yum install yasm nasm unzip curl gcc gcc-c++ tar git make ca-certificates pk
 RUN cd app && CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++" LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++" node compile-ffmpeg.mjs old-cmake
 RUN source "$HOME/.cargo/env" && cd app && node generate-bindings.mjs
 RUN source "$HOME/.cargo/env" && cd app && node zip.mjs
-RUN source "$HOME/.cargo/env" && cd app && node test-ffmpeg.mjs
+RUN source "$HOME/.cargo/env" && cd app && EXPECT_AV1_ENCODER=0 node test-ffmpeg.mjs
 

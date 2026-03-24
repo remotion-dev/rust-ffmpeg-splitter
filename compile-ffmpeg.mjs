@@ -122,9 +122,15 @@ if (!existsSync(PREFIX)) {
 const isWindows = process.argv.includes("windows");
 const isMusl = process.argv.includes("musl");
 const isOldCmake = process.argv.includes("old-cmake");
+const isLambdaTarget =
+  process.platform === "linux" &&
+  process.arch === "arm64" &&
+  !isMusl &&
+  !isWindows;
+const shouldEnableAv1Encoder = !isLambdaTarget;
 
 await enableFdkAac(isWindows);
-enableAv1(isWindows);
+enableAv1({ isWindows, enableEncoder: shouldEnableAv1Encoder });
 enableZimg(isWindows);
 enableVpx(isWindows);
 enableX264(isMusl, isWindows);
@@ -216,7 +222,7 @@ execSync(
     "--enable-small",
     "--enable-shared",
     "--enable-libdav1d",
-    "--enable-libaom",
+    shouldEnableAv1Encoder ? "--enable-libaom" : null,
     "--enable-libzimg",
     "--enable-libfdk-aac",
     "--disable-static",
@@ -267,7 +273,7 @@ execSync(
     "--enable-encoder=pcm_s24le",
     "--enable-encoder=libx264",
     "--enable-encoder=libx265",
-    "--enable-encoder=libaom_av1",
+    shouldEnableAv1Encoder ? "--enable-encoder=libaom_av1" : null,
     "--enable-libvpx",
     "--enable-encoder=libvpx_vp8",
     "--enable-encoder=libvpx_vp9",
