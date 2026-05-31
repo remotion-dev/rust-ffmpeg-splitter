@@ -2,7 +2,7 @@ import { execSync } from "child_process";
 import { existsSync } from "fs";
 import { PREFIX } from "./const.mjs";
 
-const NV_CODEC_HEADERS_TAG = "n12.2.16.0";
+const NV_CODEC_HEADERS_TAG = "n12.2.72.0";
 
 export const enableNvencHeaders = (isWindows) => {
 	// Only install on native Linux builds (not macOS, not Windows cross-compile)
