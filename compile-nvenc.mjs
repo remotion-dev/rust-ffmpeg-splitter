@@ -1,3 +1,4 @@
+import path from "path";
 import { execSync } from "child_process";
 import { existsSync } from "fs";
 import { PREFIX } from "./const.mjs";
@@ -26,7 +27,12 @@ export const enableNvencHeaders = (isWindows) => {
 		stdio: "inherit",
 	});
 
-	execSync(`make install PREFIX=${PREFIX}`, {
+	// Install into the shared top-level PREFIX dir so FFmpeg's PKG_CONFIG_PATH
+	// (which points at <cwd>/remotion/lib/pkgconfig) can find ffnvcodec.pc.
+	// Using a relative PREFIX here would install into nv-codec-headers/remotion
+	// and FFmpeg would silently disable h264_nvenc / hevc_nvenc.
+	const installPrefix = path.join(process.cwd(), PREFIX);
+	execSync(`make install PREFIX=${installPrefix}`, {
 		cwd: "nv-codec-headers",
 		stdio: "inherit",
 	});
