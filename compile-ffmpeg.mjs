@@ -129,6 +129,8 @@ const isLambdaTarget =
   !isMusl &&
   !isWindows;
 const shouldEnableAv1Encoder = !isLambdaTarget;
+const shouldEnableNvenc =
+  process.platform === "linux" && (isWindows || process.arch !== "arm64");
 
 await enableFdkAac(isWindows);
 enableAv1({ isWindows, enableEncoder: shouldEnableAv1Encoder });
@@ -138,7 +140,7 @@ enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows, isOldCmake);
 enableLibMp3Lame(isWindows);
 enableOpus(isWindows);
-enableNvencHeaders(isWindows);
+enableNvencHeaders(shouldEnableNvenc);
 
 const TAG = "n7.1";
 
@@ -290,12 +292,8 @@ execSync(
     process.platform === "darwin"
       ? "--enable-encoder=prores_videotoolbox"
       : null,
-    !isWindows && process.platform === "linux"
-      ? "--enable-encoder=h264_nvenc"
-      : null,
-    !isWindows && process.platform === "linux"
-      ? "--enable-encoder=hevc_nvenc"
-      : null,
+    shouldEnableNvenc ? "--enable-encoder=h264_nvenc" : null,
+    shouldEnableNvenc ? "--enable-encoder=hevc_nvenc" : null,
     "--disable-muxers",
     "--enable-muxer=webm,opus,mp4,wav,mp3,mov,matroska,hevc,h264,gif,image2,image2pipe,adts,m4a,mpegts,null,avi",
     "--enable-libx264",
