@@ -12,6 +12,7 @@ import { enableAv1 } from "./compile-av1.mjs";
 import { enableFdkAac } from "./compile-fdkaac.mjs";
 import { enableZimg } from "./compile-zimg.mjs";
 import { fixLinuxLinks } from "./fix-linux-links.mjs";
+import { enableNvencHeaders } from "./compile-nvenc.mjs";
 
 if (existsSync("/opt/homebrew/opt/libx11/lib/libX11.6.dylib")) {
   console.log(
@@ -128,6 +129,8 @@ const isLambdaTarget =
   !isMusl &&
   !isWindows;
 const shouldEnableAv1Encoder = !isLambdaTarget;
+const shouldEnableNvenc =
+  process.platform === "linux" && (isWindows || process.arch !== "arm64");
 
 await enableFdkAac(isWindows);
 enableAv1({ isWindows, enableEncoder: shouldEnableAv1Encoder });
@@ -137,6 +140,7 @@ enableX264(isMusl, isWindows);
 enableX265(isMusl, isWindows, isOldCmake);
 enableLibMp3Lame(isWindows);
 enableOpus(isWindows);
+enableNvencHeaders(shouldEnableNvenc);
 
 const TAG = "n7.1";
 
@@ -288,6 +292,8 @@ execSync(
     process.platform === "darwin"
       ? "--enable-encoder=prores_videotoolbox"
       : null,
+    shouldEnableNvenc ? "--enable-encoder=h264_nvenc" : null,
+    shouldEnableNvenc ? "--enable-encoder=hevc_nvenc" : null,
     "--disable-muxers",
     "--enable-muxer=webm,opus,mp4,wav,mp3,mov,matroska,hevc,h264,gif,image2,image2pipe,adts,m4a,mpegts,null,avi",
     "--enable-libx264",
