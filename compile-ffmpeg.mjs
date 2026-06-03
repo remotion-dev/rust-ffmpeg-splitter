@@ -267,6 +267,8 @@ execSync(
     "--disable-debug",
     "--enable-gpl",
     "--enable-nonfree",
+    shouldEnableNvenc ? "--enable-ffnvcodec" : null,
+    shouldEnableNvenc ? "--enable-nvenc" : null,
     "--disable-encoders",
     "--enable-encoder=opus",
     "--enable-encoder=aac",
@@ -319,6 +321,23 @@ execSync(
     stdio: "inherit",
   }
 );
+
+if (shouldEnableNvenc) {
+  const configMak = fs.readFileSync(
+    path.join("ffmpeg", "ffbuild", "config.mak"),
+    "utf8"
+  );
+  for (const config of [
+    "CONFIG_FFNVCODEC",
+    "CONFIG_NVENC",
+    "CONFIG_H264_NVENC_ENCODER",
+    "CONFIG_HEVC_NVENC_ENCODER",
+  ]) {
+    if (!configMak.includes(`${config}=yes`)) {
+      throw new Error(`Expected FFmpeg configure to enable ${config}`);
+    }
+  }
+}
 
 execSync("make clean", {
   cwd: "ffmpeg",
