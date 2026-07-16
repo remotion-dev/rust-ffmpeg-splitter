@@ -11,9 +11,7 @@ COPY opus.gz app/opus.gz
 COPY sample-5s.webm app/sample-5s.webm
 COPY sample.mp4 app/sample.mp4
 COPY sample-av1.webm app/sample-av1.webm
-COPY aac.patch app/aac.patch
-COPY hevc_ps.patch app/hevc_ps.patch
-COPY x265-api.patch app/x265-api.patch
+COPY *.patch app/
 
 RUN apk add curl 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -23,4 +21,3 @@ RUN cd app && CFLAGS="$CFLAGS -static-libgcc" CXXFLAGS="$CXXFLAGS -static-libgcc
 RUN source "$HOME/.cargo/env" && cd app && node generate-bindings.mjs musl
 RUN source "$HOME/.cargo/env" && cd app && node zip.mjs
 RUN source "$HOME/.cargo/env" && cd app && node test-ffmpeg.mjs
-
