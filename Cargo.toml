@@ -3,6 +3,7 @@ name = "ffmpeg-splitter"
 version = "0.1.0"
 authors = ["Jonny Burger <jonny@remotion.dev>"]
 edition = "2021"
+license = "GPL-2.0-or-later"
 
 [[bin]]
 name = "split"

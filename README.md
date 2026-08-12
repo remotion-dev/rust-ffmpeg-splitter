@@ -36,3 +36,7 @@ These 7 files are added to the fork of the [`rust-ffmpeg-sys`](https://github.co
 Once committed and pushed to GitHub, the commit ID is copied and added to the [`rust-ffmpeg`](https://github.com/remotion-dev/rust-ffmpeg) crate in the [`Cargo.toml`] file. Fork this repository as well if necessary and change the repository name to your fork.
 
 Once this is committed and pushed to GitHub, the main Remotion repository references the `rust-ffmpeg` repository in the [`Cargo.toml`](https://github.com/remotion-dev/remotion/blob/main/packages/Cargo.toml#L22) file.
+
+## License
+
+This project is licensed under the GNU General Public License, version 2 or (at your option) any later version. See [LICENSE](LICENSE).
