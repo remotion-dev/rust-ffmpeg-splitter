@@ -4,6 +4,12 @@ import { PREFIX } from "./const.mjs";
 
 export const enableX265 = (isMusl, isWindows, isOldCmake) => {
   if (isWindows) {
+    // The checked-in x265-windows artifacts come from:
+    // https://github.com/videolan/x265/tree/419182243fb2e2dfbe91dfc45a51778cf704f849
+    // (2020-12-15, tag 3.4 + 28 commits, X265_BUILD 198). They were built for
+    // 64-bit Windows at 8-bit depth with MSYS2 GCC 12.2.0. The source revision
+    // is corroborated by X265_BUILD in x265_config.h, the version string
+    // "3.4+28-419182243" in libx265.a, and X265_BUILD in source/CMakeLists.txt.
     execSync("cp x265-windows/lib/libx265.a remotion/lib/libx265.a");
     execSync(
       "cp x265-windows/lib/pkgconfig/x265.pc remotion/lib/pkgconfig/x265.pc"
