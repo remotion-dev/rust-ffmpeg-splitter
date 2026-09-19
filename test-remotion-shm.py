@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """End-to-end test for the Remotion POSIX shared-memory FFmpeg input."""
 
+import json
 import os
-from pathlib import Path
 import queue
 import subprocess
 import sys
@@ -10,6 +10,7 @@ import tempfile
 import threading
 import time
 from multiprocessing import resource_tracker, shared_memory
+from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parent
@@ -19,6 +20,7 @@ FFMPEG = Path(os.environ.get(
     "REMOTION_FFMPEG_BIN",
     DEFAULT_BINARY if DEFAULT_BINARY.exists() else LOCAL_BINARY,
 ))
+FFPROBE = Path(os.environ.get("REMOTION_FFPROBE_BIN", FFMPEG.with_name("ffprobe")))
 
 
 def ffmpeg_environment():
@@ -294,19 +296,25 @@ def main():
                 frame_id_base + index for index in range(frame_count)
             ]
 
-            decoded = subprocess.check_output(
-                [
-                    str(FFMPEG),
-                    "-v", "error",
-                    "-i", str(output),
-                    "-map", "0:v:0",
-                    "-pix_fmt", "bgra",
-                    "-c:v", "rawvideo",
-                    "-f", "rawvideo",
-                    "pipe:1",
-                ],
-                env=environment,
+            packet_metadata = json.loads(
+                subprocess.check_output(
+                    [
+                        str(FFPROBE),
+                        "-v", "error",
+                        "-select_streams", "v:0",
+                        "-show_entries", "packet=pos,size",
+                        "-of", "json",
+                        str(output),
+                    ],
+                    env=environment,
+                    text=True,
+                )
             )
+            decoded = bytearray()
+            with output.open("rb") as output_file:
+                for packet in packet_metadata["packets"]:
+                    output_file.seek(int(packet["pos"]))
+                    decoded.extend(output_file.read(int(packet["size"])))
             assert decoded == expected
             print(
                 f"validated {frame_count} exact BGRA frames across "
