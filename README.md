@@ -21,6 +21,7 @@ macOS and Linux builds also include the private [`remotionshm`](REMOTION_SHM.md)
 input device used to pass Chromium BGRA frames through POSIX shared memory.
 `test-ffmpeg.mjs` runs its multi-pool integration test when Python 3 is
 available.
+macOS outputs target macOS 15.0, matching the existing Remotion binaries.
 
 ## Relation to Remotion repository
 

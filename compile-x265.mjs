@@ -1,6 +1,6 @@
 import fs, { readFileSync } from "fs";
 import { execSync } from "child_process";
-import { PREFIX } from "./const.mjs";
+import { MACOS_DEPLOYMENT_TARGET, PREFIX } from "./const.mjs";
 
 export const enableX265 = (isMusl, isWindows, isOldCmake) => {
   if (isWindows) {
@@ -70,6 +70,8 @@ export const enableX265 = (isMusl, isWindows, isOldCmake) => {
     CMAKE_RC_COMPILER: isWindows ? "x86_64-w64-mingw32-windres" : undefined,
     CMAKE_RANLIB: isWindows ? "x86_64-w64-mingw32-ranlib" : undefined,
     CMAKE_SYSTEM_NAME: isWindows ? "Windows" : undefined,
+    MACOSX_DEPLOYMENT_TARGET:
+      process.platform === "darwin" ? MACOS_DEPLOYMENT_TARGET : undefined,
     CMAKE_ASM_YASM_COMPILER: isWindows ? "yasm" : undefined,
     CMAKE_CXX_FLAGS: isWindows
       ? "-static-libgcc -static-libstdc++ -static -O3 -s"
@@ -84,7 +86,7 @@ export const enableX265 = (isMusl, isWindows, isOldCmake) => {
       ? "-static-libgcc -static-libstdc++ -static -O3 -s"
       : undefined,
     CMAKE_INSTALL_PREFIX: PREFIX,
-    CFLAGS: extraCFlags.join(" "),
+    CFLAGS: [process.env.CFLAGS, ...extraCFlags].filter(Boolean).join(" "),
   };
 
   // Determine whether to use 'cmake' or 'cmake3'
@@ -109,6 +111,9 @@ export const enableX265 = (isMusl, isWindows, isOldCmake) => {
       "-DSTATIC_LINK_CRT:BOOL=" + (staticallyLinkCLibrary ? "ON" : "OFF"),
       "-DENABLE_PIC=ON",
       "-DENABLE_CLI:BOOL=OFF",
+      process.platform === "darwin"
+        ? `-DCMAKE_OSX_DEPLOYMENT_TARGET=${MACOS_DEPLOYMENT_TARGET}`
+        : null,
       "source",
     ]
       .filter(Boolean)

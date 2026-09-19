@@ -1,6 +1,9 @@
 import { execSync, spawnSync } from "child_process";
 import path from "path";
 import assert from "assert";
+import { verifyMacOSDeploymentTarget } from "./verify-macos-deployment-target.mjs";
+
+verifyMacOSDeploymentTarget();
 
 const lib = path.join(process.cwd(), "remotion", "lib");
 
