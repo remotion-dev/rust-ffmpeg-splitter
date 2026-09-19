@@ -150,7 +150,7 @@ enableNvencHeaders(shouldEnableNvenc);
 const TAG = "n7.1";
 
 if (fs.existsSync("ffmpeg")) {
-  execSync("git stash", {
+  execSync("git stash --include-untracked", {
     stdio: "inherit",
     cwd: "ffmpeg",
   });
