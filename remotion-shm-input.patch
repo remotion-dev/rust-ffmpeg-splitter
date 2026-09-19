@@ -52,10 +52,10 @@ index 9b9a9146c7d7bef71c2107abfdf348c705dc5eb5..4cc16ba0898b7a41a425649c5497e1c1
  extern const FFInputFormat  ff_oss_demuxer;
 diff --git a/libavdevice/remotionshm.c b/libavdevice/remotionshm.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..9a2e4b27124ae9e8607f42949a4f09582d1574e7
+index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f610deeb7
 --- /dev/null
 +++ b/libavdevice/remotionshm.c
-@@ -0,0 +1,940 @@
+@@ -0,0 +1,946 @@
 +/*
 + * Remotion POSIX shared-memory video input device
 + *
@@ -96,7 +96,6 @@ index 0000000000000000000000000000000000000000..9a2e4b27124ae9e8607f42949a4f0958
 +#include "libavformat/avformat.h"
 +#include "libavformat/demux.h"
 +#include "libavformat/internal.h"
-+#include "libavformat/url.h"
 +#include "libavutil/buffer.h"
 +#include "libavutil/common.h"
 +#include "libavutil/error.h"
@@ -169,6 +168,13 @@ index 0000000000000000000000000000000000000000..9a2e4b27124ae9e8607f42949a4f0958
 +    size_t control_buffer_size;
 +    RemotionShmSession *session;
 +} RemotionShmContext;
++
++static int remotionshm_interrupted(const AVFormatContext *avctx)
++{
++    const AVIOInterruptCB *callback = &avctx->interrupt_callback;
++
++    return callback->callback && callback->callback(callback->opaque);
++}
 +
 +static void remotionshm_set_ack_error(RemotionShmSession *session, int error)
 +{
@@ -468,7 +474,7 @@ index 0000000000000000000000000000000000000000..9a2e4b27124ae9e8607f42949a4f0958
 +            poll_result = poll(descriptors, FF_ARRAY_ELEMS(descriptors), -1);
 +            if (poll_result < 0) {
 +                if (errno == EINTR) {
-+                    if (ff_check_interrupt(&avctx->interrupt_callback))
++                    if (remotionshm_interrupted(avctx))
 +                        return AVERROR_EXIT;
 +                    continue;
 +                }
@@ -507,7 +513,7 @@ index 0000000000000000000000000000000000000000..9a2e4b27124ae9e8607f42949a4f0958
 +        }
 +        if (read_size < 0) {
 +            if (errno == EINTR) {
-+                if (ff_check_interrupt(&avctx->interrupt_callback))
++                if (remotionshm_interrupted(avctx))
 +                    return AVERROR_EXIT;
 +                continue;
 +            }
