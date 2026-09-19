@@ -32,6 +32,19 @@ if (exit1.status !== 0) {
 }
 assert(exit1.status === 0);
 
+const devices = spawnSync(ffmpegBinary, ["-hide_banner", "-devices"], {
+  env,
+});
+if (devices.status !== 0) {
+  console.log(devices.stderr.toString("utf8"));
+  console.log(devices.stdout.toString("utf8"));
+}
+assert(devices.status === 0);
+assert.equal(
+  devices.stdout.toString("utf8").includes("remotionshm"),
+  process.platform !== "win32"
+);
+
 const encoders = spawnSync(ffmpegBinary, ["-hide_banner", "-encoders"], {
   env,
 });
@@ -177,5 +190,20 @@ if (shouldHaveAv1Encoder) {
     }
   );
   assert(exit7.status === 0);
+}
+
+if (process.platform !== "win32") {
+  const python = spawnSync("python3", ["--version"], { env });
+  if (python.status === 0) {
+    const sharedMemoryTest = spawnSync("python3", ["test-remotion-shm.py"], {
+      env,
+      stdio: "inherit",
+    });
+    assert(sharedMemoryTest.status === 0);
+  } else {
+    console.log(
+      "Skipping shared-memory integration test: python3 is unavailable"
+    );
+  }
 }
 console.log("Hooray!");

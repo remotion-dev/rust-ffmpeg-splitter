@@ -27,6 +27,13 @@ if (existsSync("/opt/homebrew/opt/sdl2/lib/libSDL2-2.0.0.dylib")) {
   );
   process.exit(1);
 }
+
+const isWindows = process.argv.includes("windows");
+const isMusl = process.argv.includes("musl");
+const isOldCmake = process.argv.includes("old-cmake");
+const shouldEnableRemotionShm =
+  !isWindows && ["darwin", "linux"].includes(process.platform);
+
 const decoders = [
   "aac",
   "ac3",
@@ -72,6 +79,7 @@ const decoders = [
   "hls",
   "m4a",
   "rawvideo",
+  shouldEnableRemotionShm ? "wrapped_avframe" : null,
   process.platform === "darwin" ? "h264_videotoolbox" : null,
   process.platform === "darwin" ? "hevc_videotoolbox" : null,
 ].filter(Boolean);
@@ -120,9 +128,6 @@ if (!existsSync(PREFIX)) {
   fs.mkdirSync(PREFIX);
 }
 
-const isWindows = process.argv.includes("windows");
-const isMusl = process.argv.includes("musl");
-const isOldCmake = process.argv.includes("old-cmake");
 const isLambdaTarget =
   process.platform === "linux" &&
   process.arch === "arm64" &&
@@ -173,6 +178,9 @@ if (fs.existsSync("ffmpeg")) {
   execSync("git apply fdk-aac-free.patch --directory ffmpeg", {
     stdio: "inherit",
   });
+  execSync("git apply remotion-shm-input.patch --directory ffmpeg", {
+    stdio: "inherit",
+  });
 } else {
   execSync("git clone https://github.com/ffmpeg/ffmpeg.git", {
     stdio: "inherit",
@@ -191,6 +199,9 @@ if (fs.existsSync("ffmpeg")) {
     stdio: "inherit",
   });
   execSync("git apply fdk-aac-free.patch --directory ffmpeg", {
+    stdio: "inherit",
+  });
+  execSync("git apply remotion-shm-input.patch --directory ffmpeg", {
     stdio: "inherit",
   });
 }
@@ -309,6 +320,7 @@ execSync(
     "--disable-demuxers",
     "--disable-sdl2",
     "--disable-xlib",
+    shouldEnableRemotionShm ? "--enable-indev=remotionshm" : null,
     `--enable-demuxer=${demuxers.map((d) => d).join(",")}`,
     "--disable-decoders",
     `--enable-decoder=${decoders.map((d) => d).join(",")}`,
