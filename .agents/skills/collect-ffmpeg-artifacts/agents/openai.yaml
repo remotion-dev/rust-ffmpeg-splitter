@@ -1,0 +1,4 @@
+interface:
+  display_name: "Collect FFmpeg Artifacts"
+  short_description: "Collect seven CI-built FFmpeg archives"
+  default_prompt: "Use $collect-ffmpeg-artifacts to download and verify the seven CI artifacts for a splitter commit."
