@@ -1,7 +1,7 @@
 import { execSync } from "child_process";
 import { join, dirname } from "node:path";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
-import { PREFIX } from "./const.mjs";
+import { MACOS_DEPLOYMENT_TARGET, PREFIX } from "./const.mjs";
 
 const getCmakeCommand = () => {
   try {
@@ -148,6 +148,9 @@ const enableLibaom = (isWindows) => {
       "-DCONFIG_AV1_DECODER=0",
       "-DCONFIG_AV1_ENCODER=1",
       "-DCONFIG_AV1_HIGHBITDEPTH=0",
+      process.platform === "darwin"
+        ? `-DCMAKE_OSX_DEPLOYMENT_TARGET=${MACOS_DEPLOYMENT_TARGET}`
+        : null,
       isWindows ? "-DCMAKE_SYSTEM_NAME=Windows" : null,
       isWindows ? `-DCMAKE_C_COMPILER=${windowsToolchain.cc}` : null,
       isWindows ? `-DCMAKE_CXX_COMPILER=${windowsToolchain.cxx}` : null,

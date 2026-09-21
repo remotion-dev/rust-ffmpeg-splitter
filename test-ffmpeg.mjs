@@ -1,6 +1,9 @@
 import { execSync, spawnSync } from "child_process";
 import path from "path";
 import assert from "assert";
+import { verifyMacOSDeploymentTarget } from "./verify-macos-deployment-target.mjs";
+
+verifyMacOSDeploymentTarget();
 
 const lib = path.join(process.cwd(), "remotion", "lib");
 
@@ -31,6 +34,19 @@ if (exit1.status !== 0) {
   console.log(exit1.stdout.toString("utf8"));
 }
 assert(exit1.status === 0);
+
+const devices = spawnSync(ffmpegBinary, ["-hide_banner", "-devices"], {
+  env,
+});
+if (devices.status !== 0) {
+  console.log(devices.stderr.toString("utf8"));
+  console.log(devices.stdout.toString("utf8"));
+}
+assert(devices.status === 0);
+assert.equal(
+  devices.stdout.toString("utf8").includes("remotionshm"),
+  process.platform !== "win32"
+);
 
 const encoders = spawnSync(ffmpegBinary, ["-hide_banner", "-encoders"], {
   env,
@@ -177,5 +193,33 @@ if (shouldHaveAv1Encoder) {
     }
   );
   assert(exit7.status === 0);
+}
+
+if (process.platform !== "win32") {
+  const python = ["python3", "python3.8"].find((candidate) => {
+    const check = spawnSync(
+      candidate,
+      ["-c", "from multiprocessing import resource_tracker, shared_memory"],
+      { env, stdio: "ignore" }
+    );
+    return check.status === 0;
+  });
+  if (python) {
+    const sharedMemoryTest = spawnSync(python, ["test-remotion-shm.py"], {
+      env,
+      stdio: "inherit",
+    });
+    assert(sharedMemoryTest.status === 0);
+  } else if (
+    spawnSync("python3", ["--version"], { env, stdio: "ignore" }).status === 0
+  ) {
+    throw new Error(
+      "Shared-memory integration test requires Python 3.8+ with multiprocessing.shared_memory"
+    );
+  } else {
+    console.log(
+      "Skipping shared-memory integration test: Python with multiprocessing.shared_memory is unavailable"
+    );
+  }
 }
 console.log("Hooray!");

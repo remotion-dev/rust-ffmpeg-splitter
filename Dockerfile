@@ -4,6 +4,7 @@ RUN mkdir -p app
 COPY Cargo.toml app/Cargo.toml
 COPY Cargo.lock app/Cargo.lock
 COPY *.mjs app/
+COPY test-remotion-shm.py app/test-remotion-shm.py
 COPY *.rs app/
 COPY libmp3lame.zip app/libmp3lame.zip
 COPY vpx.gz app/vpx.gz

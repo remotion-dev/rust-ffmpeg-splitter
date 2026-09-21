@@ -2,7 +2,7 @@ import path from "path";
 import fs, { existsSync } from "fs";
 import { execSync } from "child_process";
 import { fixMacOsLinks } from "./fix-links.mjs";
-import { PREFIX } from "./const.mjs";
+import { MACOS_DEPLOYMENT_TARGET, PREFIX } from "./const.mjs";
 import { enableX264 } from "./compile-x264.mjs";
 import { enableX265 } from "./compile-x265.mjs";
 import { enableLibMp3Lame } from "./compile-libmp3lame.mjs";
@@ -13,6 +13,57 @@ import { enableFdkAac } from "./compile-fdkaac.mjs";
 import { enableZimg } from "./compile-zimg.mjs";
 import { fixLinuxLinks } from "./fix-linux-links.mjs";
 import { enableNvencHeaders } from "./compile-nvenc.mjs";
+import { verifyMacOSDeploymentTarget } from "./verify-macos-deployment-target.mjs";
+
+const macOsDeploymentFlag = `-mmacosx-version-min=${MACOS_DEPLOYMENT_TARGET}`;
+
+if (process.platform === "darwin") {
+  process.env.MACOSX_DEPLOYMENT_TARGET = MACOS_DEPLOYMENT_TARGET;
+  for (const variable of ["CFLAGS", "CXXFLAGS", "LDFLAGS"]) {
+    const current = process.env[variable] ?? "";
+    process.env[variable] = current
+      .split(/\s+/)
+      .filter(Boolean)
+      .includes(macOsDeploymentFlag)
+      ? current
+      : [current, macOsDeploymentFlag].filter(Boolean).join(" ");
+  }
+
+  console.log(
+    `Building all macOS objects for macOS ${MACOS_DEPLOYMENT_TARGET} or later`
+  );
+
+  for (const directory of [
+    "fdk-aac-free-2.0.0",
+    "zimg",
+    "libvpx-1.12.0",
+    "x264",
+    "x265",
+    "libmp3lame",
+    "opus-1.3.1",
+  ]) {
+    if (existsSync(path.join(directory, "Makefile"))) {
+      execSync("make clean", { cwd: directory, stdio: "inherit" });
+    }
+  }
+
+  for (const buildOutput of [
+    PREFIX,
+    "fdk-aac-free-2.0.0/remotion",
+    "av1/build",
+    "aom-build",
+    "aom/remotion",
+    "zimg/remotion",
+    "libvpx-1.12.0/remotion",
+    "x264/remotion",
+    "x265/remotion",
+    "libmp3lame/remotion",
+    "opus-1.3.1/remotion",
+    "ffmpeg/remotion",
+  ]) {
+    fs.rmSync(buildOutput, { force: true, recursive: true });
+  }
+}
 
 if (existsSync("/opt/homebrew/opt/libx11/lib/libX11.6.dylib")) {
   console.log(
@@ -27,6 +78,13 @@ if (existsSync("/opt/homebrew/opt/sdl2/lib/libSDL2-2.0.0.dylib")) {
   );
   process.exit(1);
 }
+
+const isWindows = process.argv.includes("windows");
+const isMusl = process.argv.includes("musl");
+const isOldCmake = process.argv.includes("old-cmake");
+const shouldEnableRemotionShm =
+  !isWindows && ["darwin", "linux"].includes(process.platform);
+
 const decoders = [
   "aac",
   "ac3",
@@ -72,6 +130,7 @@ const decoders = [
   "hls",
   "m4a",
   "rawvideo",
+  shouldEnableRemotionShm ? "wrapped_avframe" : null,
   process.platform === "darwin" ? "h264_videotoolbox" : null,
   process.platform === "darwin" ? "hevc_videotoolbox" : null,
 ].filter(Boolean);
@@ -120,9 +179,6 @@ if (!existsSync(PREFIX)) {
   fs.mkdirSync(PREFIX);
 }
 
-const isWindows = process.argv.includes("windows");
-const isMusl = process.argv.includes("musl");
-const isOldCmake = process.argv.includes("old-cmake");
 const isLambdaTarget =
   process.platform === "linux" &&
   process.arch === "arm64" &&
@@ -145,7 +201,7 @@ enableNvencHeaders(shouldEnableNvenc);
 const TAG = "n7.1";
 
 if (fs.existsSync("ffmpeg")) {
-  execSync("git stash", {
+  execSync("git stash --include-untracked", {
     stdio: "inherit",
     cwd: "ffmpeg",
   });
@@ -173,6 +229,9 @@ if (fs.existsSync("ffmpeg")) {
   execSync("git apply fdk-aac-free.patch --directory ffmpeg", {
     stdio: "inherit",
   });
+  execSync("git apply remotion-shm-input.patch --directory ffmpeg", {
+    stdio: "inherit",
+  });
 } else {
   execSync("git clone https://github.com/ffmpeg/ffmpeg.git", {
     stdio: "inherit",
@@ -193,11 +252,15 @@ if (fs.existsSync("ffmpeg")) {
   execSync("git apply fdk-aac-free.patch --directory ffmpeg", {
     stdio: "inherit",
   });
+  execSync("git apply remotion-shm-input.patch --directory ffmpeg", {
+    stdio: "inherit",
+  });
 }
 
 const extraCFlags = [
   // TODO: should it always be static libgcc?
   isMusl ? "-static-libgcc" : null,
+  process.platform === "darwin" ? macOsDeploymentFlag : null,
   "-I" + PREFIX + "/include",
   "-I" + PREFIX + "/include/opus",
   "-I" + PREFIX + "/include/lame",
@@ -206,6 +269,7 @@ const extraCFlags = [
 
 const extraLdFlags = [
   "-L" + PREFIX + "/lib",
+  process.platform === "darwin" ? macOsDeploymentFlag : null,
   process.platform === "darwin" && process.arch === "arm64" ? "-Wl" : null,
 ].filter(Boolean);
 
@@ -309,6 +373,7 @@ execSync(
     "--disable-demuxers",
     "--disable-sdl2",
     "--disable-xlib",
+    shouldEnableRemotionShm ? "--enable-indev=remotionshm" : null,
     `--enable-demuxer=${demuxers.map((d) => d).join(",")}`,
     "--disable-decoders",
     `--enable-decoder=${decoders.map((d) => d).join(",")}`,
@@ -403,3 +468,5 @@ execSync("cp -r " + PREFIX + " ../", {
   cwd: "ffmpeg",
   stdio: "inherit",
 });
+
+verifyMacOSDeploymentTarget();

@@ -17,6 +17,12 @@ node generate-bindings.mjs
 node zip.mjs
 ```
 
+macOS and Linux builds also include the private [`remotionshm`](REMOTION_SHM.md)
+input device used to pass Chromium BGRA frames through POSIX shared memory.
+`test-ffmpeg.mjs` runs its multi-pool integration test when Python 3 is
+available.
+macOS outputs target macOS 15.0, matching the existing Remotion binaries.
+
 ## Relation to Remotion repository
 
 By running the above instructions on a macOS Apple Silicon machine, and by running it in a CircleCI pipeline (free tier works as long as this repo is kept open source) and downloading the artifacts, we obtain 7 zip files:
