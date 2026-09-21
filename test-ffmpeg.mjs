@@ -196,16 +196,29 @@ if (shouldHaveAv1Encoder) {
 }
 
 if (process.platform !== "win32") {
-  const python = spawnSync("python3", ["--version"], { env });
-  if (python.status === 0) {
-    const sharedMemoryTest = spawnSync("python3", ["test-remotion-shm.py"], {
+  const python = ["python3", "python3.8"].find((candidate) => {
+    const check = spawnSync(
+      candidate,
+      ["-c", "from multiprocessing import resource_tracker, shared_memory"],
+      { env, stdio: "ignore" }
+    );
+    return check.status === 0;
+  });
+  if (python) {
+    const sharedMemoryTest = spawnSync(python, ["test-remotion-shm.py"], {
       env,
       stdio: "inherit",
     });
     assert(sharedMemoryTest.status === 0);
+  } else if (
+    spawnSync("python3", ["--version"], { env, stdio: "ignore" }).status === 0
+  ) {
+    throw new Error(
+      "Shared-memory integration test requires Python 3.8+ with multiprocessing.shared_memory"
+    );
   } else {
     console.log(
-      "Skipping shared-memory integration test: python3 is unavailable"
+      "Skipping shared-memory integration test: Python with multiprocessing.shared_memory is unavailable"
     );
   }
 }
