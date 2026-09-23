@@ -425,12 +425,29 @@ def assert_file_pool_rejections(environment):
             nested_map.close()
 
 
+def posix_shared_memory_available():
+    # Linux implements shm_open() on /dev/shm; AWS Lambda and containers started
+    # with --ipc=none do not have it. macOS needs no filesystem mount.
+    return sys.platform == "darwin" or os.path.isdir("/dev/shm")
+
+
 def main():
     environment = ffmpeg_environment()
     if not assert_device_registration(environment):
         return
     assert_pool_dir_option(environment)
+    if not posix_shared_memory_available():
+        print("skipping POSIX shared-memory cases: no /dev/shm on this host")
+        assert_file_backed_pools(environment)
+        assert_file_pool_rejections(environment)
+        return
+    assert_posix_pools(environment)
+    assert_ack_failure_unblocks(environment)
+    assert_file_backed_pools(environment)
+    assert_file_pool_rejections(environment)
 
+
+def assert_posix_pools(environment):
     width, height = 32, 18
     stride = width * 4 + 32
     byte_length = stride * height
@@ -600,9 +617,6 @@ def main():
                 f"validated {frame_count} exact BGRA frames across "
                 f"{len(frame_pools)} pools with final-reference ACKs"
             )
-            assert_ack_failure_unblocks(environment)
-            assert_file_backed_pools(environment)
-            assert_file_pool_rejections(environment)
     finally:
         for descriptor in (control_read, control_write, ack_read, ack_write):
             if descriptor >= 0:
