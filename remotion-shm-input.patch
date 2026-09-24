@@ -1,5 +1,5 @@
 diff --git a/configure b/configure
-index d77a55b653c1534c5af9a067f570126d3f4c8c4b..4390e86e4e1b51f1426afd8e5ec47a330a2213be 100755
+index 0a615c665d3996de1eb161af4daa554cefc8f268..749c2c2f9631e218acadf08395426b7f3cb4e0e1 100755
 --- a/configure
 +++ b/configure
 @@ -2408,6 +2408,7 @@ SYSTEM_FUNCS="
@@ -52,12 +52,16 @@ index 9b9a9146c7d7bef71c2107abfdf348c705dc5eb5..4cc16ba0898b7a41a425649c5497e1c1
  extern const FFInputFormat  ff_oss_demuxer;
 diff --git a/libavdevice/remotionshm.c b/libavdevice/remotionshm.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f610deeb7
+index 0000000000000000000000000000000000000000..de3a15afd920e468a6f35310cf0c77804971f074
 --- /dev/null
 +++ b/libavdevice/remotionshm.c
-@@ -0,0 +1,946 @@
+@@ -0,0 +1,1075 @@
 +/*
-+ * Remotion POSIX shared-memory video input device
++ * Remotion shared-memory video input device
++ *
++ * Frame pools are either named POSIX shared-memory objects or, on hosts
++ * without POSIX shared memory such as AWS Lambda, regular files inside one
++ * caller-designated private directory that are mapped with MAP_SHARED.
 + *
 + * This file is part of FFmpeg.
 + *
@@ -113,9 +117,16 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +#define REMOTIONSHM_MAX_TOTAL_SLOTS 4096
 +#define REMOTIONSHM_MAX_POOLS REMOTIONSHM_MAX_TOTAL_SLOTS
 +#define REMOTIONSHM_MAX_SLOT_CAPACITY (512ULL * 1024 * 1024)
-+#define REMOTIONSHM_MAX_LINE 512
-+#define REMOTIONSHM_CONTROL_BUFFER_SIZE 4096
 +#define REMOTIONSHM_MAX_SHM_NAME 255
++#define REMOTIONSHM_MAX_POOL_PATH 4096
++#define REMOTIONSHM_MAX_LINE (REMOTIONSHM_MAX_POOL_PATH + 256)
++#define REMOTIONSHM_CONTROL_BUFFER_SIZE 4096
++#define REMOTIONSHM_POOL_PREFIX "rmshm-"
++
++typedef enum RemotionShmBackend {
++    REMOTIONSHM_BACKEND_POSIX_SHM,
++    REMOTIONSHM_BACKEND_FILE,
++} RemotionShmBackend;
 +
 +typedef struct RemotionShmAck {
 +    uint32_t pool_id;
@@ -131,6 +142,7 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +    uint8_t *mapping;
 +    atomic_uchar *busy;
 +    char *name;
++    RemotionShmBackend backend;
 +} RemotionShmPool;
 +
 +typedef struct RemotionShmSession {
@@ -162,6 +174,7 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +    int control_fd;
 +    int ack_fd;
 +    int ack_timeout_ms;
++    char *pool_dir;
 +    int owned_control_fd;
 +    uint8_t control_buffer[REMOTIONSHM_CONTROL_BUFFER_SIZE];
 +    size_t control_buffer_offset;
@@ -534,19 +547,97 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +    }
 +}
 +
-+static int remotionshm_valid_name(const char *name)
++static int remotionshm_valid_token(const char *token)
 +{
 +    const char *cursor;
-+    size_t length = strlen(name);
++    size_t prefix_length = strlen(REMOTIONSHM_POOL_PREFIX);
 +
-+    if (length < 8 || length > REMOTIONSHM_MAX_SHM_NAME ||
-+        strncmp(name, "/rmshm-", 7))
++    if (strncmp(token, REMOTIONSHM_POOL_PREFIX, prefix_length) ||
++        !token[prefix_length])
 +        return 0;
-+    for (cursor = name + 7; *cursor; cursor++)
++    for (cursor = token + prefix_length; *cursor; cursor++)
 +        if (!isalnum((unsigned char)*cursor) && *cursor != '-' &&
 +            *cursor != '_' && *cursor != '.')
 +            return 0;
 +    return 1;
++}
++
++static int remotionshm_valid_name(const char *name)
++{
++    size_t length = strlen(name);
++
++    return length >= 2 && length <= REMOTIONSHM_MAX_SHM_NAME &&
++           name[0] == '/' && remotionshm_valid_token(name + 1);
++}
++
++/*
++ * A file-backed pool must be a direct child of the caller-designated pool
++ * directory and use the same opaque token shape as POSIX names. The consumer
++ * never opens arbitrary paths from the control stream.
++ */
++static int remotionshm_valid_file_path(const RemotionShmContext *ctx,
++                                       const char *path)
++{
++    size_t dir_length;
++
++    if (!ctx->pool_dir || ctx->pool_dir[0] != '/')
++        return 0;
++    dir_length = strlen(ctx->pool_dir);
++    while (dir_length > 1 && ctx->pool_dir[dir_length - 1] == '/')
++        dir_length--;
++    if (strlen(path) > REMOTIONSHM_MAX_POOL_PATH ||
++        strncmp(path, ctx->pool_dir, dir_length) || path[dir_length] != '/')
++        return 0;
++    return remotionshm_valid_token(path + dir_length + 1);
++}
++
++/*
++ * Opens a producer-created pool file without following symlinks. glibc only
++ * exposes O_NOFOLLOW/O_CLOEXEC for _XOPEN_SOURCE >= 700 and FFmpeg builds with
++ * 600, so the identity of the opened inode is verified against lstat() as
++ * well. Returns a descriptor or a negative AVERROR.
++ */
++static int remotionshm_open_pool_file(const char *path)
++{
++    struct stat before;
++    struct stat after;
++    int flags = O_RDONLY;
++    int fd;
++
++#ifdef O_CLOEXEC
++    flags |= O_CLOEXEC;
++#endif
++#ifdef O_NOFOLLOW
++    flags |= O_NOFOLLOW;
++#endif
++    if (lstat(path, &before) < 0)
++        return AVERROR(errno);
++    if (!S_ISREG(before.st_mode))
++        return AVERROR_INVALIDDATA;
++    fd = open(path, flags);
++    if (fd < 0)
++        return AVERROR(errno);
++    if (fstat(fd, &after) < 0 || !S_ISREG(after.st_mode) ||
++        after.st_dev != before.st_dev || after.st_ino != before.st_ino) {
++        close(fd);
++        return AVERROR_INVALIDDATA;
++    }
++    fcntl(fd, F_SETFD, FD_CLOEXEC);
++    return fd;
++}
++
++static int remotionshm_parse_backend(const char *text,
++                                     RemotionShmBackend *backend)
++{
++    if (!text || !strcmp(text, "posix-shm")) {
++        *backend = REMOTIONSHM_BACKEND_POSIX_SHM;
++        return 0;
++    }
++    if (!strcmp(text, "file")) {
++        *backend = REMOTIONSHM_BACKEND_FILE;
++        return 0;
++    }
++    return AVERROR_INVALIDDATA;
 +}
 +
 +static RemotionShmPool *remotionshm_find_pool(RemotionShmSession *session,
@@ -560,11 +651,13 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +    return NULL;
 +}
 +
-+static int remotionshm_register_pool(AVFormatContext *avctx, char **fields)
++static int remotionshm_register_pool(AVFormatContext *avctx, char **fields,
++                                     int field_count)
 +{
 +    RemotionShmContext *ctx = avctx->priv_data;
 +    RemotionShmSession *session = ctx->session;
 +    RemotionShmPool *pool = NULL;
++    RemotionShmBackend backend;
 +    uint32_t pool_id;
 +    uint32_t slot_count;
 +    uint64_t slot_capacity;
@@ -575,7 +668,11 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +    int ret;
 +
 +    if ((ret = remotionshm_parse_u32(fields[1], &pool_id)) < 0 ||
-+        !remotionshm_valid_name(fields[2]) ||
++        (ret = remotionshm_parse_backend(field_count > 5 ? fields[5] : NULL,
++                                         &backend)) < 0 ||
++        (backend == REMOTIONSHM_BACKEND_POSIX_SHM
++             ? !remotionshm_valid_name(fields[2])
++             : !remotionshm_valid_file_path(ctx, fields[2])) ||
 +        (ret = remotionshm_parse_u32(fields[3], &slot_count)) < 0 ||
 +        (ret = remotionshm_parse_u64(fields[4], &slot_capacity)) < 0 ||
 +        !slot_count || slot_count > REMOTIONSHM_MAX_SLOTS_PER_POOL ||
@@ -609,6 +706,7 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +    pool->slot_count = slot_count;
 +    pool->slot_capacity = slot_capacity;
 +    pool->mapping_size = mapping_size;
++    pool->backend = backend;
 +    pool->name = av_strdup(fields[2]);
 +    pool->busy = av_calloc(slot_count, sizeof(*pool->busy));
 +    if (!pool->name || !pool->busy) {
@@ -618,13 +716,25 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +    for (i = 0; i < slot_count; i++)
 +        atomic_init(&pool->busy[i], 0);
 +
-+    fd = shm_open(pool->name, O_RDONLY, 0);
-+    if (fd < 0) {
-+        ret = AVERROR(errno);
-+        av_log(avctx, AV_LOG_ERROR,
-+               "remotionshm: could not open pool %s: %s\n",
-+               pool->name, av_err2str(ret));
-+        goto fail;
++    if (backend == REMOTIONSHM_BACKEND_FILE) {
++        fd = remotionshm_open_pool_file(pool->name);
++        if (fd < 0) {
++            ret = fd;
++            av_log(avctx, AV_LOG_ERROR,
++                   "remotionshm: could not open pool file %s: %s\n",
++                   pool->name, av_err2str(ret));
++            fd = -1;
++            goto fail;
++        }
++    } else {
++        fd = shm_open(pool->name, O_RDONLY, 0);
++        if (fd < 0) {
++            ret = AVERROR(errno);
++            av_log(avctx, AV_LOG_ERROR,
++                   "remotionshm: could not open pool %s: %s\n",
++                   pool->name, av_err2str(ret));
++            goto fail;
++        }
 +    }
 +    if (fstat(fd, &stat_buffer) < 0) {
 +        ret = AVERROR(errno);
@@ -644,7 +754,12 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +        ret = AVERROR(errno);
 +        goto fail;
 +    }
-+    if (shm_unlink(pool->name) < 0 && errno != ENOENT) {
++    /* Both processes now hold the mapping, so the name is no longer needed.
++     * Unlinking here means a producer crash cannot leave a persistent object
++     * or file behind. */
++    if ((backend == REMOTIONSHM_BACKEND_FILE ? unlink(pool->name)
++                                             : shm_unlink(pool->name)) < 0 &&
++        errno != ENOENT) {
 +        ret = AVERROR(errno);
 +        av_log(avctx, AV_LOG_ERROR,
 +               "remotionshm: could not unlink pool %s: %s\n",
@@ -652,6 +767,10 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +        goto fail;
 +    }
 +    close(fd);
++    av_log(avctx, AV_LOG_VERBOSE,
++           "remotionshm: mapped %s pool %"PRIu32" (%s, %"PRIu32" slot(s) of %"PRIu64" bytes)\n",
++           backend == REMOTIONSHM_BACKEND_FILE ? "file-backed" : "POSIX shared-memory",
++           pool_id, pool->name, slot_count, slot_capacity);
 +
 +    session->pools[session->pool_count++] = pool;
 +    session->total_slots += slot_count;
@@ -864,6 +983,14 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +               "remotionshm: video_size, framerate and distinct control/ACK FDs are required\n");
 +        return AVERROR(EINVAL);
 +    }
++    if (ctx->pool_dir && !ctx->pool_dir[0])
++        av_freep(&ctx->pool_dir);
++    if (ctx->pool_dir && (ctx->pool_dir[0] != '/' ||
++                          strlen(ctx->pool_dir) >= REMOTIONSHM_MAX_POOL_PATH)) {
++        av_log(avctx, AV_LOG_ERROR,
++               "remotionshm: pool_dir must be an absolute directory path\n");
++        return AVERROR(EINVAL);
++    }
 +
 +    ctx->owned_control_fd = dup(ctx->control_fd);
 +    if (ctx->owned_control_fd < 0)
@@ -922,8 +1049,8 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +                                             FF_ARRAY_ELEMS(fields));
 +        if (field_count < 0)
 +            return field_count;
-+        if (!strcmp(fields[0], "P") && field_count == 5) {
-+            ret = remotionshm_register_pool(avctx, fields);
++        if (!strcmp(fields[0], "P") && (field_count == 5 || field_count == 6)) {
++            ret = remotionshm_register_pool(avctx, fields, field_count);
 +            if (ret < 0)
 +                return ret;
 +            continue;
@@ -980,6 +1107,8 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +      AV_OPT_TYPE_INT, { .i64 = 4 }, 0, INT_MAX, DEC },
 +    { "ack_timeout", "maximum milliseconds to wait for a drained ACK pipe",
 +      OFFSET(ack_timeout_ms), AV_OPT_TYPE_INT, { .i64 = 5000 }, 100, 60000, DEC },
++    { "pool_dir", "absolute private directory in which file-backed pools may be opened",
++      OFFSET(pool_dir), AV_OPT_TYPE_STRING, { .str = NULL }, 0, 0, DEC },
 +    { NULL },
 +};
 +
@@ -993,7 +1122,7 @@ index 0000000000000000000000000000000000000000..bc13213a42116c25e0ccf8bd7838ed9f
 +
 +const FFInputFormat ff_remotionshm_demuxer = {
 +    .p.name         = "remotionshm",
-+    .p.long_name    = NULL_IF_CONFIG_SMALL("Remotion POSIX shared-memory frames"),
++    .p.long_name    = NULL_IF_CONFIG_SMALL("Remotion shared-memory frames (POSIX shm or mapped files)"),
 +    .p.flags        = AVFMT_NOFILE,
 +    .p.priv_class   = &remotionshm_class,
 +    .priv_data_size = sizeof(RemotionShmContext),

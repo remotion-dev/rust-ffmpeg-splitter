@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
-"""End-to-end test for the Remotion POSIX shared-memory FFmpeg input."""
+"""End-to-end test for the Remotion shared-memory FFmpeg input.
+
+Covers POSIX shared-memory pools, file-backed pools inside ``-pool_dir`` (the
+backend used where ``/dev/shm`` does not exist, such as AWS Lambda), ACK-pipe
+failure handling, and rejection of pool files outside the designated directory.
+"""
 
 import json
+import mmap
 import os
 import queue
 import subprocess
@@ -146,11 +152,302 @@ def assert_ack_failure_unblocks(environment):
         close_pool(pool)
 
 
+def base_command(width, height, control_read, ack_write, output, pool_dir=None):
+    return [
+        str(FFMPEG),
+        "-v", "error",
+        "-nostdin",
+        "-xerror",
+        "-nofind_stream_info",
+        "-threads:v", "1",
+        "-f", "remotionshm",
+        "-video_size", f"{width}x{height}",
+        "-framerate", "24/1",
+        "-control_fd", str(control_read),
+        "-ack_fd", str(ack_write),
+        *(["-pool_dir", str(pool_dir)] if pool_dir is not None else []),
+        "-i", "remotion",
+        "-vf", "copy",
+        "-fps_mode", "passthrough",
+        "-c:v", "rawvideo",
+        "-pix_fmt", "bgra",
+        "-f", "mov",
+        "-y", str(output),
+    ]
+
+
+def assert_pool_dir_option(environment):
+    help_text = subprocess.check_output(
+        [str(FFMPEG), "-hide_banner", "-h", "demuxer=remotionshm"],
+        env=environment,
+        text=True,
+    )
+    assert "-pool_dir" in help_text, help_text
+    print("remotionshm advertises the pool_dir option")
+
+
+def create_pool_file(pool_dir, token, size):
+    path = pool_dir / token
+    fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_RDWR, 0o600)
+    try:
+        os.ftruncate(fd, size)
+        mapping = mmap.mmap(fd, size)
+    finally:
+        os.close(fd)
+    return path, mapping
+
+
+def assert_file_backed_pools(environment):
+    width, height = 16, 9
+    stride = width * 4 + 16
+    byte_length = stride * height
+    slot_capacity = byte_length + 64
+    slot_count = 2
+    frame_count = 12
+    pool_ids = (3, 5)
+    pools = []
+    control_read, control_write = os.pipe()
+    ack_read, ack_write = os.pipe()
+    process = None
+
+    try:
+        with tempfile.TemporaryDirectory(prefix="remotionshm-files-") as directory:
+            pool_dir = Path(directory) / "pools"
+            pool_dir.mkdir(mode=0o700)
+            for pool_id in pool_ids:
+                pools.append((pool_id, *create_pool_file(
+                    pool_dir,
+                    f"rmshm-{os.getpid()}-{pool_id}",
+                    slot_count * slot_capacity,
+                )))
+            output = Path(directory) / "file-backed.mov"
+            process = subprocess.Popen(
+                base_command(width, height, control_read, ack_write, output, pool_dir),
+                env=environment,
+                pass_fds=(control_read, ack_write),
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
+            )
+            os.close(control_read)
+            control_read = -1
+            os.close(ack_write)
+            ack_write = -1
+
+            acknowledgements = queue.Queue()
+
+            def read_acknowledgements():
+                with os.fdopen(ack_read, "r", encoding="ascii") as ack_file:
+                    for line in ack_file:
+                        acknowledgements.put(
+                            tuple(int(field) for field in line.rstrip("\n").split("\t"))
+                        )
+                acknowledgements.put(None)
+
+            threading.Thread(target=read_acknowledgements, daemon=True).start()
+            ack_read = -1
+
+            available = {pool_id: list(range(slot_count)) for pool_id in pool_ids}
+            outstanding = {}
+            expected = bytearray()
+
+            def accept_acknowledgement():
+                acknowledgement = acknowledgements.get(timeout=15)
+                assert acknowledgement is not None, "ACK channel closed early"
+                pool_id, slot, frame_id = acknowledgement
+                assert outstanding.pop((pool_id, slot)) == frame_id
+                available[pool_id].append(slot)
+
+            with os.fdopen(control_write, "w", encoding="ascii") as control:
+                control_write = -1
+                for pool_id, path, _ in pools:
+                    control.write(
+                        f"P\t{pool_id}\t{path}\t{slot_count}\t{slot_capacity}\tfile\n"
+                    )
+                control.flush()
+                for frame_index in range(frame_count):
+                    pool_id, path, mapping = pools[frame_index % len(pools)]
+                    while not available[pool_id]:
+                        accept_acknowledgement()
+                    slot = available[pool_id].pop(0)
+                    frame_id = 1000 + frame_index
+                    offset = slot * slot_capacity
+                    mapping[offset:offset + slot_capacity] = b"\x5a" * slot_capacity
+                    for y in range(height):
+                        row = bytes(
+                            channel
+                            for x in range(width)
+                            for channel in (
+                                (x * 5 + frame_index * 3) % 256,
+                                (y * 11 + frame_index * 7) % 256,
+                                ((x // 2 + y // 3 + frame_index) % 2) * 255,
+                                (x * 17 + y * 13 + frame_index * 23) % 256,
+                            )
+                        )
+                        row_start = offset + y * stride
+                        mapping[row_start:row_start + width * 4] = row
+                        expected.extend(row)
+                    outstanding[(pool_id, slot)] = frame_id
+                    control.write(
+                        f"F\t{pool_id}\t{slot}\t{frame_id}\t{width}\t{height}\t"
+                        f"{stride}\t{byte_length}\t{frame_index}\n"
+                    )
+                    control.flush()
+                    if frame_index == 0:
+                        # The consumer unlinks a pool file as soon as it is mapped;
+                        # the first ACK proves the mapping (and the unlink) happened.
+                        while outstanding:
+                            accept_acknowledgement()
+                        for _, mapped_path, _ in pools:
+                            assert not mapped_path.exists(), mapped_path
+
+            while outstanding:
+                accept_acknowledgement()
+
+            return_code = process.wait(timeout=30)
+            stderr = process.stderr.read().decode("utf8")
+            assert return_code == 0, stderr
+            assert sorted(pool_dir.iterdir()) == [], list(pool_dir.iterdir())
+
+            packet_metadata = json.loads(
+                subprocess.check_output(
+                    [
+                        str(FFPROBE),
+                        "-v", "error",
+                        "-select_streams", "v:0",
+                        "-show_entries", "packet=pos,size",
+                        "-of", "json",
+                        str(output),
+                    ],
+                    env=environment,
+                    text=True,
+                )
+            )
+            decoded = bytearray()
+            with output.open("rb") as output_file:
+                for packet in packet_metadata["packets"]:
+                    output_file.seek(int(packet["pos"]))
+                    decoded.extend(output_file.read(int(packet["size"])))
+            assert decoded == expected
+            print(
+                f"validated {frame_count} exact BGRA frames across {len(pools)} "
+                "file-backed pools; files were unlinked after mapping"
+            )
+    finally:
+        if process is not None and process.poll() is None:
+            process.kill()
+            process.wait()
+        for descriptor in (control_read, control_write, ack_read, ack_write):
+            if descriptor >= 0:
+                os.close(descriptor)
+        for _, _, mapping in pools:
+            mapping.close()
+
+
+def assert_registration_rejected(environment, pool_dir, record, expected_message):
+    width, height = 8, 8
+    control_read, control_write = os.pipe()
+    ack_read, ack_write = os.pipe()
+    process = None
+    try:
+        with tempfile.TemporaryDirectory(prefix="remotionshm-reject-") as directory:
+            process = subprocess.Popen(
+                base_command(
+                    width, height, control_read, ack_write,
+                    Path(directory) / "rejected.mov", pool_dir,
+                ),
+                env=environment,
+                pass_fds=(control_read, ack_write),
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
+            )
+            os.close(control_read)
+            control_read = -1
+            os.close(ack_write)
+            ack_write = -1
+            with os.fdopen(control_write, "w", encoding="ascii") as control:
+                control_write = -1
+                control.write(record)
+            return_code = process.wait(timeout=10)
+            stderr = process.stderr.read().decode("utf8")
+            assert return_code != 0, stderr
+            assert expected_message in stderr, stderr
+    finally:
+        if process is not None and process.poll() is None:
+            process.kill()
+            process.wait()
+        for descriptor in (control_read, control_write, ack_read, ack_write):
+            if descriptor >= 0:
+                os.close(descriptor)
+
+
+def assert_file_pool_rejections(environment):
+    size = 8 * 8 * 4 + 64
+    with tempfile.TemporaryDirectory(prefix="remotionshm-reject-") as directory:
+        pool_dir = Path(directory) / "pools"
+        pool_dir.mkdir(mode=0o700)
+        outside_dir = Path(directory) / "outside"
+        outside_dir.mkdir(mode=0o700)
+        inside, inside_map = create_pool_file(pool_dir, "rmshm-inside", size)
+        outside, outside_map = create_pool_file(outside_dir, "rmshm-outside", size)
+        link = pool_dir / "rmshm-link"
+        link.symlink_to(inside)
+        nested = pool_dir / "nested"
+        nested.mkdir()
+        nested_file, nested_map = create_pool_file(nested, "rmshm-nested", size)
+        try:
+            cases = [
+                ("outside pool_dir", pool_dir,
+                 f"P\t1\t{outside}\t1\t{size}\tfile\n", "invalid pool registration"),
+                ("nested path", pool_dir,
+                 f"P\t1\t{nested_file}\t1\t{size}\tfile\n", "invalid pool registration"),
+                ("bad token", pool_dir,
+                 f"P\t1\t{pool_dir}/other-name\t1\t{size}\tfile\n", "invalid pool registration"),
+                ("symlink", pool_dir,
+                 f"P\t1\t{link}\t1\t{size}\tfile\n", "could not open pool file"),
+                ("without -pool_dir", None,
+                 f"P\t1\t{inside}\t1\t{size}\tfile\n", "invalid pool registration"),
+                ("unknown backend", pool_dir,
+                 f"P\t1\t{inside}\t1\t{size}\tmemfd\n", "invalid pool registration"),
+                ("posix name as file", pool_dir,
+                 f"P\t1\t/rmshm-not-a-file\t1\t{size}\tfile\n", "invalid pool registration"),
+                ("file path as posix", pool_dir,
+                 f"P\t1\t{inside}\t1\t{size}\n", "invalid pool registration"),
+            ]
+            for label, directory_option, record, message in cases:
+                assert_registration_rejected(environment, directory_option, record, message)
+                assert inside.exists(), label
+            print(f"validated {len(cases)} rejected file-pool registrations")
+        finally:
+            inside_map.close()
+            outside_map.close()
+            nested_map.close()
+
+
+def posix_shared_memory_available():
+    # Linux implements shm_open() on /dev/shm; AWS Lambda and containers started
+    # with --ipc=none do not have it. macOS needs no filesystem mount.
+    return sys.platform == "darwin" or os.path.isdir("/dev/shm")
+
+
 def main():
     environment = ffmpeg_environment()
     if not assert_device_registration(environment):
         return
+    assert_pool_dir_option(environment)
+    if not posix_shared_memory_available():
+        print("skipping POSIX shared-memory cases: no /dev/shm on this host")
+        assert_file_backed_pools(environment)
+        assert_file_pool_rejections(environment)
+        return
+    assert_posix_pools(environment)
+    assert_ack_failure_unblocks(environment)
+    assert_file_backed_pools(environment)
+    assert_file_pool_rejections(environment)
 
+
+def assert_posix_pools(environment):
     width, height = 32, 18
     stride = width * 4 + 32
     byte_length = stride * height
@@ -320,7 +617,6 @@ def main():
                 f"validated {frame_count} exact BGRA frames across "
                 f"{len(frame_pools)} pools with final-reference ACKs"
             )
-            assert_ack_failure_unblocks(environment)
     finally:
         for descriptor in (control_read, control_write, ack_read, ack_write):
             if descriptor >= 0:
